@@ -178,14 +178,14 @@ class Bubbles extends Component {
       simulation = d3.forceSimulation(inData)
         .velocityDecay(0.2)
         // .alphaDecay(0)
-        // .force('x', d3.forceX().strength(0.002))
-        // .force('y', d3.forceY().strength(0.002))
+        .force('x', d3.forceX().strength(0.002))
+        .force('y', d3.forceY().strength(0.002))
         .force('collide', d3.forceCollide()
           .radius(d => radius(dataWeight)(d.value) + 0.5)
           .strength(0.02)
           .iterations(2))
         .force('charge', d3.forceManyBody()
-          .strength(2))
+          .strength(5))
         .force('center', d3.forceCenter(fullWidth / 2, fullHeight / 2))
         .on('tick', ticked);
 
@@ -216,6 +216,8 @@ class Bubbles extends Component {
         .attr('r', d => radius(dataWeight)(d.value));
 
       simulation.alpha(0.8)
+        .force('x', null)
+        .force('y', null)
         .force('charge', d3.forceManyBody()
           .strength(0.5))
         .nodes(inData)
