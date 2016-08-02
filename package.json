@@ -5,30 +5,37 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev-server": "webpack-dev-server --progress --colors --port 2999 --inline --hot --content-base app/"
+    "dev-server": "webpack-dev-server --progress --colors --port 2999 --inline --hot",
+    "build": "rimraf build && cross-env NODE_ENV=production webpack --config ./webpack.production.config.js --progress --profile --colors && node_modules/babel-cli/bin/babel.js  server -d build/server --presets es2015",
+    "start": "node build/server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer": "^6.3.7",
+    "babel-cli": "^6.11.4",
     "babel-core": "^6.10.4",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
+    "cross-env": "^2.0.0",
     "eslint": "^3.2.0",
     "eslint-config-airbnb": "^9.0.1",
     "eslint-plugin-import": "^1.12.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^5.2.2",
+    "extract-text-webpack-plugin": "^1.0.1",
     "html-webpack-plugin": "^2.22.0",
     "node-sass": "^3.8.0",
     "postcss-flexbugs-fixes": "^2.0.0",
     "postcss-loader": "^0.9.1",
     "precss": "^1.4.0",
+    "rimraf": "^2.5.4",
     "sass-loader": "^4.0.0",
+    "stats-webpack-plugin": "^0.4.0",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
@@ -36,6 +43,7 @@
     "babel-polyfill": "^6.9.1",
     "bootstrap": "^4.0.0-alpha.3",
     "d3": "^4.1.1",
+    "express": "^4.14.0",
     "lodash": "^4.13.1",
     "postcss": "^5.1.1",
     "react": "^15.2.1",
@@ -51,10 +59,15 @@
       "react"
     ],
     "rules": {
-      "max-len": [2, 120, 2, {
-        "ignoreUrls": true,
-        "ignoreComments": false
-      }],
+      "max-len": [
+        2,
+        120,
+        2,
+        {
+          "ignoreUrls": true,
+          "ignoreComments": false
+        }
+      ],
       "react/jsx-uses-vars": 2,
       "react/jsx-uses-react": 2
     },

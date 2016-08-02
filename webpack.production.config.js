@@ -2,18 +2,19 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const StatsPlugin = require('stats-webpack-plugin');
 
 module.exports = {
-  devtool: 'sourcemap',
   entry: [
     'babel-polyfill',
     'whatwg-fetch',
     './app/index.js',
   ],
   output: {
-    path: path.resolve(__dirname, 'build'),
-    publicPath: '/',
-    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'build/public/assets'),
+    publicPath: '/assets/',
+    filename: 'bundle-[hash].min.js',
   },
   module: {
     loaders: [
@@ -45,21 +46,34 @@ module.exports = {
         test: /\.(eot|ttf|svg|gif|png)$/,
         loader: 'file-loader',
       },
+      {
+        test: /\.json?$/,
+        loader: 'json',
+      },
     ],
   },
   plugins: [
     new webpack.ProvidePlugin({
       d3: 'd3',
     }),
+    new webpack.optimize.OccurenceOrderPlugin(),
     new HtmlWebpackPlugin({
       template: 'app/index.html',
-      filename: 'index.html',
+      filename: '../index.html',
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new ExtractTextPlugin('bundle-[hash].min.css'),
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        warnings: false,
+        screw_ie8: true,
+      },
+    }),
+    new StatsPlugin('webpack.stats.json', {
+      source: false,
+      modules: false,
+    }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development'),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
   ],
   postcss() {
