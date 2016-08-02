@@ -11,3 +11,10 @@ To run local dev server:
 To use linter:
 - install eslint globally `sudo npm i -g eslint`
 - add eslint plugin to your favorite editor
+
+To start as a standalone app in production mode:
+- install node.js 6.xx
+- run `npm i`
+- run `sudo npm i -g webpack`
+- run `npm run build`
+- run `npm run start`
