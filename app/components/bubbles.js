@@ -3,7 +3,9 @@ import 'whatwg-fetch';
 import { getJson } from '../util/requests';
 
 const d3 = require('d3');
-import { forEach, reduce, find } from 'lodash';
+import { forEach, reduce, find, sortBy, first, last } from 'lodash';
+
+require('font-awesome/css/font-awesome.css');
 
 class Bubbles extends Component {
   constructor(props) {
@@ -24,8 +26,27 @@ class Bubbles extends Component {
 
   render() {
     const { group } = this.props;
+    const tooltipId = `tooltip-${group}`;
     const svgId = `group-${group}`;
-    return <svg id={ svgId } style={{ width: '100%', height: '100%' }}></svg>;
+    const switchId = `switch-${group}`;
+    return <div style={{ width: '100%', height: '100%' }}>
+            <i className="fa fa-retweet" id={ switchId }></i>
+            <svg id={ svgId } style={{ width: '100%', height: '100%' }}></svg>
+            <div id={ tooltipId } style={{
+              position: 'absolute',
+              textAlign: 'center',
+              borderRadius: '5px',
+              border: '1px solid #000',
+              background: '#fff',
+              opacity: 0,
+              display: 'none',
+              color: 'black',
+              padding: '10px',
+              width: '300px',
+              fontSize: '12px',
+              zIndex: 10,
+            }}></div>
+          </div>;
   }
 
   componentDidMount() {
@@ -33,6 +54,8 @@ class Bubbles extends Component {
     const { url, group, token } = this.props;
     const svg = d3.select(`#group-${group}`);
     const svgDom = document.querySelector(`#group-${group}`);
+    const switchButton = document.querySelector(`#switch-${group}`);
+    let switchInOnTop = true;
     let fullWidth = svgDom.getBoundingClientRect().width;
     let width = fullWidth;
     let fullHeight = svgDom.getBoundingClientRect().height;
@@ -51,11 +74,14 @@ class Bubbles extends Component {
     const outData = [];
     const headers = {
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
     };
+    if (token) headers.Authorization = `Bearer ${token}`;
     let circle = null;
     let outCircle = null;
     let simulation = null;
+    let path = null;
+    let arc = null;
+    const tooltip = d3.select(`#tooltip-${group}`);
 
     function fillPoints(pointsArr) {
       forEach(pointsArr, (point) => {
@@ -66,17 +92,17 @@ class Bubbles extends Component {
           name: point.attributes.name,
           x: d3.scaleLinear()
             .domain([0, width])
-            .range([width / 100 * 20, width / 100 * 80])(Math.random() * width),
+            .range([width / 100 * 30, width / 100 * 70])(Math.random() * width),
           y: d3.scaleLinear()
             .domain([0, width])
-            .range([width / 100 * 20, width / 100 * 80])(Math.random() * height),
+            .range([width / 100 * 30, width / 100 * 70])(Math.random() * height),
           seeded: false,
           updating: false,
         };
         if (point.attributes.mode === 'in') {
-          inData.push(Object.assign({}, pointObj, { color: inColor }));
+          inData.push(Object.assign({}, pointObj, { color: inColor, outPoint: false }));
         } else {
-          outData.push(Object.assign({}, pointObj, { color: outColor }));
+          outData.push(Object.assign({}, pointObj, { color: outColor, outPoint: true }));
         }
       });
     }
@@ -105,7 +131,12 @@ class Bubbles extends Component {
     }
 
     function outCombined() {
-      return [{ id: 'outBubble', value: reduce(outData, (s, d) => s + d.value, 0) }];
+      return [{
+        id: 'outBubble',
+        value: reduce(outData, (s, d) => s + d.value, 0),
+        name: 'Power produced',
+        outPoint: true,
+      }];
     }
 
     function getData() {
@@ -146,14 +177,42 @@ class Bubbles extends Component {
         .attr('cy', d => d.y);
     }
 
+    function formatPower(power) {
+      const powerArr = power.toLocaleString('en').split(',');
+      powerArr.pop();
+      return powerArr.join('.');
+    }
+
     function showDetails(data, i, element) {
-      d3.select(element).style('stroke', d3.rgb(inColor).darker().darker());
-      d3.select(element).style('opacity', 0.6);
+      const color = data.outPoint ? outColor : inColor;
+      const opacity = data.outPoint ? 0.8 : 0.6;
+      d3.select(element).style('stroke', d3.rgb(color).darker().darker());
+      d3.select(element).style('opacity', opacity);
+      tooltip.transition()
+        .duration(500)
+        .style('opacity', 1)
+        .style('display', 'block');
+      tooltip.html(`<b>Name: </b>${data.name}<br /><b>Power: </b>${formatPower(data.value)} Watt`)
+        .style('left', `${d3.event.pageX + 20}px`)
+        .style('top', `${d3.event.pageY - 20}px`);
     }
 
     function hideDetails(data, i, element) {
-      d3.select(element).style('stroke', d3.rgb(inColor).darker());
-      d3.select(element).style('opacity', 0.8);
+      const color = data.outPoint ? outColor : inColor;
+      const opacity = data.outPoint ? 1 : 0.8;
+      d3.select(element).style('stroke', d3.rgb(color).darker());
+      d3.select(element).style('opacity', opacity);
+      tooltip.transition()
+        .duration(500)
+        .style('opacity', 0)
+        .style('display', 'none');
+    }
+
+    function scaleCenterForce(val) {
+      const sortedData = sortBy(inData, d => d.value);
+      return d3.scaleLinear()
+        .domain([first(sortedData).value, last(sortedData).value])
+        .range([0.001, 0.0015])(val);
     }
 
     function drawData() {
@@ -175,18 +234,42 @@ class Bubbles extends Component {
           setTimeout(() => hideDetails(d, i, elementSelf), 1000);
         });
 
+      // arc = d3.arc()
+      //   .startAngle(0)
+      //   .endAngle(Math.PI / 2)
+      //   .innerRadius(() => radius(dataWeight)(outCombined()[0].value))
+      //   .outerRadius(() => radius(dataWeight)(outCombined()[0].value * 1.1));
+      //
+      // path = svg.selectAll('path')
+      //   .data(outData)
+      //   .enter()
+      //   .append('path')
+      //   .attr('d', arc)
+      //   .attr('id', d => `path_${d.id}`)
+      //   .attr('stroke-width', 4)
+      //   .style('stroke', 'none')
+      //   .attr('transform', `translate(${fullWidth / 2}, ${fullHeight / 2})`)
+      //   .style('fill', d3.rgb(outColor).darker())
+      //   .on('mouseover', function mouseShow(d, i) { showDetails(d, i, this); })
+      //   .on('mouseout', function mouseHide(d, i) { hideDetails(d, i, this); })
+      //   .on('touchstart', function touchShow(d, i) { showDetails(d, i, this); })
+      //   .on('touchend', function touchHide(d, i) {
+      //     const elementSelf = this;
+      //     setTimeout(() => hideDetails(d, i, elementSelf), 1000);
+      //   });
+
       simulation = d3.forceSimulation(inData)
         .velocityDecay(0.2)
         // .alphaDecay(0)
-        .force('x', d3.forceX().strength(0.002))
-        .force('y', d3.forceY().strength(0.002))
+        .force('x', d3.forceX(fullWidth / 2).strength(d => scaleCenterForce(d.value)))
+        .force('y', d3.forceY(fullHeight / 2).strength(d => scaleCenterForce(d.value)))
         .force('collide', d3.forceCollide()
           .radius(d => radius(dataWeight)(d.value) + 0.5)
           .strength(0.02)
           .iterations(2))
         .force('charge', d3.forceManyBody()
-          .strength(5))
-        .force('center', d3.forceCenter(fullWidth / 2, fullHeight / 2))
+          // .strength(2))
+          .strength(d => d.value * 0.000002))
         .on('tick', ticked);
 
       const nodes = simulation.nodes();
@@ -216,10 +299,12 @@ class Bubbles extends Component {
         .attr('r', d => radius(dataWeight)(d.value));
 
       simulation.alpha(0.8)
-        .force('x', null)
-        .force('y', null)
-        .force('charge', d3.forceManyBody()
-          .strength(0.5))
+        // .force('x', null)
+        // .force('y', null)
+        // .force('x', d3.forceX(fullWidth / 2).strength(0.001))
+        // .force('y', d3.forceY(fullHeight / 2).strength(0.001))
+        // .force('charge', d3.forceManyBody()
+        //   .strength(0.5))
         .nodes(inData)
         .restart();
 
@@ -228,6 +313,16 @@ class Bubbles extends Component {
         .duration(500)
         .attr('r', d => radius(dataWeight)(d.value));
     }
+
+    switchButton.addEventListener('click', () => {
+      if (switchInOnTop) {
+        switchInOnTop = false;
+        circle.lower();
+      } else {
+        switchInOnTop = true;
+        circle.raise();
+      }
+    });
 
     fetch(`${url}/api/v1/groups/${group}/metering-points?per_page=10000`, { headers })
       .then(getJson)
