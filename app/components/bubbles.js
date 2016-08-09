@@ -69,7 +69,7 @@ class Bubbles extends Component {
     // const height = +svg.attr('height');
     const inColor = '#5FA2DD';
     const outColor = '#F76C51';
-    const borderWidth = '6px';
+    const borderWidth = '3px';
     const inData = [];
     const outData = [];
     const headers = {
@@ -143,7 +143,7 @@ class Bubbles extends Component {
       const totalPower = reduce(outData, (s, d) => s + d.value, 0);
       let startAngle = 0;
       forEach(outData, (data, idx) => {
-        const endAngle = data.value / totalPower * 2 * Math.PI + startAngle;
+        const endAngle = (data.value / totalPower * 2 * Math.PI + startAngle) || 0;
         outData[idx].startAngle = startAngle;
         outData[idx].endAngle = endAngle;
         startAngle = endAngle;
@@ -205,10 +205,14 @@ class Bubbles extends Component {
     }
 
     function showDetails(data, i, element) {
-      const color = data.outPoint ? outColor : inColor;
-      const opacity = data.outPoint ? 0.8 : 0.6;
-      d3.select(element).style('stroke', d3.rgb(color).darker().darker());
-      d3.select(element).style('opacity', opacity);
+      if (data.outPoint && data.id !== 'outBubble') {
+        d3.select(element).style('opacity', 0.9);
+      } else {
+        const color = data.outPoint ? outColor : inColor;
+        const opacity = data.outPoint ? 0.9 : 0.7;
+        d3.select(element).style('stroke', d3.rgb(color).darker().darker());
+        d3.select(element).style('opacity', opacity);
+      }
       tooltip.transition()
         .duration(500)
         .style('opacity', 1)
@@ -219,10 +223,14 @@ class Bubbles extends Component {
     }
 
     function hideDetails(data, i, element) {
-      const color = data.outPoint ? outColor : inColor;
-      const opacity = data.outPoint ? 1 : 0.8;
-      d3.select(element).style('stroke', d3.rgb(color).darker());
-      d3.select(element).style('opacity', opacity);
+      if (data.outPoint && data.id !== 'outBubble') {
+        d3.select(element).style('opacity', 1);
+      } else {
+        const color = data.outPoint ? outColor : inColor;
+        const opacity = data.outPoint ? 1 : 0.9;
+        d3.select(element).style('stroke', d3.rgb(color).darker());
+        d3.select(element).style('opacity', opacity);
+      }
       tooltip.transition()
         .duration(500)
         .style('opacity', 0)
@@ -304,7 +312,7 @@ class Bubbles extends Component {
         .style('fill', inColor)
         .style('stroke', d3.rgb(inColor).darker())
         .style('stroke-width', borderWidth)
-        .style('opacity', '0.8')
+        .style('opacity', 0.9)
         .attr('r', d => radius(dataWeight)(d.value))
         .on('mouseover', function mouseShow(d, i) { showDetails(d, i, this); })
         .on('mouseout', function mouseHide(d, i) { hideDetails(d, i, this); })
@@ -317,7 +325,8 @@ class Bubbles extends Component {
 
     function redrawData() {
       circle.transition()
-        .duration(50)
+        .ease(d3.easeExpOut)
+        .duration(1000)
         .attr('r', d => radius(dataWeight)(d.value));
 
       simulation.alpha(0.8)
@@ -332,6 +341,7 @@ class Bubbles extends Component {
 
       outCircle.data(outCombined(), dataId)
         .transition()
+        .ease(d3.easeExpOut)
         .duration(1000)
         .attr('r', d => radius(dataWeight)(d.value));
 
@@ -343,6 +353,7 @@ class Bubbles extends Component {
         .outerRadius(() => radius(dataWeight)(outCombined()[0].value * 1.1));
 
       path.transition()
+        .ease(d3.easeExpOut)
         .duration(1000)
         .attr('d', arc);
     }
