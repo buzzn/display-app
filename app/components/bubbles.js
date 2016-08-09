@@ -102,7 +102,7 @@ class Bubbles extends Component {
         if (point.attributes.mode === 'in') {
           inData.push(Object.assign({}, pointObj, { color: inColor, outPoint: false }));
         } else {
-          outData.push(Object.assign({}, pointObj, { color: outColor, outPoint: true }));
+          outData.push(Object.assign({}, pointObj, { color: outColor, outPoint: true, startAngle: 0, endAngle: 0 }));
         }
       });
     }
@@ -139,6 +139,26 @@ class Bubbles extends Component {
       }];
     }
 
+    function recalculateAngles() {
+      const totalPower = reduce(outData, (s, d) => s + d.value, 0);
+      let startAngle = 0;
+      forEach(outData, (data, idx) => {
+        const endAngle = data.value / totalPower * 2 * Math.PI + startAngle;
+        outData[idx].startAngle = startAngle;
+        outData[idx].endAngle = endAngle;
+        startAngle = endAngle;
+      });
+    }
+
+    function calculateArcColor(data) {
+      const totalPower = reduce(outData, (s, d) => s + d.value, 0);
+      const hsl = d3.hsl(outColor).darker();
+      hsl.h = d3.scaleLinear()
+        .domain([0, totalPower])
+        .range([hsl.h - 40, hsl.h + 40])(data.value);
+      return d3.hsl(hsl).toString();
+    }
+
     function getData() {
       forEach(inData, (point, idx) => {
         if (inData[idx].updating) return;
@@ -162,6 +182,7 @@ class Bubbles extends Component {
           .then(getJson)
           .then(json => {
             outData[idx].value = Math.abs(json.power_milliwatt) || 0;
+            recalculateAngles();
             outData[idx].seeded = true;
             outData[idx].updating = false;
           })
@@ -234,29 +255,30 @@ class Bubbles extends Component {
           setTimeout(() => hideDetails(d, i, elementSelf), 1000);
         });
 
-      // arc = d3.arc()
-      //   .startAngle(0)
-      //   .endAngle(Math.PI / 2)
-      //   .innerRadius(() => radius(dataWeight)(outCombined()[0].value))
-      //   .outerRadius(() => radius(dataWeight)(outCombined()[0].value * 1.1));
-      //
-      // path = svg.selectAll('path')
-      //   .data(outData)
-      //   .enter()
-      //   .append('path')
-      //   .attr('d', arc)
-      //   .attr('id', d => `path_${d.id}`)
-      //   .attr('stroke-width', 4)
-      //   .style('stroke', 'none')
-      //   .attr('transform', `translate(${fullWidth / 2}, ${fullHeight / 2})`)
-      //   .style('fill', d3.rgb(outColor).darker())
-      //   .on('mouseover', function mouseShow(d, i) { showDetails(d, i, this); })
-      //   .on('mouseout', function mouseHide(d, i) { hideDetails(d, i, this); })
-      //   .on('touchstart', function touchShow(d, i) { showDetails(d, i, this); })
-      //   .on('touchend', function touchHide(d, i) {
-      //     const elementSelf = this;
-      //     setTimeout(() => hideDetails(d, i, elementSelf), 1000);
-      //   });
+      arc = d3.arc()
+        .startAngle(d => d.startAngle)
+        .endAngle(d => d.endAngle)
+        .cornerRadius(16)
+        .innerRadius(() => radius(dataWeight)(outCombined()[0].value))
+        .outerRadius(() => radius(dataWeight)(outCombined()[0].value * 1.1));
+
+      path = svg.selectAll('path')
+        .data(outData)
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('id', d => `path_${d.id}`)
+        .attr('stroke-width', 4)
+        .style('stroke', 'none')
+        .attr('transform', `translate(${fullWidth / 2}, ${fullHeight / 2})`)
+        .style('fill', d => calculateArcColor(d))
+        .on('mouseover', function mouseShow(d, i) { showDetails(d, i, this); })
+        .on('mouseout', function mouseHide(d, i) { hideDetails(d, i, this); })
+        .on('touchstart', function touchShow(d, i) { showDetails(d, i, this); })
+        .on('touchend', function touchHide(d, i) {
+          const elementSelf = this;
+          setTimeout(() => hideDetails(d, i, elementSelf), 1000);
+        });
 
       simulation = d3.forceSimulation(inData)
         .velocityDecay(0.2)
@@ -310,8 +332,19 @@ class Bubbles extends Component {
 
       outCircle.data(outCombined(), dataId)
         .transition()
-        .duration(500)
+        .duration(1000)
         .attr('r', d => radius(dataWeight)(d.value));
+
+      arc = d3.arc()
+        .startAngle(d => d.startAngle)
+        .endAngle(d => d.endAngle)
+        .cornerRadius(16)
+        .innerRadius(() => radius(dataWeight)(outCombined()[0].value))
+        .outerRadius(() => radius(dataWeight)(outCombined()[0].value * 1.1));
+
+      path.transition()
+        .duration(1000)
+        .attr('d', arc);
     }
 
     switchButton.addEventListener('click', () => {
