@@ -18,3 +18,7 @@ To start as a standalone app in production mode:
 - run `sudo npm i -g webpack rimraf cross-env`
 - run `npm run build`
 - run `npm run start`
+
+with Docker:
+- docker build -t buzzn-kiosk .
+- docker run -it --rm -p2999:2999 --name kiosk2 buzzn-kiosk
