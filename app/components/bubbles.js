@@ -60,9 +60,9 @@ class Bubbles extends Component {
     let width = fullWidth;
     let fullHeight = svgDom.getBoundingClientRect().height;
     let height = fullHeight;
-    if (width > height + height / 100 * 20) {
+    if (width > height + height * 0.2) {
       width = height;
-    } else if (height > width + width / 100 * 20) {
+    } else if (height > width + width * 0.2) {
       height = width;
     }
     // const width = +svg.attr('width');
@@ -91,11 +91,11 @@ class Bubbles extends Component {
           r: 0,
           name: point.attributes.name,
           x: d3.scaleLinear()
-            .domain([0, width])
-            .range([width / 100 * 30, width / 100 * 70])(Math.random() * width),
+            .domain([0, fullWidth])
+            .range([fullWidth * 0.4, fullWidth * 0.6])(Math.random() * fullWidth),
           y: d3.scaleLinear()
-            .domain([0, width])
-            .range([width / 100 * 30, width / 100 * 70])(Math.random() * height),
+            .domain([0, fullHeight])
+            .range([fullHeight * 0.4, fullHeight * 0.6])(Math.random() * fullHeight),
           seeded: false,
           updating: false,
         };
@@ -143,20 +143,13 @@ class Bubbles extends Component {
       const totalPower = reduce(outData, (s, d) => s + d.value, 0);
       let startAngle = 0;
       forEach(outData, (data, idx) => {
-        const endAngle = (data.value / totalPower * 2 * Math.PI + startAngle) || 0;
+        if (data.value === 0) return;
+        let endAngle = (data.value / totalPower * 2 * Math.PI + startAngle) || 0;
+        if (outData.length > 1 && endAngle > 0.015) endAngle -= 0.015;
         outData[idx].startAngle = startAngle;
         outData[idx].endAngle = endAngle;
-        startAngle = endAngle;
+        startAngle = endAngle + 0.015;
       });
-    }
-
-    function calculateArcColor(data) {
-      const totalPower = reduce(outData, (s, d) => s + d.value, 0);
-      const hsl = d3.hsl(outColor).darker();
-      hsl.h = d3.scaleLinear()
-        .domain([0, totalPower])
-        .range([hsl.h - 40, hsl.h + 40])(data.value);
-      return d3.hsl(hsl).toString();
     }
 
     function getData() {
@@ -199,7 +192,7 @@ class Bubbles extends Component {
     }
 
     function formatPower(power) {
-      const powerArr = power.toLocaleString('en').split(',');
+      const powerArr = power.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').split(',');
       powerArr.pop();
       return powerArr.join('.');
     }
@@ -241,7 +234,7 @@ class Bubbles extends Component {
       const sortedData = sortBy(inData, d => d.value);
       return d3.scaleLinear()
         .domain([first(sortedData).value, last(sortedData).value])
-        .range([0.001, 0.0015])(val);
+        .range([0.0005, 0.001])(val);
     }
 
     function drawData() {
@@ -279,7 +272,7 @@ class Bubbles extends Component {
         .attr('stroke-width', 4)
         .style('stroke', 'none')
         .attr('transform', `translate(${fullWidth / 2}, ${fullHeight / 2})`)
-        .style('fill', d => calculateArcColor(d))
+        .style('fill', d3.rgb(outColor).darker())
         .on('mouseover', function mouseShow(d, i) { showDetails(d, i, this); })
         .on('mouseout', function mouseHide(d, i) { hideDetails(d, i, this); })
         .on('touchstart', function touchShow(d, i) { showDetails(d, i, this); })
@@ -298,8 +291,9 @@ class Bubbles extends Component {
           .strength(0.02)
           .iterations(2))
         .force('charge', d3.forceManyBody()
-          // .strength(2))
-          .strength(d => d.value * 0.000002))
+          .strength(d => d.value * 0.000002 / d3.scaleLinear()
+            .domain([0, 300])
+            .range([1, 100])(inData.length)))
         .on('tick', ticked);
 
       const nodes = simulation.nodes();
@@ -374,12 +368,12 @@ class Bubbles extends Component {
         if (json.data.length === 0) return Promise.reject('Empty group');
         fillPoints(json.data);
         getData();
-        self.setState({ fetchTimer: setInterval(getData, 8000) });
+        self.setState({ fetchTimer: setInterval(getData, 10000) });
         self.setState({ seedTimer: setInterval(() => {
           if (!find(inData, d => !d.seeded) && !find(outData, d => !d.seeded)) {
             clearInterval(self.state.seedTimer);
             drawData();
-            self.setState({ drawTimer: setInterval(redrawData, 8000) });
+            self.setState({ drawTimer: setInterval(redrawData, 10000) });
           }
         }, 2000) });
       })
