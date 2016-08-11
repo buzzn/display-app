@@ -1,0 +1,14 @@
+{
+  "apps": [
+    {
+      "name": "kiosk",
+      "script": "build/server",
+      "merge_logs": true,
+      "max_memory_restart": "200M",
+      "env": {
+        "PORT": 2999,
+        "NODE_ENV": "production"
+      }
+    }
+  ]
+}
