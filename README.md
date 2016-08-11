@@ -15,6 +15,6 @@ To use linter:
 To start as a standalone app in production mode:
 - install node.js 6.xx
 - run `npm i`
-- run `sudo npm i -g webpack`
+- run `sudo npm i -g webpack rimraf cross-env`
 - run `npm run build`
 - run `npm run start`

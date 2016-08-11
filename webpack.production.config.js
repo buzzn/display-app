@@ -35,15 +35,15 @@ module.exports = {
         loaders: ['style', 'css', 'postcss', 'sass'],
       },
       {
-        test: /\.woff$/,
+        test: /\.woff?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=[path][name].[ext]',
       },
       {
-        test: /\.woff2$/,
+        test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader?limit=10000&mimetype=application/font-woff2&name=[path][name].[ext]',
       },
       {
-        test: /\.(eot|ttf|svg|gif|png)$/,
+        test: /\.(eot|ttf|svg|gif|png)(\?[\s\S]+)?$/,
         loader: 'file-loader',
       },
       {
