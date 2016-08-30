@@ -2,11 +2,15 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const DashboardPlugin = require('webpack-dashboard/plugin');
 
 module.exports = {
   devtool: 'sourcemap',
   entry: [
     'babel-polyfill',
+    'bootstrap-loader',
+    'react-hot-loader/patch',
+    'webpack/hot/only-dev-server',
     'whatwg-fetch',
     './app/index.js',
   ],
@@ -23,6 +27,7 @@ module.exports = {
         loader: 'babel',
         query: {
           presets: ['es2015', 'stage-0', 'react'],
+          plugins: ['react-hot-loader/babel'],
         },
       },
       {
@@ -55,12 +60,11 @@ module.exports = {
       template: 'app/index.html',
       filename: 'index.html',
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NamedModulesPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'),
     }),
+    new DashboardPlugin(),
   ],
   postcss() {
     return [
