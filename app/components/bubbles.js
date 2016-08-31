@@ -362,24 +362,32 @@ class Bubbles extends Component {
       }
     });
 
-    fetch(`${url}/api/v1/groups/${group}/metering-points?per_page=10000`, { headers })
-      .then(getJson)
-      .then(json => {
-        if (json.data.length === 0) return Promise.reject('Empty group');
-        fillPoints(json.data);
-        getData();
-        self.setState({ fetchTimer: setInterval(getData, 10000) });
-        self.setState({ seedTimer: setInterval(() => {
-          if (!find(inData, d => !d.seeded) && !find(outData, d => !d.seeded)) {
-            clearInterval(self.state.seedTimer);
-            drawData();
-            self.setState({ drawTimer: setInterval(redrawData, 10000) });
+    function getMeteringPoints(page = 1) {
+      fetch(`${url}/api/v1/groups/${group}/metering-points?per_page=10&page=${page}`, { headers })
+        .then(getJson)
+        .then(json => {
+          if (json.data.length === 0) return Promise.reject('Empty group');
+          fillPoints(json.data);
+          if (json.meta.total_pages > page) {
+            getMeteringPoints(page + 1);
+          } else {
+            getData();
+            self.setState({ fetchTimer: setInterval(getData, 10000) });
+            self.setState({ seedTimer: setInterval(() => {
+              if (!find(inData, d => !d.seeded) && !find(outData, d => !d.seeded)) {
+                clearInterval(self.state.seedTimer);
+                drawData();
+                self.setState({ drawTimer: setInterval(redrawData, 10000) });
+              }
+            }, 2000) });
           }
-        }, 2000) });
-      })
-      .catch(error => {
-        console.log(error);
-      });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+
+    getMeteringPoints();
   }
 
   componentWillUnmount() {
