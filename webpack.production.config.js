@@ -23,7 +23,7 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
-          presets: ['es2015', 'stage-0', 'react'],
+          presets: [["es2015", { "modules": false }], 'stage-0', 'react'],
         },
       },
       {
@@ -56,7 +56,7 @@ module.exports = {
     new webpack.ProvidePlugin({
       d3: 'd3',
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
       template: 'app/index.html',
       filename: '../index.html',
