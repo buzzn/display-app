@@ -64,7 +64,6 @@ export class BubblesWrapper extends Component {
             <div style={{ width: '100vw', height: '100vh' }}>
               <Bubbles key={ this.state.group }
                        url={this.state.url }
-                       token={ this.state.token }
                        group={ this.state.group } />
             </div>
           </div>;
