@@ -11,7 +11,6 @@ export class BubblesWrapper extends Component {
     super(props);
     this.state = {
       url: '',
-      token: '',
       group: '',
       loading: true,
       groups: [],
@@ -27,11 +26,6 @@ export class BubblesWrapper extends Component {
     localStorage.setItem(`${BUZZN_STORAGE_PREFIX}rootUrl`, event.target.value);
   }
 
-  changeToken(event) {
-    this.setState({ token: event.target.value });
-    localStorage.setItem(`${BUZZN_STORAGE_PREFIX}accessToken`, event.target.value);
-  }
-
   applySettings() {
     this.setState({ loading: true, groups: [], group: '' });
     this.loadGroups(this.state.url);
@@ -40,7 +34,6 @@ export class BubblesWrapper extends Component {
   loadGroups(url) {
     const headers = {
       Accept: 'application/json',
-      Authorization: `Bearer ${this.state.token}`,
     };
 
     fetch(`${url}/api/v1/groups`, { headers })
@@ -55,7 +48,6 @@ export class BubblesWrapper extends Component {
     this.loadGroups(localStorage.getItem(`${BUZZN_STORAGE_PREFIX}rootUrl`) || 'https://staging.buzzn.net');
     this.setState({
       url: localStorage.getItem(`${BUZZN_STORAGE_PREFIX}rootUrl`) || 'https://staging.buzzn.net',
-      token: localStorage.getItem(`${BUZZN_STORAGE_PREFIX}accessToken`) || '',
     });
   }
 
@@ -63,8 +55,6 @@ export class BubblesWrapper extends Component {
     return <div>
             <label>URL:</label>
             <input value={ this.state.url } onChange={ ::this.changeUrl } />
-            <label>Access Token:</label>
-            <input value={ this.state.token } onChange={ ::this.changeToken } />
             <button onClick={ ::this.applySettings }>Apply</button>
             <br />
             Groups:

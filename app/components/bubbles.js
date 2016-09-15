@@ -21,7 +21,6 @@ class Bubbles extends Component {
   static propTypes = {
     url: React.PropTypes.string.isRequired,
     group: React.PropTypes.string.isRequired,
-    token: React.PropTypes.string.isRequired,
   }
 
   render() {
@@ -51,7 +50,7 @@ class Bubbles extends Component {
 
   componentDidMount() {
     const self = this;
-    const { url, group, token } = this.props;
+    const { url, group } = this.props;
     const svg = d3.select(`#group-${group}`);
     const svgDom = document.querySelector(`#group-${group}`);
     const switchButton = document.querySelector(`#switch-${group}`);
@@ -75,7 +74,6 @@ class Bubbles extends Component {
     const headers = {
       Accept: 'application/json',
     };
-    if (token) headers.Authorization = `Bearer ${token}`;
     let circle = null;
     let outCircle = null;
     let simulation = null;
