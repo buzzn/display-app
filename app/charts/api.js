@@ -1,0 +1,81 @@
+import 'whatwg-fetch';
+import moment from 'moment';
+import forEach from 'lodash/forEach';
+import map from 'lodash/map';
+import range from 'lodash/range';
+import filter from 'lodash/filter';
+import isArray from 'lodash/isArray';
+
+function prepareHeaders() {
+  return {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  };
+}
+
+function parseResponse(response) {
+  const json = response.json();
+  if (response.status >= 200 && response.status < 300) {
+    return json;
+  } else {
+    return json.then(error => Promise.reject(error));
+  }
+}
+
+function remainingPages({ apiUrl, apiPath, group, json }) {
+  const totalPages = json.meta.total_pages;
+  if (totalPages === 1) {
+    return [json];
+  } else {
+    return Promise.all(map(range(totalPages), page => (
+        fetch(`${apiUrl}${apiPath}/groups/${group}/metering-points?page=${page + 1}`, { headers: prepareHeaders() })
+        .then(parseResponse)
+      )));
+  }
+}
+
+function extractIds(jsonArr) {
+  const ids = { inIds: [], outIds: [] };
+  forEach(jsonArr, json => {
+    forEach(json.data, m => {
+      if (m.attributes.mode === 'in') {
+        ids.inIds.push(m.id);
+      } else {
+        ids.outIds.push(m.id);
+      }
+    });
+  });
+  return ids;
+}
+
+function uriTimestamp(timestamp) {
+  return encodeURIComponent(moment(timestamp).format('YYYY-MM-DDTHH:mm:ss.SSSZ'));
+}
+
+function generateRequests({ apiUrl, apiPath, ids, timestamp, resolution }) {
+  return map(ids, id => (
+    fetch(`${apiUrl}${apiPath}/aggregates/past?timestamp=${uriTimestamp(timestamp)}&resolution=${resolution}&metering_point_ids=${[id]}`, { headers: prepareHeaders() })
+    .then(parseResponse)
+    .then(values => ({ id, values: map(values, v => ({ powerMilliwatt: v.power_milliwatt, timestamp: new Date(v.timestamp).getTime() })) }))
+    )
+  );
+}
+
+function filterData(data) {
+  // [{ id, values }, ...], values can be array (if correct), or object (if incorrect)
+  // values: [{ power_milliwatt, timestamp }]
+  return filter(data, m => isArray(m.values));
+}
+
+export default {
+  getIds: ({ apiUrl, apiPath, group }) => (
+      fetch(`${apiUrl}${apiPath}/groups/${group}/metering-points`, { headers: prepareHeaders() })
+      .then(parseResponse)
+      .then(json => remainingPages({ apiUrl, apiPath, group, json }))
+      .then(extractIds)
+    ),
+  getData: (params) => (
+    Promise.all(generateRequests(params))
+    .then(filterData)
+  ),
+};

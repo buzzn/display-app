@@ -4,6 +4,4 @@ import { call, put, fork, take, select } from 'redux-saga/effects';
 
 export const getConfig = state => state.config;
 
-export default function* bubblesSaga() {
-  // yield fork(takeLatest, constants.CALCULATE, calculate);
-}
+export default function* bubblesSaga() {}
