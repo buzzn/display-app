@@ -2,8 +2,21 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const flexbugsFixes = require('postcss-flexbugs-fixes');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
+
+const postcssLoader = {
+  loader: 'postcss-loader',
+  options: {
+    plugins() {
+      return [
+        autoprefixer({ browsers: ['last 3 versions'] }),
+        flexbugsFixes,
+      ];
+    },
+  },
+};
 
 module.exports = {
   entry: [
@@ -17,7 +30,7 @@ module.exports = {
     filename: 'bundle-[hash].min.js',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
@@ -28,11 +41,20 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css', 'postcss'],
+        use: [
+          'style',
+          'css',
+          postcssLoader,
+        ],
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'postcss', 'sass'],
+        use: [
+          'style',
+          'css',
+          'sass',
+          postcssLoader,
+        ],
       },
       {
         test: /\.woff?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -76,10 +98,4 @@ module.exports = {
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
   ],
-  postcss() {
-    return [
-      autoprefixer({ browsers: ['last 3 versions'] }),
-      require('postcss-flexbugs-fixes'),
-    ];
-  },
 };

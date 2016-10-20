@@ -2,7 +2,20 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const flexbugsFixes = require('postcss-flexbugs-fixes');
 const DashboardPlugin = require('webpack-dashboard/plugin');
+
+const postcssLoader = {
+  loader: 'postcss-loader',
+  options: {
+    plugins() {
+      return [
+        autoprefixer({ browsers: ['last 3 versions'] }),
+        flexbugsFixes,
+      ];
+    },
+  },
+};
 
 module.exports = {
   devtool: 'sourcemap',
@@ -20,7 +33,7 @@ module.exports = {
     filename: 'bundle.js',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
@@ -32,11 +45,20 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css', 'postcss'],
+        use: [
+          'style',
+          'css',
+          postcssLoader,
+        ],
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'postcss', 'sass'],
+        use: [
+          'style',
+          'css',
+          'sass',
+          postcssLoader,
+        ],
       },
       {
         test: /\.woff?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -66,10 +88,4 @@ module.exports = {
     }),
     new DashboardPlugin(),
   ],
-  postcss() {
-    return [
-      autoprefixer({ browsers: ['last 3 versions'] }),
-      require('postcss-flexbugs-fixes'),
-    ];
-  },
 };
