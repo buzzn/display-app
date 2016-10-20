@@ -19,11 +19,13 @@ const postcssLoader = {
 };
 
 module.exports = {
-  entry: [
-    'babel-polyfill',
-    'whatwg-fetch',
-    './app/index.js',
-  ],
+  entry: {
+    app: [
+      'babel-polyfill',
+      'whatwg-fetch',
+      './app/index.js',
+    ],
+  },
   output: {
     path: path.resolve(__dirname, 'build/public/assets'),
     publicPath: '/assets/',
@@ -36,7 +38,7 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
-          presets: [["es2015", { "modules": false }], 'stage-0', 'react'],
+          presets: ['es2015', 'stage-0', 'react'],
         },
       },
       {
@@ -75,27 +77,35 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+    new webpack.NoErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.ProvidePlugin({
       d3: 'd3',
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
       template: 'app/index.html',
       filename: '../index.html',
     }),
     new ExtractTextPlugin('bundle-[hash].min.css'),
     new webpack.optimize.UglifyJsPlugin({
-      compressor: {
+      comments: false,
+      sourceMap: false,
+      compress: {
         warnings: false,
         screw_ie8: true,
       },
     }),
     new StatsPlugin('webpack.stats.json', {
       source: false,
-      modules: false,
-    }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      modules: true,
     }),
   ],
 };
