@@ -6,24 +6,13 @@ const flexbugsFixes = require('postcss-flexbugs-fixes');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
 
-const postcssLoader = {
-  loader: 'postcss-loader',
-  options: {
-    plugins() {
-      return [
-        autoprefixer({ browsers: ['last 3 versions'] }),
-        flexbugsFixes,
-      ];
-    },
-  },
-};
-
 module.exports = {
   entry: {
     app: [
       'babel-polyfill',
+      'bootstrap-loader',
       'whatwg-fetch',
-      './app/index.js',
+      './app/index.production.js',
     ],
   },
   output: {
@@ -46,7 +35,7 @@ module.exports = {
         use: [
           'style',
           'css',
-          postcssLoader,
+          'postcss',
         ],
       },
       {
@@ -54,8 +43,8 @@ module.exports = {
         use: [
           'style',
           'css',
+          'postcss',
           'sass',
-          postcssLoader,
         ],
       },
       {
@@ -80,10 +69,27 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
+    new webpack.ProvidePlugin({
+      'window.Tether': 'tether',
+    }),
     new webpack.NoErrorsPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
+      options: {
+        context: __dirname,
+        output: {
+          path: path.resolve(__dirname, 'build/public/assets'),
+        },
+        postcss: {
+          plugins() {
+            return [
+              autoprefixer({ browsers: ['last 3 versions'] }),
+              flexbugsFixes,
+            ];
+          },
+        },
+      },
     }),
     new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
@@ -94,13 +100,16 @@ module.exports = {
       template: 'app/index.html',
       filename: '../index.html',
     }),
-    new ExtractTextPlugin('bundle-[hash].min.css'),
+    // TODO: fix it after #265
+    new ExtractTextPlugin({ filename: 'bundle-[hash].min.css', allChunks: true }),
     new webpack.optimize.UglifyJsPlugin({
       comments: false,
       sourceMap: false,
       compress: {
         warnings: false,
         screw_ie8: true,
+        unused: true,
+        dead_code: true,
       },
     }),
     new StatsPlugin('webpack.stats.json', {
