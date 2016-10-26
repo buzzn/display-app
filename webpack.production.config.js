@@ -2,37 +2,50 @@ const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const flexbugsFixes = require('postcss-flexbugs-fixes');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
 
 module.exports = {
-  entry: [
-    'babel-polyfill',
-    'whatwg-fetch',
-    './app/index.js',
-  ],
+  entry: {
+    app: [
+      'babel-polyfill',
+      'bootstrap-loader',
+      'whatwg-fetch',
+      './app/index.production.js',
+    ],
+  },
   output: {
     path: path.resolve(__dirname, 'build/public/assets'),
     publicPath: '/assets/',
     filename: 'bundle-[hash].min.js',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel',
         query: {
-          presets: [["es2015", { "modules": false }], 'stage-0', 'react'],
+          presets: ['es2015', 'stage-0', 'react'],
         },
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css', 'postcss'],
+        use: [
+          'style',
+          'css',
+          'postcss',
+        ],
       },
       {
         test: /\.scss$/,
-        loaders: ['style', 'css', 'postcss', 'sass'],
+        use: [
+          'style',
+          'css',
+          'postcss',
+          'sass',
+        ],
       },
       {
         test: /\.woff?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -53,33 +66,55 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+    new webpack.ProvidePlugin({
+      'window.Tether': 'tether',
+    }),
+    new webpack.NoErrorsPlugin(),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+      options: {
+        context: __dirname,
+        output: {
+          path: path.resolve(__dirname, 'build/public/assets'),
+        },
+        postcss: {
+          plugins() {
+            return [
+              autoprefixer({ browsers: ['last 3 versions'] }),
+              flexbugsFixes,
+            ];
+          },
+        },
+      },
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.ProvidePlugin({
       d3: 'd3',
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
       template: 'app/index.html',
       filename: '../index.html',
     }),
-    new ExtractTextPlugin('bundle-[hash].min.css'),
+    // TODO: fix it after #265
+    new ExtractTextPlugin({ filename: 'bundle-[hash].min.css', allChunks: true }),
     new webpack.optimize.UglifyJsPlugin({
-      compressor: {
+      comments: false,
+      sourceMap: false,
+      compress: {
         warnings: false,
         screw_ie8: true,
+        unused: true,
+        dead_code: true,
       },
     }),
     new StatsPlugin('webpack.stats.json', {
       source: false,
-      modules: false,
-    }),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      modules: true,
     }),
   ],
-  postcss() {
-    return [
-      autoprefixer({ browsers: ['last 3 versions'] }),
-      require('postcss-flexbugs-fixes'),
-    ];
-  },
 };
