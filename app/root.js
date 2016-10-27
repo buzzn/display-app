@@ -7,34 +7,26 @@ import GroupSelector from './components/group_selector';
 import './styles/main.scss';
 
 const Root = props => (
-  <div>
-  { !!props.groups &&
-    <div>
-      <div className="row">
-        <GroupSelector { ...props } />
-      </div>
-      <div className="row">
-        <div className="col-sm-12 col-md-6 col-lg-6">
-          <div className="row">
-            <div className="col-sm-12 col-md-12 col-lg-12">
-              <div className="panel">
-                <Bubbles.container />
-              </div>
-            </div>
-          </div>
+  <div className="effect" id="container">
+    { !!props.groups &&
+      <div id="page-content">
+        <div className="row">
+          <GroupSelector { ...props } />
         </div>
-        <div className="col-sm-12 col-md-6 col-lg-6">
-          <div className="row">
-            <div className="col-sm-12 col-md-12 col-lg-12">
-              <div className="panel">
-                <Charts.chart />
+        <div className="row">
+          <Bubbles.container />
+          <div className="col-sm-12 col-md-6 col-lg-6">
+            <div className="row">
+              <div className="col-sm-12 col-md-12 col-lg-12">
+                <div className="panel">
+                  <Charts.chart />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  }
+    }
   </div>
 );
 
