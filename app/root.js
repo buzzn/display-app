@@ -15,15 +15,7 @@ const Root = props => (
         </div>
         <div className="row">
           <Bubbles.container />
-          <div className="col-sm-12 col-md-6 col-lg-6">
-            <div className="row">
-              <div className="col-sm-12 col-md-12 col-lg-12">
-                <div className="panel">
-                  <Charts.chart />
-                </div>
-              </div>
-            </div>
-          </div>
+          <Charts.chart />
         </div>
       </div>
     }

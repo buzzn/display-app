@@ -1,4 +1,4 @@
-.bubbles-wrapper {
+.chart-wrapper {
   .media-body {
     // width: 10000px;
   }
@@ -36,15 +36,9 @@
     padding: 15px;
   }
 
-  .panel-primary .panel-heading, .panel-primary .panel-footer, .panel-primary.panel-colorful {
-    background-color: #5fa2dd;
-    border-color: #5fa2dd;
-    color: #ffffff;
-  }
-
-  .panel-danger .panel-heading, .panel-danger .panel-footer, .panel-danger.panel-colorful {
-    background-color: #f76c51;
-    border-color: #f76c51;
+  .panel-primary .panel-heading, .panel-primary .panel-footer, .panel-mint.panel-colorful {
+    background-color: #50c7a7;
+    border-color: #50c7a7;
     color: #ffffff;
   }
 

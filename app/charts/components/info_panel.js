@@ -1,11 +1,11 @@
 import React from 'react';
 
-export default ({ type, data }) => (
+export default ({ icon, text, data }) => (
   <div className="col-sm-12 col-md-6 col-lg-6">
     <div className="panel media pad-all">
       <div className="media-left">
-        <span className={ `icon-wrap icon-wrap-sm icon-circle panel-colorful ${type === 'in' ? 'panel-primary' : 'panel-danger'}` }>
-          <i className="fa fa-arrow-circle-o-right fa-2x"></i>
+        <span className="icon-wrap icon-wrap-sm icon-circle panel-colorful panel-mint">
+          <i className={ `fa fa-2x ${icon}` }></i>
         </span>
       </div>
       <div className="media-body">
@@ -14,7 +14,7 @@ export default ({ type, data }) => (
             <div className="power-ticker">{ data ? data / 1000 : 'n.a.' }</div>
           </span>
         </div>
-        <p>{ type === 'in' ? 'Aktueller Gesamtbezug (Watt)' : 'Aktuelle Gesamterzeugung (Watt)' }</p>
+        <p>{ text }</p>
       </div>
     </div>
   </div>
