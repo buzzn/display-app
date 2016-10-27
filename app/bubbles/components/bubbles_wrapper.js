@@ -4,7 +4,7 @@ import Bubbles from './bubbles';
 
 const BubblesWrapper = ({ group, url }) => (
   <div>
-    <div style={{ width: '100vw', height: '100vh' }}>
+    <div style={{ width: '100%', height: '453px', display: 'inline-block', position: 'relative' }}>
       { group && <Bubbles key={ group } url={ url } group={ group } /> }
     </div>
   </div>
