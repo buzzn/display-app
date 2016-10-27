@@ -1,3 +1,5 @@
+import { formatLabel } from './process_data';
+
 export default {
   chart: {
     type: 'areaspline',
@@ -41,7 +43,7 @@ export default {
     min: 0,
     labels: {
       enabled: true,
-      // formatter: function() { return formatLabel(this.value, 'axis'); },
+      formatter: function() { return formatLabel(this.value, 'axis'); },
     },
     title: {
       margin: 0,

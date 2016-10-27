@@ -42,10 +42,8 @@ class Chart extends Component {
 
   render() {
     return (
-      <div>
+      <div className="panel-body">
         <div className="text-center"></div>
-        <div className="btn btn-default btn-icon btn-circle icon-lg btn-chart-prev fa fa-chevron-left fa-2x"></div>
-        <div className="btn btn-default btn-icon btn-circle icon-lg btn-chart-next pull-right fa fa-chevron-right fa-2x"></div>
         <ReactHighcharts config={ config } ref="chart" ></ReactHighcharts>
       </div>
     );
