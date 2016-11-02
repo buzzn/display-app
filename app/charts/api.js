@@ -56,7 +56,7 @@ function generateRequests({ apiUrl, apiPath, ids, timestamp, resolution }) {
   return map(ids, id => (
     fetch(`${apiUrl}${apiPath}/aggregates/past?timestamp=${uriTimestamp(timestamp)}&resolution=${resolution}&metering_point_ids=${[id]}`, { headers: prepareHeaders() })
     .then(parseResponse)
-    .then(values => ({ id, values: map(values, v => ({ powerMilliwatt: v.power_milliwatt, timestamp: new Date(v.timestamp).getTime() })) }))
+    .then(values => ({ id, values: map(values, v => ({ powerMilliwatt: v.power_milliwatt / 1000, timestamp: new Date(v.timestamp).getTime() })) }))
     )
   );
 }

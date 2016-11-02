@@ -32,7 +32,7 @@ class Chart extends Component {
       this.chart.series[1].setData(map(outSum, v => ([v.timestamp, v.powerMilliwatt])));
     }
 
-    // this.chart.xAxis[0].setExtremes();
+    this.chart.xAxis[0].setExtremes(moment(outSum[0].timestamp).startOf('day').valueOf(), moment(outSum[0].timestamp).endOf('day').valueOf());
     // this.chart.yAxis[0].setExtremes();
 
     this.chart.hideLoading();

@@ -73,6 +73,7 @@ export default {
   },
   tooltip: {
     shared: true,
+    pointFormatter: function() { return `${this.series.name}: <b>${formatLabel(this.y, 'tooltip')}</b><br/>`; },
     dateTimeLabelFormats: {
       millisecond: '%e.%b, %H:%M:%S.%L',
       second: '%e.%b, %H:%M:%S',
