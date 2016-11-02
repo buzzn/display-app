@@ -5,6 +5,8 @@ import moment from 'moment';
 import map from 'lodash/map';
 import config from '../util/chart_config';
 import { sumData } from '../util/process_data';
+import InfoPanel from './info_panel';
+import '../styles/main.scss';
 
 class Chart extends Component {
   componentDidMount() {
@@ -42,9 +44,25 @@ class Chart extends Component {
 
   render() {
     return (
-      <div className="panel-body">
-        <div className="text-center"></div>
-        <ReactHighcharts config={ config } ref="chart" ></ReactHighcharts>
+      <div className="col-sm-12 col-md-6 col-lg-6 chart-wrapper">
+        <div className="row">
+          <InfoPanel {...{ text: 'Autarkie', icon: 'fa-flag-checkered', data: null }} />
+          <InfoPanel {...{ text: 'Sparsamkeit', icon: 'fa-power-off', data: null }} />
+        </div>
+        <div className="row">
+          <div className="col-sm-12 col-md-12 col-lg-12">
+            <div className="panel">
+              <div className="panel-body">
+                <div className="text-center"></div>
+                <ReactHighcharts config={ config } ref="chart" ></ReactHighcharts>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <InfoPanel {...{ text: 'Passung', icon: 'fa-line-chart', data: null }} />
+          <InfoPanel {...{ text: 'Lokalität', icon: 'fa-map-marker', data: null }} />
+        </div>
       </div>
     );
   }

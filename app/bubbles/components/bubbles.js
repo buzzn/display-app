@@ -50,7 +50,7 @@ class Bubbles extends Component {
 
   componentDidMount() {
     const self = this;
-    const { url, group } = this.props;
+    const { url, group, setData } = this.props;
     const svg = d3.select(`#group-${group}`);
     const svgDom = document.querySelector(`#group-${group}`);
     const switchButton = document.querySelector(`#switch-${group}`);
@@ -181,6 +181,10 @@ class Bubbles extends Component {
             outData[idx].updating = false;
             console.log(error);
           });
+      });
+      setData({
+        in: reduce(inData, (s, d) => s + d.value, 0),
+        out: reduce(outData, (s, d) => s + d.value, 0),
       });
     }
 
