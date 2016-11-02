@@ -6,7 +6,6 @@ import map from 'lodash/map';
 import config from '../util/chart_config';
 import { sumData } from '../util/process_data';
 import InfoPanel from './info_panel';
-import '../styles/main.scss';
 
 class Chart extends Component {
   componentDidMount() {

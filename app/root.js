@@ -4,6 +4,8 @@ import { actions } from './actions';
 import Bubbles from './bubbles';
 import Charts from './charts';
 import GroupSelector from './components/group_selector';
+import './styles/nifty.css';
+import './styles/nifty_overrides.scss';
 import './styles/main.scss';
 
 const Root = props => (

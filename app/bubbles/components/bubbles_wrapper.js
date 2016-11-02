@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Bubbles from './bubbles';
 import InfoPanel from './info_panel';
 import { actions } from '../actions';
-import '../styles/main.scss';
 
 const BubblesWrapper = ({ group, url, summedData, setData }) => (
   <div className="col-sm-12 col-md-6 col-lg-6 bubbles-wrapper">
