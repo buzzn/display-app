@@ -4,18 +4,42 @@ import sortBy from 'lodash/sortBy';
 import find from 'lodash/find';
 import filter from 'lodash/filter';
 
+import { constants } from '../actions';
+
+export function getMomentPeriod(resolution) {
+  let period = 'day';
+
+  switch (resolution) {
+    case constants.RESOLUTIONS.YEAR_MONTH:
+      period = 'year';
+      break;
+    case constants.RESOLUTIONS.MONTH_DAY:
+      period = 'month';
+      break;
+    case constants.RESOLUTIONS.HOUR_MINUTE:
+      period = 'hour';
+      break;
+    default:
+    case constants.RESOLUTIONS.DAY_MINUTE:
+      period = 'day';
+      break;
+  }
+
+  return period;
+}
+
 export function matchesTimestamp(time1, time2, resolution) {
   const delta = Math.abs(time1 - time2);
 
   switch (resolution) {
-    case 'year_to_months':
+    case constants.RESOLUTIONS.YEAR_MONTH:
       return delta <= 15 * 24 * 60 * 60 * 1000;
-    case 'month_to_days':
+    case constants.RESOLUTIONS.MONTH_DAY:
       return delta <= 12 * 60 * 60 * 1000;
-    case 'day_to_minutes':
+    case constants.RESOLUTIONS.DAY_MINUTE:
     default:
       return delta <= 8 * 60 * 1000;
-    case 'hour_to_minutes':
+    case constants.RESOLUTIONS.HOUR_MINUTE:
       return delta <= 1000;
   }
 }

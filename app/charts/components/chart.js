@@ -4,37 +4,73 @@ import ReactHighcharts from 'react-highcharts';
 import moment from 'moment';
 import map from 'lodash/map';
 import config from '../util/chart_config';
-import { sumData } from '../util/process_data';
-import InfoPanel from './info_panel';
+import { sumData, getMomentPeriod } from '../util/process_data';
+import { constants } from '../actions';
 
 class Chart extends Component {
   componentDidMount() {
+    const { loading } = this.props;
     this.chart = this.refs.chart.getChart();
+    if (loading) this.chart.showLoading();
   }
 
   componentWillReceiveProps(nextProps) {
-    const resolution = 'day_to_minutes';
+    const { resolution, timestamp, inData, outData, loading } = nextProps;
 
-    const { inData, outData } = nextProps;
-    const inSum = sumData({ data: inData, resolution });
-    const outSum = sumData({ data: outData, resolution });
-
-    this.chart.showLoading();
-
-    this.chart.setTitle({ text: `Heute: ${moment(outSum[0].timestamp).format('DD.MM.YYYY')}` });
-
-    if (this.chart.series.length === 0) {
-      this.chart.addSeries({ name: 'Gesamtverbrauch', data: map(inSum, v => ([v.timestamp, v.powerMilliwatt])) });
-      this.chart.addSeries({ name: 'Gesamterzeugung', data: map(outSum, v => ([v.timestamp, v.powerMilliwatt])) });
+    if (loading) {
+      this.chart.showLoading();
     } else {
-      this.chart.series[0].setData(map(inSum, v => ([v.timestamp, v.powerMilliwatt])));
-      this.chart.series[1].setData(map(outSum, v => ([v.timestamp, v.powerMilliwatt])));
+      const inSum = sumData({ data: inData, resolution });
+      const outSum = sumData({ data: outData, resolution });
+
+      this.chart.showLoading();
+
+      const chartTitle = { text: '' };
+
+      moment.locale('de');
+      switch (resolution) {
+        case constants.RESOLUTIONS.YEAR_MONTH:
+          chartTitle.text = moment(timestamp).format('YYYY');
+          break;
+        case constants.RESOLUTIONS.MONTH_DAY:
+          chartTitle.text = moment(timestamp).format('MMMM YYYY');
+          break;
+        case constants.RESOLUTIONS.HOUR_MINUTE:
+          chartTitle.text = `${moment(timestamp).format('DD.MM.YYYY')} ... ${moment(timestamp).startOf('hour').format('HH:mm')} - ${moment(timestamp).endOf('hour').format('HH:mm')}`;
+          break;
+        default:
+        case constants.RESOLUTIONS.DAY_MINUTE:
+          chartTitle.text = moment(timestamp).format('DD.MM.YYYY');
+          break;
+      }
+
+      this.chart.setTitle(chartTitle);
+
+      if (this.chart.series.length === 0) {
+        this.chart.addSeries({ name: 'Gesamtverbrauch', data: map(inSum, v => ([v.timestamp, v.powerMilliwatt])) });
+        this.chart.addSeries({ name: 'Gesamterzeugung', data: map(outSum, v => ([v.timestamp, v.powerMilliwatt])) });
+      } else {
+        this.chart.series[0].setData(map(inSum, v => ([v.timestamp, v.powerMilliwatt])));
+        this.chart.series[1].setData(map(outSum, v => ([v.timestamp, v.powerMilliwatt])));
+      }
+
+      switch (resolution) {
+        case constants.RESOLUTIONS.YEAR_MONTH:
+        case constants.RESOLUTIONS.MONTH_DAY:
+          this.chart.series.forEach(series => series.update({ type: 'column' }));
+          break;
+        default:
+          this.chart.series.forEach(series => series.update({ type: 'areaspline' }));
+          break;
+      }
+
+      const momentRes = getMomentPeriod(resolution);
+
+      this.chart.xAxis[0].setExtremes(moment(timestamp).startOf(momentRes).valueOf(), moment(timestamp).endOf(momentRes).valueOf());
+      // this.chart.yAxis[0].setExtremes();
+
+      this.chart.hideLoading();
     }
-
-    this.chart.xAxis[0].setExtremes(moment(outSum[0].timestamp).startOf('day').valueOf(), moment(outSum[0].timestamp).endOf('day').valueOf());
-    // this.chart.yAxis[0].setExtremes();
-
-    this.chart.hideLoading();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -43,32 +79,16 @@ class Chart extends Component {
 
   render() {
     return (
-      <div className="col-sm-12 col-md-6 col-lg-6 chart-wrapper">
-        <div className="row">
-          <InfoPanel {...{ text: 'Autarkie', icon: 'fa-flag-checkered', data: null }} />
-          <InfoPanel {...{ text: 'Sparsamkeit', icon: 'fa-power-off', data: null }} />
-        </div>
-        <div className="row">
-          <div className="col-sm-12 col-md-12 col-lg-12">
-            <div className="panel">
-              <div className="panel-body">
-                <div className="text-center"></div>
-                <ReactHighcharts config={ config } ref="chart" ></ReactHighcharts>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <InfoPanel {...{ text: 'Passung', icon: 'fa-line-chart', data: null }} />
-          <InfoPanel {...{ text: 'Lokalität', icon: 'fa-map-marker', data: null }} />
-        </div>
-      </div>
+      <ReactHighcharts config={ config } ref="chart" domProps={{ class: 'chart', style: { width: '94%', height: '300px', marginLeft: '3%' } }}></ReactHighcharts>
     );
   }
 }
 
 function mapStateToProps(state) {
+  // TODO: replace 'charts' with 'mountedPath' ownProps parameter or constant
   return {
+    resolution: state.charts.resolution,
+    timestamp: state.charts.timestamp,
     inData: state.charts.inData,
     outData: state.charts.outData,
   };
