@@ -5,6 +5,7 @@ import map from 'lodash/map';
 import range from 'lodash/range';
 import filter from 'lodash/filter';
 import isArray from 'lodash/isArray';
+import { constants } from './actions';
 
 function prepareHeaders() {
   return {
@@ -52,11 +53,25 @@ function uriTimestamp(timestamp) {
   return encodeURIComponent(moment(timestamp).format('YYYY-MM-DDTHH:mm:ss.SSSZ'));
 }
 
+function getPower(v, resolution) {
+  let power = 0;
+  switch (resolution) {
+    case constants.RESOLUTIONS.YEAR_MONTH:
+    case constants.RESOLUTIONS.MONTH_DAY:
+      power = v.energy_milliwatt_hour / 1000;
+      break;
+    default:
+      power = v.power_milliwatt / 1000;
+      break;
+  }
+  return power;
+}
+
 function generateRequests({ apiUrl, apiPath, ids, timestamp, resolution }) {
   return map(ids, id => (
     fetch(`${apiUrl}${apiPath}/aggregates/past?timestamp=${uriTimestamp(timestamp)}&resolution=${resolution}&metering_point_ids=${[id]}`, { headers: prepareHeaders() })
     .then(parseResponse)
-    .then(values => ({ id, values: map(values, v => ({ powerMilliwatt: v.power_milliwatt / 1000, timestamp: new Date(v.timestamp).getTime() })) }))
+    .then(values => ({ id, values: map(values, v => ({ powerMilliwatt: getPower(v, resolution), timestamp: new Date(v.timestamp).getTime() })) }))
     )
   );
 }

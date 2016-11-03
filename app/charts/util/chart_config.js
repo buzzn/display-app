@@ -12,7 +12,7 @@ export default {
   },
   colors: ['#5FA2DD', '#F76C51'],
   exporting: { enabled: false },
-  legend: { enabled: false },
+  legend: { enabled: true },
   title: {
     margin: 0,
     style: { color: '#000' },
