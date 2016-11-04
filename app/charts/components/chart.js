@@ -8,6 +8,15 @@ import { sumData, getMomentPeriod } from '../util/process_data';
 import { constants } from '../actions';
 
 class Chart extends Component {
+  componentWillMount() {
+    ReactHighcharts.Highcharts.setOptions({
+      global: {
+        // timezoneOffset: (new Date()).getTimezoneOffset(),
+        useUTC: false,
+      },
+    });
+  }
+
   componentDidMount() {
     const { loading } = this.props;
     this.chart = this.refs.chart.getChart();
@@ -79,7 +88,7 @@ class Chart extends Component {
 
   render() {
     return (
-      <ReactHighcharts config={ config } ref="chart" domProps={{ class: 'chart', style: { width: '94%', height: '300px', marginLeft: '3%' } }}></ReactHighcharts>
+      <ReactHighcharts config={ config } ref="chart" domProps={{ className: 'chart', style: { width: '94%', height: '300px', marginLeft: '3%' } }}></ReactHighcharts>
     );
   }
 }
