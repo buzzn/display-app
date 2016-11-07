@@ -12,6 +12,7 @@ export const constants = {
   SET_TIMESTAMP: 'buzzn_charts/SET_TIMESTAMP',
   LOADING: 'buzzn_charts/LOADING',
   LOADED: 'buzzn_charts/LOADED',
+  CHART_UPDATE: 'buzzn_charts/CHART_UPDATE',
 };
 
 export const actions = {
@@ -22,4 +23,5 @@ export const actions = {
   setTimestamp: timestamp => ({ type: constants.SET_TIMESTAMP, timestamp }),
   loading: () => ({ type: constants.LOADING }),
   loaded: () => ({ type: constants.LOADED }),
+  chartUpdate: () => ({ type: constants.CHART_UPDATE }),
 };
