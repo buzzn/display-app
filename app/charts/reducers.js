@@ -1,4 +1,6 @@
+import moment from 'moment';
 import { constants } from './actions';
+import { getMomentPeriod } from './util/process_data';
 
 const initialState = {
   group: '',
@@ -9,7 +11,12 @@ const initialState = {
   inData: [],
   outData: [],
   loading: false,
+  shouldUpdate: true,
 };
+
+export function shouldUpdate(timestamp, resolution) {
+  return moment(timestamp).endOf(getMomentPeriod(resolution)).isSameOrAfter(new Date());
+}
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -20,9 +27,9 @@ export default (state = initialState, action) => {
     case constants.SET_DATA:
       return { ...state, ...action.data };
     case constants.SET_RESOLUTION:
-      return { ...state, resolution: action.resolution };
+      return { ...state, resolution: action.resolution, shouldUpdate: shouldUpdate(state.timestamp, action.resolution) };
     case constants.SET_TIMESTAMP:
-      return { ...state, timestamp: action.timestamp };
+      return { ...state, timestamp: action.timestamp, shouldUpdate: shouldUpdate(action.timestamp, state.resolution) };
     case constants.LOADING:
       return { ...state, loading: true };
     case constants.LOADED:

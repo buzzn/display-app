@@ -26,6 +26,7 @@ export function* getIds({ apiUrl, apiPath }) {
       try {
         const { inIds, outIds } = yield call(api.getIds, { apiUrl, apiPath, group });
         yield put(actions.setIds({ inIds, outIds }));
+        yield put(actions.chartUpdate());
       } catch (error) {
         yield call(clearAll);
       }
@@ -41,25 +42,30 @@ export function* getData({ apiUrl, apiPath }) {
   while (true) {
     yield put(actions.loading());
 
-    const { inIds, outIds, resolution, timestamp } = yield select(getCharts);
-
-    // timestamp = moment(timestamp).startOf(getMomentPeriod(resolution)).toDate();
-    // yield put(actions.setTimestamp(timestamp));
+    const { inIds, outIds, resolution, timestamp, shouldUpdate } = yield select(getCharts);
 
     try {
       const inData = yield call(api.getData, { apiUrl, apiPath, ids: inIds, timestamp, resolution });
       const outData = yield call(api.getData, { apiUrl, apiPath, ids: outIds, timestamp, resolution });
       yield put(actions.setData({ inData, outData }));
     } catch (error) {
-      yield call(clearAll);
+      yield call(clearData);
     }
 
     yield put(actions.loaded());
 
-    yield race({
-      delay: call(delay, 1000 * 60 * 5),
-      chartUpdate: take(constants.CHART_UPDATE),
-    });
+    if (shouldUpdate) {
+      const { chartUpdate } = yield race({
+        delay: call(delay, 1000 * 60 * 5),
+        chartUpdate: take(constants.CHART_UPDATE),
+      });
+
+      if (!chartUpdate && moment(timestamp).endOf(getMomentPeriod(resolution)).isBefore(new Date())) {
+        yield put(actions.setTimestamp(new Date()));
+      }
+    } else {
+      yield take(constants.CHART_UPDATE);
+    }
 
     yield call(clearData);
   }
