@@ -36,12 +36,12 @@ export function* getIds({ apiUrl, apiPath }) {
 }
 
 export function* getData({ apiUrl, apiPath }) {
-  let { ids: { inIds, outIds } } = yield take(constants.SET_IDS);
-  let resolution = constants.RESOLUTIONS.DAY_MINUTE;
-  let timestamp = new Date();
+  yield take(constants.SET_IDS);
 
   while (true) {
     yield put(actions.loading());
+
+    const { inIds, outIds, resolution, timestamp } = yield select(getCharts);
 
     // timestamp = moment(timestamp).startOf(getMomentPeriod(resolution)).toDate();
     // yield put(actions.setTimestamp(timestamp));
@@ -56,21 +56,12 @@ export function* getData({ apiUrl, apiPath }) {
 
     yield put(actions.loaded());
 
-    const { newIds, newRes, newTime } = yield race({
+    yield race({
       delay: call(delay, 1000 * 60 * 5),
-      newIds: take(constants.SET_IDS),
-      newRes: take(constants.SET_RESOLUTION),
-      newTime: take(constants.SET_TIMESTAMP),
+      chartUpdate: take(constants.CHART_UPDATE),
     });
 
     yield call(clearData);
-
-    if (newIds) {
-      inIds = newIds.ids.inIds;
-      outIds = newIds.ids.outIds;
-    }
-    if (newRes) resolution = newRes.resolution;
-    if (newTime) timestamp = newTime.timestamp;
   }
 }
 

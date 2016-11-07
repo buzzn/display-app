@@ -27,6 +27,7 @@ export default (state = initialState, action) => {
       return { ...state, loading: true };
     case constants.LOADED:
       return { ...state, loading: false };
+    case constants.CHART_UPDATE:
     default:
       return state;
   }

@@ -5,7 +5,7 @@ import moment from 'moment';
 import map from 'lodash/map';
 import config from '../util/chart_config';
 import { sumData, getMomentPeriod } from '../util/process_data';
-import { constants } from '../actions';
+import { constants, actions } from '../actions';
 
 class Chart extends Component {
   componentWillMount() {
@@ -24,7 +24,7 @@ class Chart extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { resolution, timestamp, inData, outData, loading } = nextProps;
+    const { resolution, timestamp, inData, outData, loading, setResolution, setTimestamp, chartUpdate } = nextProps;
 
     if (loading) {
       this.chart.showLoading();
@@ -63,13 +63,32 @@ class Chart extends Component {
         this.chart.series[1].setData(map(outSum, v => ([v.timestamp, v.powerMilliwatt])));
       }
 
+      const zoomIn = (newTimestamp, currentResolution) => {
+        if (currentResolution === constants.RESOLUTIONS.HOUR_MINUTE) return;
+        let newResolution = constants.RESOLUTIONS.DAY_MINUTE;
+        switch (currentResolution) {
+          case constants.RESOLUTIONS.YEAR_MONTH:
+            newResolution = constants.RESOLUTIONS.MONTH_DAY;
+            break;
+          case constants.RESOLUTIONS.MONTH_DAY:
+            newResolution = constants.RESOLUTIONS.DAY_MINUTE;
+            break;
+          default:
+            newResolution = constants.RESOLUTIONS.HOUR_MINUTE;
+            break;
+        }
+        setResolution(newResolution);
+        setTimestamp(newTimestamp);
+        chartUpdate();
+      };
+
       switch (resolution) {
         case constants.RESOLUTIONS.YEAR_MONTH:
         case constants.RESOLUTIONS.MONTH_DAY:
-          this.chart.series.forEach(series => series.update({ type: 'column' }));
+          this.chart.series.forEach(series => series.update({ type: 'column', events: { click(event) { zoomIn(event.point.x, resolution); } } }));
           break;
         default:
-          this.chart.series.forEach(series => series.update({ type: 'areaspline' }));
+          this.chart.series.forEach(series => series.update({ type: 'areaspline', events: { click(event) { zoomIn(event.point.x, resolution); } } }));
           break;
       }
 
@@ -103,4 +122,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Chart);
+export default connect(mapStateToProps, {
+  setResolution: actions.setResolution,
+  setTimestamp: actions.setTimestamp,
+  chartUpdate: actions.chartUpdate,
+})(Chart);

@@ -8,7 +8,7 @@ import Chart from './chart';
 
 class ChartWrapper extends Component {
   changePage(direction) {
-    const { setTimestamp, resolution, timestamp } = this.props;
+    const { setTimestamp, resolution, timestamp, chartUpdate } = this.props;
     let newTimestamp = new Date();
     const period = getMomentPeriod(resolution);
     if (direction === 'prev') {
@@ -17,10 +17,17 @@ class ChartWrapper extends Component {
       newTimestamp = moment(timestamp).add(1, period).toDate();
     }
     setTimestamp(newTimestamp);
+    chartUpdate();
+  }
+
+  changeResolution(newResolution) {
+    const { setResolution, chartUpdate } = this.props;
+    setResolution(newResolution);
+    chartUpdate();
   }
 
   render() {
-    const { setResolution, resolution, timestamp, loading } = this.props;
+    const { resolution, timestamp, loading } = this.props;
     const limit = moment(timestamp).endOf(getMomentPeriod(resolution)).isSameOrAfter(new Date());
 
     return (
@@ -34,10 +41,10 @@ class ChartWrapper extends Component {
             <div className="panel">
               <div className="panel-body">
                 <div className="text-center">
-                  <button className="btn btn-default" onClick={ () => setResolution(constants.RESOLUTIONS.YEAR_MONTH) } disabled={ loading }>Jahr</button>
-                  <button className="btn btn-default" onClick={ () => setResolution(constants.RESOLUTIONS.MONTH_DAY) } disabled={ loading }>Monat</button>
-                  <button className="btn btn-default" onClick={ () => setResolution(constants.RESOLUTIONS.DAY_MINUTE) } disabled={ loading }>Tag</button>
-                  <button className="btn btn-default" onClick={ () => setResolution(constants.RESOLUTIONS.HOUR_MINUTE) } disabled={ loading }>Stunde</button>
+                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.YEAR_MONTH) } disabled={ loading }>Jahr</button>
+                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.MONTH_DAY) } disabled={ loading }>Monat</button>
+                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.DAY_MINUTE) } disabled={ loading }>Tag</button>
+                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.HOUR_MINUTE) } disabled={ loading }>Stunde</button>
                 </div>
                 <button className="btn btn-default btn-icon btn-circle icon-lg btn-chart-prev fa fa-chevron-left fa-2x" onClick={ this.changePage.bind(this, 'prev') } disabled={ loading }></button>
                 <button className="btn btn-default btn-icon btn-circle icon-lg btn-chart-next pull-right fa fa-chevron-right fa-2x" onClick={ this.changePage.bind(this, 'next') } disabled={ loading || limit }></button>
@@ -64,4 +71,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setResolution: actions.setResolution, setTimestamp: actions.setTimestamp })(ChartWrapper);
+export default connect(mapStateToProps, {
+  setResolution: actions.setResolution,
+  setTimestamp: actions.setTimestamp,
+  chartUpdate: actions.chartUpdate,
+})(ChartWrapper);
