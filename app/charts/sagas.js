@@ -55,8 +55,26 @@ export function* getData({ apiUrl, apiPath }) {
     yield put(actions.loaded());
 
     if (shouldUpdate) {
+      let updateDelay = 5 * 60 * 1000;
+
+      switch (resolution) {
+        case constants.RESOLUTIONS.YEAR_MONTH:
+          updateDelay = 24 * 60 * 60 * 1000;
+          break;
+        case constants.RESOLUTIONS.MONTH_DAY:
+          updateDelay = 60 * 60 * 1000;
+          break;
+        case constants.RESOLUTIONS.HOUR_MINUTE:
+          updateDelay = 5 * 60 * 1000;
+          break;
+        default:
+        case constants.RESOLUTIONS.DAY_MINUTE:
+          updateDelay = 30 * 60 * 1000;
+          break;
+      }
+
       const { chartUpdate } = yield race({
-        delay: call(delay, 1000 * 60 * 5),
+        delay: call(delay, updateDelay),
         chartUpdate: take(constants.CHART_UPDATE),
       });
 
