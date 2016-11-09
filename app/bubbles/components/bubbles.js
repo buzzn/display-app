@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { findDOMNode } from 'react-dom';
 import 'whatwg-fetch';
 import { getJson } from '../util/requests';
 
 const d3 = require('d3');
-import { forEach, reduce, find, sortBy, first, last } from 'lodash';
+import { forEach, reduce, find, sortBy, first, last, debounce } from 'lodash';
 
 require('font-awesome/css/font-awesome.css');
 
@@ -52,18 +53,12 @@ class Bubbles extends Component {
     const self = this;
     const { url, group, setData } = this.props;
     const svg = d3.select(`#group-${group}`);
-    const svgDom = document.querySelector(`#group-${group}`);
     const switchButton = document.querySelector(`#switch-${group}`);
     let switchInOnTop = true;
-    let fullWidth = svgDom.getBoundingClientRect().width;
-    let width = fullWidth;
-    let fullHeight = svgDom.getBoundingClientRect().height;
-    let height = fullHeight;
-    if (width > height + height * 0.2) {
-      width = height;
-    } else if (height > width + width * 0.2) {
-      height = width;
-    }
+    let fullWidth = null;
+    let width = null;
+    let fullHeight = null;
+    let height = null;
     // const width = +svg.attr('width');
     // const height = +svg.attr('height');
     const inColor = '#5FA2DD';
@@ -80,6 +75,20 @@ class Bubbles extends Component {
     let path = null;
     let arc = null;
     const tooltip = d3.select(`#tooltip-${group}`);
+
+    function setSize() {
+      const svgDom = document.querySelector(`#group-${group}`);
+      if (!svgDom) return;
+      fullWidth = svgDom.getBoundingClientRect().width;
+      width = fullWidth;
+      fullHeight = svgDom.getBoundingClientRect().height;
+      height = fullHeight;
+      if (width > height + height * 0.2) {
+        width = height;
+      } else if (height > width + width * 0.2) {
+        height = width;
+      }
+    }
 
     function fillPoints(pointsArr) {
       forEach(pointsArr, (point) => {
@@ -236,7 +245,8 @@ class Bubbles extends Component {
       const sortedData = sortBy(inData, d => d.value);
       return d3.scaleLinear()
         .domain([first(sortedData).value, last(sortedData).value])
-        .range([0.0005, 0.001])(val);
+        .range([0.004, 0.0005])
+        .clamp(true)(val);
     }
 
     function drawData() {
@@ -326,12 +336,12 @@ class Bubbles extends Component {
         .attr('r', d => radius(dataWeight)(d.value));
 
       simulation.alpha(0.8)
-        // .force('x', null)
-        // .force('y', null)
-        // .force('x', d3.forceX(fullWidth / 2).strength(0.001))
-        // .force('y', d3.forceY(fullHeight / 2).strength(0.001))
-        // .force('charge', d3.forceManyBody()
-        //   .strength(0.5))
+        .force('x', d3.forceX(fullWidth / 2).strength(d => scaleCenterForce(d.value)))
+        .force('y', d3.forceY(fullHeight / 2).strength(d => scaleCenterForce(d.value)))
+        .force('charge', d3.forceManyBody()
+          .strength(d => d.value * 0.000002 / d3.scaleLinear()
+            .domain([0, 300])
+            .range([1, 100])(inData.length)))
         .nodes(inData)
         .restart();
 
@@ -364,6 +374,43 @@ class Bubbles extends Component {
       }
     });
 
+    this.onResize = debounce(() => {
+      if (!outCircle || !arc || !path || !circle || !simulation) return;
+
+      setSize();
+
+      outCircle.attr('cx', () => fullWidth / 2)
+        .attr('cy', () => fullHeight / 2)
+        .transition()
+        .ease(d3.easeExpOut)
+        .duration(1000)
+        .attr('r', d => radius(dataWeight)(d.value));
+
+      arc.innerRadius(() => radius(dataWeight)(outCombined()[0].value))
+        .outerRadius(() => radius(dataWeight)(outCombined()[0].value * 1.1));
+
+      path.attr('transform', `translate(${fullWidth / 2}, ${fullHeight / 2})`)
+        .transition()
+        .ease(d3.easeExpOut)
+        .duration(1000)
+        .attr('d', arc);
+
+      circle.transition()
+        .ease(d3.easeExpOut)
+        .duration(1000)
+        .attr('r', d => radius(dataWeight)(d.value));
+
+      // Params are different from draw/redraw
+      simulation.force('x', d3.forceX(fullWidth / 2).strength(d => scaleCenterForce(d.value * 10)))
+        .force('y', d3.forceY(fullHeight / 2).strength(d => scaleCenterForce(d.value * 10)))
+        .force('charge', d3.forceManyBody()
+          .strength(d => d.value * 0.00002 / d3.scaleLinear()
+            .domain([0, 300])
+            .range([1, 100])(inData.length)))
+        .alpha(1)
+        .restart();
+    }, 500);
+
     function getMeteringPoints(page = 1) {
       fetch(`${url}/api/v1/groups/${group}/metering-points?per_page=10&page=${page}`, { headers })
         .then(getJson)
@@ -389,6 +436,10 @@ class Bubbles extends Component {
         });
     }
 
+    setSize();
+
+    window.addEventListener('resize', this.onResize);
+
     getMeteringPoints();
   }
 
@@ -396,6 +447,7 @@ class Bubbles extends Component {
     clearInterval(this.state.fetchTimer);
     clearInterval(this.state.drawTimer);
     clearInterval(this.state.seedTimer);
+    window.removeEventListener('resize', this.onResize);
   }
 }
 
