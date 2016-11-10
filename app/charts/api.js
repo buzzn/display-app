@@ -5,6 +5,7 @@ import map from 'lodash/map';
 import range from 'lodash/range';
 import filter from 'lodash/filter';
 import isArray from 'lodash/isArray';
+import find from 'lodash/find';
 import { constants } from './actions';
 
 function prepareHeaders() {
@@ -67,6 +68,15 @@ function getPower(v, resolution) {
   return power;
 }
 
+function formatScores(json) {
+  const scores = {};
+  forEach(['fitting', 'autarchy', 'closeness', 'sufficiency'], type => {
+    const score = find(json.data, j => j.attributes.mode === type);
+    scores[type] = score ? score.attributes.value : 0;
+  });
+  return scores;
+}
+
 function generateRequests({ apiUrl, apiPath, ids, timestamp, resolution }) {
   return map(ids, id => (
     fetch(`${apiUrl}${apiPath}/aggregates/past?timestamp=${uriTimestamp(timestamp)}&resolution=${resolution}&metering_point_ids=${[id]}`, { headers: prepareHeaders() })
@@ -92,5 +102,10 @@ export default {
   getData: (params) => (
     Promise.all(generateRequests(params))
     .then(filterData)
+  ),
+  getScores: ({ apiUrl, apiPath, group, interval, timestamp }) => (
+    fetch(`${apiUrl}${apiPath}/groups/${group}/scores?timestamp=${uriTimestamp(timestamp)}&interval=${interval}`, { headers: prepareHeaders() })
+    .then(parseResponse)
+    .then(formatScores)
   ),
 };

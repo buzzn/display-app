@@ -159,6 +159,12 @@ class Bubbles extends Component {
       });
     }
 
+    function formatPower(power) {
+      const powerArr = power.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').split(',');
+      powerArr.pop();
+      return powerArr.join('.');
+    }
+
     function getData() {
       forEach(inData, (point, idx) => {
         if (inData[idx].updating) return;
@@ -192,20 +198,14 @@ class Bubbles extends Component {
           });
       });
       setData({
-        in: reduce(inData, (s, d) => s + d.value, 0),
-        out: reduce(outData, (s, d) => s + d.value, 0),
+        in: formatPower(reduce(inData, (s, d) => s + d.value, 0)),
+        out: formatPower(reduce(outData, (s, d) => s + d.value, 0)),
       });
     }
 
     function ticked() {
       circle.attr('cx', d => d.x)
         .attr('cy', d => d.y);
-    }
-
-    function formatPower(power) {
-      const powerArr = power.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').split(',');
-      powerArr.pop();
-      return powerArr.join('.');
     }
 
     function showDetails(data, i, element) {

@@ -11,7 +11,12 @@ export default ({ icon, text, data }) => (
       <div className="media-body">
         <div className="group-ticker">
           <span className="text-2x text-thin">
-            <div className="power-ticker">{ data ? data / 1000 : 'n.a.' }</div>
+            <div className="power-ticker">
+              { data ?
+                [1, 2, 3, 4, 5].map(s => (s <= data ? <i key={s} className='fa fa-star'></i> : <i key={s} className='fa fa-star-o'></i>)) :
+                'n.a.'
+              }
+            </div>
           </span>
         </div>
         <p>{ text }</p>
