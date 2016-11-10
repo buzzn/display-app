@@ -27,14 +27,14 @@ class ChartWrapper extends Component {
   }
 
   render() {
-    const { resolution, timestamp, loading } = this.props;
+    const { resolution, timestamp, loading, scores } = this.props;
     const limit = moment(timestamp).endOf(getMomentPeriod(resolution)).isSameOrAfter(new Date());
 
     return (
       <div className="col-sm-12 col-md-6 col-lg-6 chart-wrapper">
         <div className="row">
-          <InfoPanel {...{ text: 'Autarkie', icon: 'fa-flag-checkered', data: null }} />
-          <InfoPanel {...{ text: 'Sparsamkeit', icon: 'fa-power-off', data: null }} />
+          <InfoPanel {...{ text: 'Autarkie', icon: 'fa-flag-checkered', data: scores.autarchy }} />
+          <InfoPanel {...{ text: 'Sparsamkeit', icon: 'fa-power-off', data: scores.sufficiency }} />
         </div>
         <div className="row">
           <div className="col-sm-12 col-md-12 col-lg-12">
@@ -54,8 +54,8 @@ class ChartWrapper extends Component {
           </div>
         </div>
         <div className="row">
-          <InfoPanel {...{ text: 'Passung', icon: 'fa-line-chart', data: null }} />
-          <InfoPanel {...{ text: 'Lokalität', icon: 'fa-map-marker', data: null }} />
+          <InfoPanel {...{ text: 'Passung', icon: 'fa-line-chart', data: scores.fitting }} />
+          <InfoPanel {...{ text: 'Lokalität', icon: 'fa-map-marker', data: scores.closeness }} />
         </div>
       </div>
     );
@@ -68,6 +68,7 @@ function mapStateToProps(state) {
     resolution: state.charts.resolution,
     timestamp: state.charts.timestamp,
     loading: state.charts.loading,
+    scores: state.charts.scores,
   };
 }
 

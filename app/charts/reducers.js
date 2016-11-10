@@ -12,6 +12,7 @@ const initialState = {
   outData: [],
   loading: false,
   shouldUpdate: true,
+  scores: {},
 };
 
 export function shouldUpdate(timestamp, resolution) {
@@ -34,6 +35,8 @@ export default (state = initialState, action) => {
       return { ...state, loading: true };
     case constants.LOADED:
       return { ...state, loading: false };
+    case constants.SET_SCORES:
+      return { ...state, scores: action.scores };
     case constants.CHART_UPDATE:
     default:
       return state;

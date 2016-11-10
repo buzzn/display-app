@@ -13,6 +13,7 @@ export const constants = {
   LOADING: 'buzzn_charts/LOADING',
   LOADED: 'buzzn_charts/LOADED',
   CHART_UPDATE: 'buzzn_charts/CHART_UPDATE',
+  SET_SCORES: 'buzzn_charts/SET_SCORES',
 };
 
 export const actions = {
@@ -24,4 +25,5 @@ export const actions = {
   loading: () => ({ type: constants.LOADING }),
   loaded: () => ({ type: constants.LOADED }),
   chartUpdate: () => ({ type: constants.CHART_UPDATE }),
+  setScores: (scores) => ({ type: constants.SET_SCORES, scores }),
 };

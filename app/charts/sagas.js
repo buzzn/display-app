@@ -42,13 +42,17 @@ export function* getData({ apiUrl, apiPath }) {
   while (true) {
     yield put(actions.loading());
 
-    const { inIds, outIds, resolution, timestamp, shouldUpdate } = yield select(getCharts);
+    const { inIds, outIds, resolution, timestamp, shouldUpdate, group } = yield select(getCharts);
 
     try {
       const inData = yield call(api.getData, { apiUrl, apiPath, ids: inIds, timestamp, resolution });
       const outData = yield call(api.getData, { apiUrl, apiPath, ids: outIds, timestamp, resolution });
+      const interval = getMomentPeriod(resolution);
+      const scores = yield call(api.getScores, { apiUrl, apiPath, group, timestamp, interval });
       yield put(actions.setData({ inData, outData }));
+      yield put(actions.setScores(scores));
     } catch (error) {
+      console.log(error);
       yield call(clearData);
     }
 

@@ -11,7 +11,7 @@ export default ({ type, data }) => (
       <div className="media-body">
         <div className="group-ticker">
           <span className="text-2x text-thin">
-            <div className="power-ticker">{ data ? data / 1000 : 'n.a.' }</div>
+            <div className="power-ticker">{ data ? data : 'n.a.' }</div>
           </span>
         </div>
         <p>{ type === 'in' ? 'Aktueller Gesamtbezug (Watt)' : 'Aktuelle Gesamterzeugung (Watt)' }</p>
