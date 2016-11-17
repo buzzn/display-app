@@ -22,9 +22,6 @@ export default function* appLoop() {
   const { apiUrl, apiPath } = yield select(getConfig);
   yield put(setEndpointHost(apiUrl));
   yield put(setEndpointPath(apiPath));
-
-  yield fork(Charts.sagas);
-
   const group = yield call(() => window.location.href.split('/')[3]);
   if (group) {
     yield put(actions.setUrlGroup(group));
