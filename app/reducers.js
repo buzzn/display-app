@@ -13,6 +13,8 @@ function appReducer(state = {}, action) {
   switch (action.type) {
     case constants.SET_GROUP:
       return { ...state, group: action.group };
+    case constants.SET_URL_GROUP:
+      return { ...state, urlGroup: action.group };
     default:
       return state;
   }
