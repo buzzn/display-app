@@ -10,11 +10,13 @@ import './styles/main.scss';
 
 const Root = props => (
   <div className="effect" id="container">
-    { !!props.groups &&
+    { (!!props.groups || !!props.urlGroup) &&
       <div id="page-content">
-        <div className="row">
-          <GroupSelector { ...props } />
-        </div>
+        { !props.urlGroup &&
+          <div className="row">
+            <GroupSelector { ...props } />
+          </div>
+        }
         <div className="row">
           <Bubbles.container />
           <Charts.chart />
@@ -27,6 +29,7 @@ const Root = props => (
 function mapStateToProps(state) {
   return {
     groups: state.api.groups ? state.api.groups.data : null,
+    urlGroup: state.app.urlGroup,
   };
 }
 

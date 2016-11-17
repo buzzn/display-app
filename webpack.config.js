@@ -19,6 +19,9 @@ const postcssLoader = {
 
 module.exports = {
   devtool: 'sourcemap',
+  devServer: {
+    historyApiFallback: true,
+  },
   entry: [
     'babel-polyfill',
     'bootstrap-loader',
