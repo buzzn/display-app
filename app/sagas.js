@@ -18,6 +18,11 @@ export function* charts() {
   yield put(Charts.actions.setGroup(group));
 }
 
+export function* getGroupTitle(groupAction, group) {
+  const groupId = group || groupAction.group;
+  yield put(readEndpoint(`groups/${groupId}`));
+}
+
 export default function* appLoop() {
   const { apiUrl, apiPath } = yield select(getConfig);
   yield put(setEndpointHost(apiUrl));
@@ -25,10 +30,12 @@ export default function* appLoop() {
   const group = yield call(() => window.location.href.split('/')[3]);
   if (group) {
     yield put(actions.setUrlGroup(group));
+    yield call(getGroupTitle, null, group);
     yield put(Bubbles.actions.setGroup(group));
     yield put(Charts.actions.setGroup(group));
   } else {
     yield put(readEndpoint('groups'));
+    yield fork(takeLatest, constants.SET_GROUP, getGroupTitle);
     yield fork(takeLatest, constants.SET_GROUP, bubbles);
     yield fork(takeLatest, constants.SET_GROUP, charts);
   }
