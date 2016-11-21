@@ -51,7 +51,7 @@ class Bubbles extends Component {
 
   componentDidMount() {
     const self = this;
-    const { url, group, setData } = this.props;
+    const { url, group, setData, setLoading, setLoaded } = this.props;
     const svg = d3.select(`#group-${group}`);
     const switchButton = document.querySelector(`#switch-${group}`);
     let switchInOnTop = true;
@@ -425,6 +425,7 @@ class Bubbles extends Component {
             self.setState({ seedTimer: setInterval(() => {
               if (!find(inData, d => !d.seeded) && !find(outData, d => !d.seeded)) {
                 clearInterval(self.state.seedTimer);
+                setLoaded();
                 drawData();
                 self.setState({ drawTimer: setInterval(redrawData, 10000) });
               }
@@ -440,6 +441,7 @@ class Bubbles extends Component {
 
     window.addEventListener('resize', this.onResize);
 
+    setLoading();
     getMeteringPoints();
   }
 
