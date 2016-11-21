@@ -39,7 +39,7 @@ class ChartWrapper extends Component {
         <div className="row">
           <div className="col-sm-12 col-md-12 col-lg-12">
             <div className="panel">
-              <div className="panel-body">
+              <div className="panel-body" style={{ position: 'relative' }}>
                 <div className="text-center">
                   <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.YEAR_MONTH) } disabled={ loading }>Jahr</button>
                   <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.MONTH_DAY) } disabled={ loading }>Monat</button>
@@ -48,7 +48,21 @@ class ChartWrapper extends Component {
                 </div>
                 <button className="btn btn-default btn-icon btn-circle icon-lg btn-chart-prev fa fa-chevron-left fa-2x" onClick={ this.changePage.bind(this, 'prev') } disabled={ loading }></button>
                 <button className="btn btn-default btn-icon btn-circle icon-lg btn-chart-next pull-right fa fa-chevron-right fa-2x" onClick={ this.changePage.bind(this, 'next') } disabled={ loading || limit }></button>
-                <Chart loading={ loading } />
+                <Chart />
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  marginLeft: '3%',
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  zIndex: loading ? 10 : -10,
+                  background: 'rgba(255, 255, 255, 0.7)',
+                }}>
+                  <div style={{ color: 'grey', fontSize: '28px', fontWeight: 'bolder', marginLeft: '40%', marginTop: '35%' }}>
+                    Loading...
+                  </div>
+                </div>
               </div>
             </div>
           </div>
