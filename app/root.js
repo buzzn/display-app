@@ -10,7 +10,7 @@ import './styles/nifty_overrides.scss';
 import './styles/main.scss';
 import LogoImg from './images/bz_logo_115px_grey.png';
 
-const Root = props => (
+export const Root = props => (
   <div className="effect mainnav-lg" id="container">
     { (!!props.groups || !!props.urlGroup) &&
       <div className="boxed">

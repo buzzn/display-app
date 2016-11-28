@@ -5,11 +5,11 @@ import config from './config';
 import { reducer as api } from 'redux-json-api';
 import { constants } from './actions';
 
-function configReducer(state = config) {
+export function configReducer(state = config) {
   return state;
 }
 
-function appReducer(state = {}, action) {
+export function appReducer(state = {}, action) {
   switch (action.type) {
     case constants.SET_GROUP:
       return { ...state, group: action.group };
