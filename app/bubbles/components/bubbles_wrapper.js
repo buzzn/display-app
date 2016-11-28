@@ -4,7 +4,7 @@ import Bubbles from './bubbles';
 import InfoPanel from './info_panel';
 import { actions } from '../actions';
 
-const BubblesWrapper = ({ group, url, summedData, loading, setData, setLoading, setLoaded }) => (
+export const BubblesWrapper = ({ group, url, summedData, loading, setData, setLoading, setLoaded }) => (
   <div className="col-sm-12 col-md-6 col-lg-6 bubbles-wrapper">
     <div className="row">
       <InfoPanel type="in" data={ summedData.in } />
@@ -22,7 +22,7 @@ const BubblesWrapper = ({ group, url, summedData, loading, setData, setLoading, 
                 setLoaded={ setLoaded } />
             }
           </div>
-          <div style={{
+          <div className="basic-loading" style={{
             width: '100%',
             height: '100%',
             display: 'inline-block',

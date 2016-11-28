@@ -7,7 +7,7 @@ import config from '../util/chart_config';
 import { sumData, getMomentPeriod } from '../util/process_data';
 import { constants, actions } from '../actions';
 
-class Chart extends Component {
+export class Chart extends Component {
   componentWillMount() {
     ReactHighcharts.Highcharts.setOptions({
       global: {
