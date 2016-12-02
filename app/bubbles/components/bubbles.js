@@ -8,7 +8,7 @@ import { forEach, reduce, find, sortBy, first, last, debounce } from 'lodash';
 
 require('font-awesome/css/font-awesome.css');
 
-class Bubbles extends Component {
+export class Bubbles extends Component {
   constructor(props) {
     super(props);
 

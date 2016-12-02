@@ -50,11 +50,11 @@ function extractIds(jsonArr) {
   return ids;
 }
 
-function uriTimestamp(timestamp) {
+export function uriTimestamp(timestamp) {
   return encodeURIComponent(moment(timestamp).format('YYYY-MM-DDTHH:mm:ss.SSSZ'));
 }
 
-function getPower(v, resolution) {
+export function getPower(v, resolution) {
   let power = 0;
   switch (resolution) {
     case constants.RESOLUTIONS.YEAR_MONTH:

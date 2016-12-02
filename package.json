@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-register --require babel-polyfill $(find . -name '*.tests.js' ! -ipath '*node_modules*')",
+    "test": "mocha --compilers js:babel-register --require babel-polyfill --require tests-setup.js --require ignore-styles $(find . -name '*.tests.js' ! -ipath '*node_modules*')",
     "dev-server": "webpack-dashboard -- webpack-dev-server --progress --inline --hot --port=2999",
     "build": "rimraf build && cross-env NODE_ENV=production webpack -p --config ./webpack.production.config.js --progress --profile --colors && node_modules/babel-cli/bin/babel.js  server -d build/server --presets es2015",
     "start": "./node_modules/babel-cli/bin/babel-node.js server"
@@ -24,7 +24,9 @@
     "babel-register": "^6.14.0",
     "bootstrap-loader": "^2.0.0-beta.12",
     "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
     "chai-enzyme": "^0.5.1",
+    "chai-spies": "^0.7.1",
     "cross-env": "^2.0.0",
     "css-loader": "^0.25.0",
     "enzyme": "^2.4.1",
@@ -36,12 +38,16 @@
     "extract-text-webpack-plugin": ">=2.0.0-beta.4 <2.0.0",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.22.0",
+    "ignore-styles": "^5.0.1",
+    "jsdom": "^9.8.3",
     "mocha": "^3.0.2",
+    "nock": "^9.0.2",
     "node-sass": "^3.10.1",
     "postcss-flexbugs-fixes": "^2.0.0",
     "postcss-loader": "^1.0.0",
     "precss": "^1.4.0",
     "react-addons-test-utils": "^15.3.1",
+    "redux-mock-store": "^1.2.1",
     "resolve-url-loader": "^1.6.0",
     "rimraf": "^2.5.4",
     "sass-loader": "^4.0.2",
@@ -60,6 +66,7 @@
     "express": "^4.14.0",
     "font-awesome": "^4.6.3",
     "highcharts": "^4.2.6",
+    "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.13.1",
     "moment": "^2.15.1",
     "postcss": "^5.1.1",
@@ -80,6 +87,11 @@
     "extends": [
       "airbnb/base"
     ],
+    "env": {
+      "browser": true,
+      "node": true,
+      "mocha": true
+    },
     "plugins": [
       "react"
     ],

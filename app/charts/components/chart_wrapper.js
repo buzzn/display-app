@@ -6,7 +6,7 @@ import { constants, actions } from '../actions';
 import { getMomentPeriod } from '../util/process_data';
 import Chart from './chart';
 
-class ChartWrapper extends Component {
+export class ChartWrapper extends Component {
   changePage(direction) {
     const { setTimestamp, resolution, timestamp, chartUpdate } = this.props;
     let newTimestamp = new Date();
@@ -41,15 +41,15 @@ class ChartWrapper extends Component {
             <div className="panel">
               <div className="panel-body" style={{ position: 'relative' }}>
                 <div className="text-center">
-                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.YEAR_MONTH) } disabled={ loading }>Jahr</button>
-                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.MONTH_DAY) } disabled={ loading }>Monat</button>
-                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.DAY_MINUTE) } disabled={ loading }>Tag</button>
-                  <button className="btn btn-default" onClick={ () => this.changeResolution(constants.RESOLUTIONS.HOUR_MINUTE) } disabled={ loading }>Stunde</button>
+                  <button className="btn btn-default year" onClick={ () => this.changeResolution(constants.RESOLUTIONS.YEAR_MONTH) } disabled={ loading }>Jahr</button>
+                  <button className="btn btn-default month" onClick={ () => this.changeResolution(constants.RESOLUTIONS.MONTH_DAY) } disabled={ loading }>Monat</button>
+                  <button className="btn btn-default day" onClick={ () => this.changeResolution(constants.RESOLUTIONS.DAY_MINUTE) } disabled={ loading }>Tag</button>
+                  <button className="btn btn-default hour" onClick={ () => this.changeResolution(constants.RESOLUTIONS.HOUR_MINUTE) } disabled={ loading }>Stunde</button>
                 </div>
                 <button className="btn btn-default btn-icon btn-circle icon-lg btn-chart-prev fa fa-chevron-left fa-2x" onClick={ this.changePage.bind(this, 'prev') } disabled={ loading }></button>
                 <button className="btn btn-default btn-icon btn-circle icon-lg btn-chart-next pull-right fa fa-chevron-right fa-2x" onClick={ this.changePage.bind(this, 'next') } disabled={ loading || limit }></button>
                 <Chart />
-                <div style={{
+                <div className="basic-loading" style={{
                   width: '100%',
                   height: '100%',
                   marginLeft: '3%',

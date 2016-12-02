@@ -8,6 +8,10 @@ import Charts from './charts';
 export const getConfig = state => state.config;
 export const getGroup = state => state.app.group;
 
+export function getGroupFromUrl() {
+  return window.location.href.split('/')[3];
+}
+
 export function* bubbles() {
   const group = yield select(getGroup);
   yield put(Bubbles.actions.setGroup(group));
@@ -27,7 +31,7 @@ export default function* appLoop() {
   const { apiUrl, apiPath } = yield select(getConfig);
   yield put(setEndpointHost(apiUrl));
   yield put(setEndpointPath(apiPath));
-  const group = yield call(() => window.location.href.split('/')[3]);
+  const group = yield call(getGroupFromUrl);
   if (group) {
     yield put(actions.setUrlGroup(group));
     yield call(getGroupTitle, null, group);
