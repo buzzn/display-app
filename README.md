@@ -1,23 +1,33 @@
+[ ![Codeship Status for buzzn/kiosk](https://app.codeship.com/projects/c13ce210-78d2-0134-4f8b-0a260436cc6e/status?branch=master)](https://app.codeship.com/projects/180313)
 # kiosk
 
 To run local dev server:
 - clone this repository
-- install node.js 6.7.0
-- run `npm i`
-- run `sudo npm i -g webpack`
-- run `npm run dev-server`
+- install node.js 6.xx
+- run `sudo npm i -g yarn webpack`
+- run `yarn`
+- run `yarn run dev-server`
 - open in browser `http://localhost:2999`
+
+To run tests:
+- run `sudo npm i -g mocha`
+- run `yarn run test`
+
+How to build automatically on codeship:
+- setup commands:
+```
+nvm install 6.7.0
+npm cache clean
+npm i -g yarn cross-env rimraf
+yarn
+npm rebuild node-sass
+```
+- test pipeline commands:
+```
+yarn run test
+yarn run build
+```
 
 To use linter:
 - install eslint globally `sudo npm i -g eslint`
 - add eslint plugin to your favorite editor
-
-To start as a standalone app in production mode:
-- run `nvm install 6.7.0`
-- run `sudo npm i -g webpack rimraf cross-env`
-- run `npm run build`
-- run `npm run start`
-
-with Docker:
-- docker build -t buzzn-kiosk .
-- docker run -it --rm -p2999:2999 --name kiosk2 buzzn-kiosk
