@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import 'whatwg-fetch';
+import forEach from 'lodash/forEach';
+import reduce from 'lodash/reduce';
+import find from 'lodash/find';
+import sortBy from 'lodash/sortBy';
+import first from 'lodash/first';
+import last from 'lodash/last';
+import debounce from 'lodash/debounce';
 import { getJson } from '../util/requests';
 
 const d3 = require('d3');
-import { forEach, reduce, find, sortBy, first, last, debounce } from 'lodash';
 
 require('font-awesome/css/font-awesome.css');
 
