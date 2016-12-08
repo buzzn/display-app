@@ -3,7 +3,7 @@ import { call } from 'redux-saga/effects';
 import appSaga from './sagas';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
-import Bubbles from './bubbles';
+import Bubbles from '@buzzn/module_bubbles';
 import Charts from './charts';
 import RootReducer from './reducers';
 

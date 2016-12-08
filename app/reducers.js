@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import Bubbles from './bubbles';
+import Bubbles from '@buzzn/module_bubbles';
 import Charts from './charts';
 import config from './config';
 import { reducer as api } from 'redux-json-api';
