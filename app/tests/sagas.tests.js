@@ -4,7 +4,7 @@ import { takeLatest } from 'redux-saga';
 import { setEndpointHost, setEndpointPath, readEndpoint } from 'redux-json-api';
 import appSaga, { getConfig, getGroup, bubbles, charts, getGroupTitle, getGroupFromUrl } from '../sagas';
 import { constants, actions } from '../actions';
-import Bubbles from '../bubbles';
+import Bubbles from '@buzzn/module_bubbles';
 import Charts from '../charts';
 
 describe('app sagas', () => {
