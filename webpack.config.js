@@ -1,21 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const autoprefixer = require('autoprefixer');
-const flexbugsFixes = require('postcss-flexbugs-fixes');
 const DashboardPlugin = require('webpack-dashboard/plugin');
-
-const postcssLoader = {
-  loader: 'postcss-loader',
-  options: {
-    plugins() {
-      return [
-        autoprefixer({ browsers: ['last 3 versions'] }),
-        flexbugsFixes,
-      ];
-    },
-  },
-};
 
 module.exports = {
   devtool: 'sourcemap',
@@ -40,7 +26,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: {
           presets: [["es2015", { "modules": false }], 'stage-0', 'react'],
           plugins: ['react-hot-loader/babel'],
@@ -49,18 +35,18 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'style',
-          'css',
-          postcssLoader,
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
         ],
       },
       {
         test: /\.scss$/,
         use: [
-          'style',
-          'css',
-          'sass',
-          postcssLoader,
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+          'postcss-loader',
         ],
       },
       {

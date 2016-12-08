@@ -1,8 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const autoprefixer = require('autoprefixer');
-const flexbugsFixes = require('postcss-flexbugs-fixes');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
 
@@ -25,7 +23,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: {
           presets: ['es2015', 'stage-0', 'react'],
         },
@@ -33,18 +31,18 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'style',
-          'css',
-          'postcss',
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
         ],
       },
       {
         test: /\.scss$/,
         use: [
-          'style',
-          'css',
-          'postcss',
-          'sass',
+          'style-loader',
+          'css-loader',
+          'postcss-loader',
+          'sass-loader',
         ],
       },
       {
@@ -81,17 +79,8 @@ module.exports = {
         output: {
           path: path.resolve(__dirname, 'build/public/assets'),
         },
-        postcss: {
-          plugins() {
-            return [
-              autoprefixer({ browsers: ['last 3 versions'] }),
-              flexbugsFixes,
-            ];
-          },
-        },
       },
     }),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.ProvidePlugin({
       d3: 'd3',

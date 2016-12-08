@@ -1,9 +1,10 @@
 .tern-project
-
-npm-debug.log
-
+jsconfig.json
+typings.json
 typings/
 .DS_Store
+npm-debug.log
+yarn-error.log
 
 node_modules/*
 
