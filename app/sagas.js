@@ -3,7 +3,7 @@ import { takeLatest } from 'redux-saga';
 import { setEndpointHost, setEndpointPath, readEndpoint } from 'redux-json-api';
 import { constants, actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
-import Charts from './charts';
+import Charts from '@buzzn/module_charts';
 
 export const getConfig = state => state.config;
 export const getGroup = state => state.app.group;

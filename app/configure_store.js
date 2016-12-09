@@ -4,7 +4,7 @@ import appSaga from './sagas';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import Bubbles from '@buzzn/module_bubbles';
-import Charts from './charts';
+import Charts from '@buzzn/module_charts';
 import RootReducer from './reducers';
 
 function* rootSaga() {

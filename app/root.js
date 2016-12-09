@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import find from 'lodash/find';
 import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
-import Charts from './charts';
+import Charts from '@buzzn/module_charts';
 import GroupSelector from './components/group_selector';
 import './styles/nifty.css';
 import './styles/nifty_overrides.scss';

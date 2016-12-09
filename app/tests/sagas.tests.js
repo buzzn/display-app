@@ -5,7 +5,7 @@ import { setEndpointHost, setEndpointPath, readEndpoint } from 'redux-json-api';
 import appSaga, { getConfig, getGroup, bubbles, charts, getGroupTitle, getGroupFromUrl } from '../sagas';
 import { constants, actions } from '../actions';
 import Bubbles from '@buzzn/module_bubbles';
-import Charts from '../charts';
+import Charts from '@buzzn/module_charts';
 
 describe('app sagas', () => {
   describe('helper selectors should return proper state parts', () => {

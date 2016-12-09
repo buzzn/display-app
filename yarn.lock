@@ -6,6 +6,10 @@
   version "1.0.0"
   resolved "git+https://github.com/buzzn/module-bubbles.git#07179f0d262b32135a621c408629771e85aaca28"
 
+"@buzzn/module_charts@git+https://github.com/buzzn/module-charts.git#v1.0.0":
+  version "1.0.0"
+  resolved "git+https://github.com/buzzn/module-charts.git#dc77e1fd458c0d4e3f5a5b2b5ca57593392f7dc5"
+
 Base64@~0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/Base64/-/Base64-0.2.1.tgz#ba3a4230708e186705065e66babdd4c35cf60028"
