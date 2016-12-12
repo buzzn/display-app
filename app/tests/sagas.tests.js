@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { put, take, select, fork, spawn, call } from 'redux-saga/effects';
 import { takeLatest } from 'redux-saga';
 import { setEndpointHost, setEndpointPath, readEndpoint } from 'redux-json-api';
-import appSaga, { getConfig, getGroup, bubbles, charts, getGroupTitle, getGroupFromUrl } from '../sagas';
+import appSaga, { getConfig, getGroup, bubbles, charts, getGroupTitle, getGroupFromUrl, windowReload } from '../sagas';
 import { constants, actions } from '../actions';
 import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
@@ -64,6 +64,11 @@ describe('app sagas', () => {
     it('should dispatch setGroup action from Charts module', () => {
       expect(generator.next().value)
       .to.eql(put(Charts.actions.setGroup(group)));
+    });
+
+    it('should spawn window reload timer', () => {
+      expect(generator.next().value)
+      .to.eql(spawn(windowReload));
     });
 
     it('should finish', () => {
