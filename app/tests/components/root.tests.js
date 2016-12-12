@@ -3,8 +3,8 @@ import { shallow } from 'enzyme';
 import { expect } from 'chai';
 import { Root } from '../../root';
 import GroupSelector from '../../components/group_selector';
-import Bubbles from '../../bubbles';
-import Charts from '../../charts';
+import Bubbles from '@buzzn/module_bubbles';
+import Charts from '@buzzn/module_charts';
 
 describe('app Root', () => {
   const props = {
