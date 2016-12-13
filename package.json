@@ -61,7 +61,7 @@
   },
   "dependencies": {
     "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#v1.0.0",
-    "@buzzn/module_charts": "git+https://github.com/buzzn/module-charts.git#v1.0.0",
+    "@buzzn/module_charts": "git+https://github.com/buzzn/module-charts.git#v1.0.1",
     "babel-polyfill": "^6.16.0",
     "bootstrap": "4.0.0-alpha.5",
     "d3": "^4.4.0",

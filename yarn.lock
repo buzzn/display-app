@@ -6,9 +6,9 @@
   version "1.0.0"
   resolved "git+https://github.com/buzzn/module-bubbles.git#07179f0d262b32135a621c408629771e85aaca28"
 
-"@buzzn/module_charts@git+https://github.com/buzzn/module-charts.git#v1.0.0":
+"@buzzn/module_charts@git+https://github.com/buzzn/module-charts.git#v1.0.1":
   version "1.0.0"
-  resolved "git+https://github.com/buzzn/module-charts.git#dc77e1fd458c0d4e3f5a5b2b5ca57593392f7dc5"
+  resolved "git+https://github.com/buzzn/module-charts.git#8784e3a0ef956536eb7319dc0b9b1b56f21472f3"
 
 Base64@~0.2.0:
   version "0.2.1"
