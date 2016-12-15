@@ -5,6 +5,7 @@ import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
 import GroupSelector from './components/group_selector';
+import FullScreenButton from './components/full_screen_button';
 import './styles/nifty.css';
 import './styles/nifty_overrides.scss';
 import './styles/main.scss';
@@ -34,6 +35,9 @@ export const Root = props => (
             </div>
           </div>
           <div id="page-content">
+            <div className="row" style={{ position: 'relative', height: '30px' }}>
+              <div style={{ position: 'absolute', right: '20px', top: '-30px' }}><FullScreenButton /></div>
+            </div>
             <div className="row">
               <Bubbles.container />
               <Charts.chart />

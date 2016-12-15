@@ -81,6 +81,7 @@
     "redux-json-api": "^1.6.2",
     "redux-saga": "^0.13.0",
     "redux-thunk": "^2.1.0",
+    "screenfull": "^3.0.2",
     "tether": "^1.4.0",
     "whatwg-fetch": "^2.0.1"
   },
