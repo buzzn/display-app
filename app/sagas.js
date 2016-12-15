@@ -12,6 +12,12 @@ export function getGroupFromUrl() {
   return window.location.href.split('/')[3];
 }
 
+export function windowReload() {
+  setInterval(() => {
+    window.location.reload(true);
+  }, 1000 * 60 * 60 * 24);
+}
+
 export function* bubbles() {
   const group = yield select(getGroup);
   yield put(Bubbles.actions.setGroup(group));
@@ -37,6 +43,7 @@ export default function* appLoop() {
     yield call(getGroupTitle, null, group);
     yield put(Bubbles.actions.setGroup(group));
     yield put(Charts.actions.setGroup(group));
+    yield spawn(windowReload);
   } else {
     yield put(readEndpoint('groups'));
     yield fork(takeLatest, constants.SET_GROUP, getGroupTitle);
