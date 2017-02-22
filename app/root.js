@@ -6,6 +6,9 @@ import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
 import GroupSelector from './components/group_selector';
 import FullScreenButton from './components/full_screen_button';
+import ChartLayout from './components/chart_layout';
+import BubblesLayout from './components/bubbles_layout';
+
 import './styles/nifty.css';
 import './styles/nifty_overrides.scss';
 import './styles/main.scss';
@@ -25,12 +28,12 @@ export const Root = props => (
             <div className="media-left">
               <span className="img-md img-user imc-circle icon-wrapper-md icon-circle bg-white fa fa-users fa-3x"></span>
             </div>
-            <div className="media-body pad-lft">
+            <div className="media-body pad-lft float-left">
               <p className="text-3x mar-no">{ props.groupTitle }</p>
             </div>
-            <div className="brand-title clear-width" style={{ marginLeft: 'auto' }}>
+            <div className="brand-title clear-width" style={{ marginLeft: 'auto', marginBottom: '30px', height: '37px' }}>
               <span className="brand-text">
-                <img className="brand-logo" src={ LogoImg } />
+                <img className="brand-logo" src={ LogoImg } style={{ float: 'right' }} />
               </span>
             </div>
           </div>
@@ -39,8 +42,8 @@ export const Root = props => (
               <div style={{ position: 'absolute', right: '20px', top: '-30px' }}><FullScreenButton /></div>
             </div>
             <div className="row">
-              <Bubbles.container />
-              <Charts.chart />
+              <Bubbles.container Layout={ BubblesLayout } />
+              <Charts.ChartWrapperContainer Layout={ ChartLayout } />
             </div>
           </div>
         </div>
