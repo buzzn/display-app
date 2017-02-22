@@ -32,6 +32,6 @@ describe('app Root', () => {
   it('should render bubbles and charts', () => {
     const wrapper = shallow(<Root { ...props } />);
     expect(wrapper.find(Bubbles.container)).to.have.length(1);
-    expect(wrapper.find(Charts.chart)).to.have.length(1);
+    expect(wrapper.find(Charts.ChartWrapperContainer)).to.have.length(1);
   });
 });
