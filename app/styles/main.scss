@@ -13,3 +13,16 @@ body {
 .text-center {
   text-align: center;
 }
+
+.row {
+  display: -webkit-flex;
+}
+
+.media-left {
+  margin-right: 10px;
+  float: left;
+}
+
+.float-left {
+  float: left;
+}
