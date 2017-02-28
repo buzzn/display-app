@@ -1,29 +1,33 @@
 import { expect } from 'chai';
-import { put, take, select, fork, spawn, call } from 'redux-saga/effects';
+import { put, select, fork, spawn, call } from 'redux-saga/effects';
 import { takeLatest } from 'redux-saga';
-import { setEndpointHost, setEndpointPath, readEndpoint } from 'redux-json-api';
-import appSaga, { getConfig, getGroup, bubbles, charts, getGroupTitle, getGroupFromUrl, windowReload } from '../sagas';
+import appSaga, {
+  getConfig,
+  bubbles,
+  charts,
+  getGroup,
+  getGroups,
+  getGroupFromUrl,
+  windowReload,
+} from '../sagas';
 import { constants, actions } from '../actions';
+import api from '../api';
 import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
 
 describe('app sagas', () => {
   describe('helper selectors should return proper state parts', () => {
-    const state = { config: 'config', app: { group: 'group' } };
+    const state = { config: 'config' };
 
     it('config selector', () => {
       expect(getConfig(state)).to.eql(state.config);
-    });
-
-    it('group selector', () => {
-      expect(getGroup(state)).to.eql(state.app.group);
     });
   });
 
   describe('main flow with groupId provided by URL', () => {
     const apiUrl = 'http://localhost:3000';
     const apiPath = '/api/v1/';
-    const group = 'group';
+    const groupId = 'groupId';
     const generator = appSaga();
 
     it('should get apiUrl and apiPath from the state', () => {
@@ -31,39 +35,29 @@ describe('app sagas', () => {
       .to.eql(select(getConfig));
     });
 
-    it('should dispatch setEndpointHost action with api host address', () => {
-      expect(generator.next({ apiUrl, apiPath }).value)
-      .to.eql(put(setEndpointHost(apiUrl)));
-    });
-
-    it('should dispatch setEndpointPath action with api path', () => {
-      expect(generator.next().value)
-      .to.eql(put(setEndpointPath(apiPath)));
-    });
-
     it('should get the part of a URL (possible groupId)', () => {
-      expect(generator.next().value)
+      expect(generator.next({ apiUrl, apiPath }).value)
       .to.eql(call(getGroupFromUrl));
     });
 
-    it('should dispatch setUrlGroup with groupId if groupId was provided by URL', () => {
-      expect(generator.next(group).value)
-      .to.eql(put(actions.setUrlGroup(group)));
+    it('should dispatch setUrlGroupId with groupId if groupId was provided by URL', () => {
+      expect(generator.next(groupId).value)
+      .to.eql(put(actions.setUrlGroupId(groupId)));
     });
 
-    it('should run the getGroupTitle saga with only group parameter', () => {
+    it('should run the getGroup saga', () => {
       expect(generator.next().value)
-      .to.eql(call(getGroupTitle, null, group));
+      .to.eql(call(getGroup, { apiUrl, apiPath }, groupId));
     });
 
     it('should dispatch setGroup action from Bubbles module', () => {
       expect(generator.next().value)
-      .to.eql(put(Bubbles.actions.setGroup(group)));
+      .to.eql(put(Bubbles.actions.setGroup(groupId)));
     });
 
     it('should dispatch setGroup action from Charts module', () => {
       expect(generator.next().value)
-      .to.eql(put(Charts.actions.setGroup(group)));
+      .to.eql(put(Charts.actions.setGroup(groupId)));
     });
 
     it('should spawn window reload timer', () => {
@@ -83,54 +77,112 @@ describe('app sagas', () => {
 
     generator.next();
     generator.next({ apiUrl, apiPath });
-    generator.next();
-    generator.next();
-    // dispatching action for redux-json-api, deep compare not working here.
-    generator.next();
+
+    it('should call getGroup saga', () => {
+      expect(generator.next().value)
+      .to.eql(call(getGroups, { apiUrl, apiPath }))
+    });
 
     it('should fork getGroupTitle saga with takeLatest helper for SET_GROUP', () => {
       expect(generator.next().value)
-      .to.eql(fork(takeLatest, constants.SET_GROUP, getGroupTitle));
+      .to.eql(fork(takeLatest, constants.SET_GROUP_ID, getGroup, { apiUrl, apiPath }));
     });
 
     it('should fork bubbles saga with takeLatest helper for SET_GROUP', () => {
       expect(generator.next().value)
-      .to.eql(fork(takeLatest, constants.SET_GROUP, bubbles));
+      .to.eql(fork(takeLatest, constants.SET_GROUP_ID, bubbles));
     });
 
     it('should fork charts saga with takeLatest helper for SET_GROUP', () => {
       expect(generator.next().value)
-      .to.eql(fork(takeLatest, constants.SET_GROUP, charts));
+      .to.eql(fork(takeLatest, constants.SET_GROUP_ID, charts));
     });
   });
 
   describe('bubbles group listener', () => {
-    const generator = bubbles();
-    const group = 'group';
-
-    it('should select group from state', () => {
-      expect(generator.next().value)
-      .to.eql(select(getGroup));
-    });
+    const groupId = 'groupId';
+    const generator = bubbles({ groupId });
 
     it('should dispatch setGroup action from Bubbles module', () => {
-      expect(generator.next(group).value)
-      .to.eql(put(Bubbles.actions.setGroup(group)));
+      expect(generator.next().value)
+      .to.eql(put(Bubbles.actions.setGroup(groupId)));
     });
   });
 
   describe('charts group listener', () => {
-    const generator = charts();
-    const group = 'group';
-
-    it('should select group from state', () => {
-      expect(generator.next().value)
-      .to.eql(select(getGroup));
-    });
+    const groupId = 'groupId';
+    const generator = charts({ groupId });
 
     it('should dispatch setGroup action from Charts module', () => {
-      expect(generator.next(group).value)
-      .to.eql(put(Charts.actions.setGroup(group)));
+      expect(generator.next().value)
+      .to.eql(put(Charts.actions.setGroup(groupId)));
+    });
+  });
+
+  describe('getGroups saga', () => {
+    const apiUrl = 'http://localhost:3000';
+    const apiPath = '/api/v1/';
+    const groups = [1, 2, 3];
+
+    describe('normal flow', () => {
+      const generator = getGroups({ apiUrl, apiPath });
+
+      it('should call api.fetchGroups', () => {
+        expect(generator.next().value)
+        .to.eql(call(api.fetchGroups, { apiUrl, apiPath }));
+      });
+
+      it('should dispatch setGroups action with groups', () => {
+        expect(generator.next(groups).value)
+        .to.eql(put(actions.setGroups(groups)));
+      });
+
+      it('should finish', () => {
+        expect(generator.next().done).to.be.true;
+      });
+    });
+  });
+
+  describe('getGroup saga', () => {
+    const apiUrl = 'http://localhost:3000';
+    const apiPath = '/api/v1/';
+    const groupId = 'groupId';
+    const group = { data: 'group' };
+
+    describe('normal flow with string param', () => {
+      const generator = getGroup({ apiUrl, apiPath }, groupId);
+
+      it('should call api.fetchGroup', () => {
+        expect(generator.next().value)
+        .to.eql(call(api.fetchGroup, { apiUrl, apiPath, groupId }));
+      });
+
+      it('should dispatch setGroup action with group', () => {
+        expect(generator.next(group).value)
+        .to.eql(put(actions.setGroup(group.data)));
+      });
+
+      it('should finish', () => {
+        expect(generator.next().done).to.be.true;
+      });
+    });
+
+    describe('normal flow with action param', () => {
+      const generator = getGroup({ apiUrl, apiPath }, { groupId });
+
+      it('should call api.fetchGroup', () => {
+        expect(generator.next().value)
+        .to.eql(call(api.fetchGroup, { apiUrl, apiPath, groupId }));
+      });
+
+      it('should dispatch setGroup action with group', () => {
+        expect(generator.next(group).value)
+        .to.eql(put(actions.setGroup(group.data)));
+      });
+
+      it('should finish', () => {
+        expect(generator.next().done).to.be.true;
+      });
     });
   });
 });

@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
 import config from './config';
-import { reducer as api } from 'redux-json-api';
 import { constants } from './actions';
 
 export function configReducer(state = config) {
@@ -11,10 +10,14 @@ export function configReducer(state = config) {
 
 export function appReducer(state = {}, action) {
   switch (action.type) {
+    case constants.SET_GROUP_ID:
+      return { ...state, groupId: action.groupId };
+    case constants.SET_URL_GROUP_ID:
+      return { ...state, urlGroupId: action.urlGroupId };
+    case constants.SET_GROUPS:
+      return { ...state, groups: action.groups };
     case constants.SET_GROUP:
       return { ...state, group: action.group };
-    case constants.SET_URL_GROUP:
-      return { ...state, urlGroup: action.group };
     default:
       return state;
   }
@@ -22,7 +25,6 @@ export function appReducer(state = {}, action) {
 
 export default combineReducers({
   config: configReducer,
-  api,
   app: appReducer,
   bubbles: Bubbles.reducers,
   charts: Charts.reducers,

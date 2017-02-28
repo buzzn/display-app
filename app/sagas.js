@@ -1,12 +1,11 @@
-import { put, take, select, fork, spawn, call } from 'redux-saga/effects';
+import { put, select, fork, spawn, call } from 'redux-saga/effects';
 import { takeLatest } from 'redux-saga';
-import { setEndpointHost, setEndpointPath, readEndpoint } from 'redux-json-api';
 import { constants, actions } from './actions';
+import api from './api';
 import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
 
 export const getConfig = state => state.config;
-export const getGroup = state => state.app.group;
 
 export function getGroupFromUrl() {
   return window.location.href.split('/')[3];
@@ -18,36 +17,46 @@ export function windowReload() {
   }, 1000 * 60 * 60 * 24);
 }
 
-export function* bubbles() {
-  const group = yield select(getGroup);
-  yield put(Bubbles.actions.setGroup(group));
+export function* bubbles({ groupId }) {
+  yield put(Bubbles.actions.setGroup(groupId));
 }
 
-export function* charts() {
-  const group = yield select(getGroup);
-  yield put(Charts.actions.setGroup(group));
+export function* charts({ groupId }) {
+  yield put(Charts.actions.setGroup(groupId));
 }
 
-export function* getGroupTitle(groupAction, group) {
-  const groupId = group || groupAction.group;
-  yield put(readEndpoint(`groups/${groupId}`));
+export function* getGroup({ apiUrl, apiPath }, param) {
+  const groupId = typeof(param) === 'string' ? param : param.groupId;
+  try {
+    const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
+    yield put(actions.setGroup(group.data));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* getGroups({ apiUrl, apiPath }) {
+  try {
+    const groups = yield call(api.fetchGroups, { apiUrl, apiPath });
+    yield put(actions.setGroups(groups));
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export default function* appLoop() {
   const { apiUrl, apiPath } = yield select(getConfig);
-  yield put(setEndpointHost(apiUrl));
-  yield put(setEndpointPath(apiPath));
-  const group = yield call(getGroupFromUrl);
-  if (group) {
-    yield put(actions.setUrlGroup(group));
-    yield call(getGroupTitle, null, group);
-    yield put(Bubbles.actions.setGroup(group));
-    yield put(Charts.actions.setGroup(group));
+  const groupId = yield call(getGroupFromUrl);
+  if (groupId) {
+    yield put(actions.setUrlGroupId(groupId));
+    yield call(getGroup, { apiUrl, apiPath }, groupId);
+    yield put(Bubbles.actions.setGroup(groupId));
+    yield put(Charts.actions.setGroup(groupId));
     yield spawn(windowReload);
   } else {
-    yield put(readEndpoint('groups'));
-    yield fork(takeLatest, constants.SET_GROUP, getGroupTitle);
-    yield fork(takeLatest, constants.SET_GROUP, bubbles);
-    yield fork(takeLatest, constants.SET_GROUP, charts);
+    yield call(getGroups, { apiUrl, apiPath });
+    yield fork(takeLatest, constants.SET_GROUP_ID, getGroup, { apiUrl, apiPath });
+    yield fork(takeLatest, constants.SET_GROUP_ID, bubbles);
+    yield fork(takeLatest, constants.SET_GROUP_ID, charts);
   }
 }

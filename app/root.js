@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import find from 'lodash/find';
 import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
@@ -14,14 +13,14 @@ import './styles/nifty_overrides.scss';
 import './styles/main.scss';
 import LogoImg from './images/bz_logo_115px_grey.png';
 
-export const Root = props => (
+export const Root = ({ groups, group, onGroupSelect }) => (
   <div className="effect mainnav-lg" id="container">
-    { (!!props.groups || !!props.urlGroup) &&
+    { (groups.length > 0 || group.id) &&
       <div className="boxed">
         <div id="content-container-no-click">
-          { !props.urlGroup &&
+          { groups.length > 0 &&
             <div className="row">
-              <GroupSelector { ...props } />
+              <GroupSelector groups={ groups } onGroupSelect={ onGroupSelect } />
             </div>
           }
           <div className="panel media pad-all">
@@ -29,7 +28,7 @@ export const Root = props => (
               <span className="img-md img-user imc-circle icon-wrapper-md icon-circle bg-white fa fa-users fa-3x"></span>
             </div>
             <div className="media-body pad-lft float-left">
-              <p className="text-3x mar-no">{ props.groupTitle }</p>
+              <p className="text-3x mar-no">{ group.attributes.name }</p>
             </div>
             <div className="brand-title clear-width" style={{ marginLeft: 'auto', marginBottom: '30px', height: '37px' }}>
               <span className="brand-text">
@@ -52,22 +51,22 @@ export const Root = props => (
   </div>
 );
 
-function groupTitle(groups, urlGroupId, groupId) {
-  let title = '';
-  const id = urlGroupId || groupId;
-  if (groups && id) {
-    const group = find(groups.data, g => g.id === id);
-    if (group) title = group.attributes.name;
-  }
-  return title;
-}
+Root.propTypes = {
+  groups: React.PropTypes.array.isRequired,
+  group: React.PropTypes.object.isRequired,
+  onGroupSelect: React.PropTypes.func.isRequired,
+};
+
+Root.defaultProps = {
+  groups: [],
+  group: { attributes: { name: '' } },
+};
 
 function mapStateToProps(state) {
   return {
-    groups: state.api.groups ? state.api.groups.data : null,
-    urlGroup: state.app.urlGroup,
-    groupTitle: groupTitle(state.api.groups, state.app.urlGroup, state.app.group),
+    groups: state.app.groups,
+    group: state.app.group,
   };
 }
 
-export default connect(mapStateToProps, { onGroupSelect: actions.setGroup })(Root);
+export default connect(mapStateToProps, { onGroupSelect: actions.setGroupId })(Root);

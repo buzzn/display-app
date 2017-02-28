@@ -2,7 +2,6 @@ import createSagaMiddleware from 'redux-saga';
 import { call } from 'redux-saga/effects';
 import appSaga from './sagas';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
 import Bubbles from '@buzzn/module_bubbles';
 import Charts from '@buzzn/module_charts';
 import RootReducer from './reducers';
@@ -15,7 +14,7 @@ export default function configureStore(initialState) {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(RootReducer,
     {},
-    compose(applyMiddleware(sagaMiddleware, thunk), window.devToolsExtension ? window.devToolsExtension() : f => f));
+    compose(applyMiddleware(sagaMiddleware), window.devToolsExtension ? window.devToolsExtension() : f => f));
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
