@@ -8,29 +8,28 @@ import Charts from '@buzzn/module_charts';
 
 describe('app Root', () => {
   const props = {
-    groups: [],
-    urlGroup: 'group',
-    groupTitle: 'title',
     onGroupSelect() {},
   };
+  const groups = [{ id: 1, attributes: { name: '' } }];
+  const group = { id: 1, attributes: { name: '' } };
 
-  it('should render empty container if there is no groups or urlGroup provided', () => {
+  it('should render empty container if there is no groups or group.id provided', () => {
     const wrapper = shallow(<Root />);
     expect(wrapper.html()).to.eql('<div class="effect mainnav-lg" id="container"></div>');
   });
 
-  it('should render group selector if there is no urlGroup provided', () => {
-    const wrapper = shallow(<Root { ...props } urlGroup={ null } />);
+  it('should render group selector if groups length > 0', () => {
+    const wrapper = shallow(<Root { ...props } groups={ groups } />);
     expect(wrapper.find(GroupSelector)).to.have.length(1);
   });
 
-  it('should not render group selector if urlGroup provided', () => {
-    const wrapper = shallow(<Root { ...props } />);
+  it('should not render group selector if groups length === 0 and group.id provided', () => {
+    const wrapper = shallow(<Root { ...props } group={ group } />);
     expect(wrapper.find(GroupSelector)).to.have.length(0);
   });
 
   it('should render bubbles and charts', () => {
-    const wrapper = shallow(<Root { ...props } />);
+    const wrapper = shallow(<Root { ...props } group={ group } />);
     expect(wrapper.find(Bubbles.container)).to.have.length(1);
     expect(wrapper.find(Charts.ChartWrapperContainer)).to.have.length(1);
   });
