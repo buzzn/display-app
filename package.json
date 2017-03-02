@@ -60,8 +60,8 @@
     "webpack-hot-middleware": "^2.13.2"
   },
   "dependencies": {
-    "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#v1.0.4",
-    "@buzzn/module_charts": "git+https://github.com/buzzn/module-charts.git#v1.0.3",
+    "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#v1.0.5",
+    "@buzzn/module_charts": "git+https://github.com/buzzn/module-charts.git#v1.0.4",
     "babel-polyfill": "^6.16.0",
     "bootstrap": "4.0.0-alpha.6",
     "d3": "^4.4.0",
