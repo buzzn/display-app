@@ -1,5 +1,9 @@
-[ ![Codeship Status for buzzn/kiosk](https://app.codeship.com/projects/c13ce210-78d2-0134-4f8b-0a260436cc6e/status?branch=master)](https://app.codeship.com/projects/180313)
-# kiosk
+# buzzn kiosk
+
+Production | Staging
+--- | ---
+https://kiosk.buzzn.io | https://staging-kiosk.buzzn.io
+[ ![Codeship Status for buzzn/kiosk](https://app.codeship.com/projects/c13ce210-78d2-0134-4f8b-0a260436cc6e/status?branch=release)](https://app.codeship.com/projects/180313) | [ ![Codeship Status for buzzn/kiosk](https://app.codeship.com/projects/c13ce210-78d2-0134-4f8b-0a260436cc6e/status?branch=master)](https://app.codeship.com/projects/180313)
 
 To run local dev server:
 - clone this repository
