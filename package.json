@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha --compilers js:babel-register --require babel-polyfill --require tests-setup.js --require ignore-styles $(find . -name '*.tests.js' ! -ipath '*node_modules*')",
     "dev-server": "webpack-dashboard -- webpack-dev-server --progress --inline --hot --host 0.0.0.0 --port=2999",
-    "build": "rimraf build && cross-env NODE_ENV=production webpack -p --config ./webpack.production.config.js --progress --profile --colors && node_modules/babel-cli/bin/babel.js  server -d build/server --presets es2015",
+    "build": "rimraf build && webpack --config ./webpack.production.config.js --progress --profile --colors",
     "start": "./node_modules/babel-cli/bin/babel-node.js server"
   },
   "keywords": [],
