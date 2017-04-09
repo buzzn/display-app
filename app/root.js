@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
@@ -52,9 +53,9 @@ export const Root = ({ groups, group, onGroupSelect }) => (
 );
 
 Root.propTypes = {
-  groups: React.PropTypes.array.isRequired,
-  group: React.PropTypes.object.isRequired,
-  onGroupSelect: React.PropTypes.func.isRequired,
+  groups: PropTypes.array.isRequired,
+  group: PropTypes.object.isRequired,
+  onGroupSelect: PropTypes.func.isRequired,
 };
 
 Root.defaultProps = {
