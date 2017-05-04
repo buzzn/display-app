@@ -1,5 +1,4 @@
-import { put, select, fork, spawn, call } from 'redux-saga/effects';
-import { takeLatest } from 'redux-saga';
+import { put, select, fork, spawn, call, takeLatest } from 'redux-saga/effects';
 import { constants, actions } from './actions';
 import api from './api';
 import Bubbles from '@buzzn/module_bubbles';
@@ -29,7 +28,7 @@ export function* getGroup({ apiUrl, apiPath }, param) {
   const groupId = typeof(param) === 'string' ? param : param.groupId;
   try {
     const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
-    yield put(actions.setGroup(group.data));
+    yield put(actions.setGroup(group));
   } catch (error) {
     console.log(error);
   }

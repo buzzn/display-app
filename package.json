@@ -62,8 +62,8 @@
     "webpack-hot-middleware": "^2.18.0"
   },
   "dependencies": {
-    "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#v1.0.11",
-    "@buzzn/module_charts": "git+https://github.com/buzzn/module-charts.git#v1.0.7",
+    "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#v1.0.12",
+    "@buzzn/module_charts": "git+https://github.com/buzzn/module-charts.git#v1.0.8",
     "babel-polyfill": "^6.23.0",
     "bootstrap": "4.0.0-alpha.6",
     "d3": "^4.7.4",
@@ -76,7 +76,7 @@
     "prop-types": "^15.5.4",
     "react": "^15.5.3",
     "react-dom": "^15.5.3",
-    "react-highcharts": "^11.5.0",
+    "react-highcharts": "^12.0.0",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
     "redux-saga": "^0.14.6",
