@@ -29,7 +29,7 @@ export const Root = ({ groups, group, onGroupSelect }) => (
               <span className="img-md img-user imc-circle icon-wrapper-md icon-circle bg-white fa fa-users fa-3x"></span>
             </div>
             <div className="media-body pad-lft float-left">
-              <p className="text-3x mar-no">{ group.attributes.name }</p>
+              <p className="text-3x mar-no">{ group.name }</p>
             </div>
             <div className="brand-title clear-width" style={{ marginLeft: 'auto', marginBottom: '30px', height: '37px' }}>
               <span className="brand-text">
@@ -60,7 +60,7 @@ Root.propTypes = {
 
 Root.defaultProps = {
   groups: [],
-  group: { attributes: { name: '' } },
+  group: { name: '' },
 };
 
 function mapStateToProps(state) {

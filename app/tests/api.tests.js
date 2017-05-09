@@ -10,33 +10,28 @@ describe('app api', () => {
   const groupId = 'groupId';
   const group1 = { id: 1, attributes: { name: 'group1' } };
   const group2 = { id: 2, attributes: { name: 'group2' } };
+  const group3 = { id: 1, name: 'group1' };
+  const group4 = { id: 2, name: 'group2' };
 
   chai.use(chaiAsPromised);
   const expect = chai.expect;
 
-  it('should return all groups', () => {
+  it('should return all groups from old api', () => {
     nock(apiUrl)
     .get(`${apiPath}/groups`)
-    .reply(200, {
-      meta: { total_pages: 2 },
-    });
-
-    nock(apiUrl)
-    .get(`${apiPath}/groups/?page=1`)
-    .reply(200, {
-      data: [group1],
-      meta: { total_pages: 2 },
-    });
-
-    nock(apiUrl)
-    .get(`${apiPath}/groups/?page=2`)
-    .reply(200, {
-      data: [group2],
-      meta: { total_pages: 2 },
-    });
+    .reply(200, { data: [group1, group2] });
 
     return expect(api.fetchGroups({ apiUrl, apiPath }))
-    .to.eventually.eql([group1, group2]);
+    .to.eventually.eql([{ id: group1.id, ...group1.attributes }, { id: group2.id, ...group2.attributes }]);
+  });
+
+  it('should return all groups from new api', () => {
+    nock(apiUrl)
+    .get(`${apiPath}/groups`)
+    .reply(200, [group3, group4]);
+
+    return expect(api.fetchGroups({ apiUrl, apiPath }))
+    .to.eventually.eql([group3, group4]);
   });
 
   it('should fetch group', () => {

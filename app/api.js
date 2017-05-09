@@ -1,6 +1,5 @@
 import 'whatwg-fetch';
-import flatten from 'lodash/flatten';
-import { prepareHeaders, parseResponse, remainingPages } from './_util';
+import { prepareHeaders, parseResponse } from './_util';
 
 export default {
   fetchGroup({ apiUrl, apiPath, groupId }) {
@@ -14,7 +13,6 @@ export default {
       headers: prepareHeaders(),
     })
     .then(parseResponse)
-    .then(json => remainingPages({ apiUrl, apiPath, json, model: 'groups', endpoint: '' }))
-    .then(jsonArr => flatten(jsonArr.map(json => json.data)));
+    .then(json => json.data ? json.data.map(g => ({ id: g.id, ...g.attributes })) : json);
   },
 };

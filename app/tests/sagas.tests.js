@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { put, select, fork, spawn, call } from 'redux-saga/effects';
-import { takeLatest } from 'redux-saga';
+import { put, select, fork, spawn, call, takeLatest } from 'redux-saga/effects';
 import appSaga, {
   getConfig,
   bubbles,
@@ -147,7 +146,7 @@ describe('app sagas', () => {
     const apiUrl = 'http://localhost:3000';
     const apiPath = '/api/v1/';
     const groupId = 'groupId';
-    const group = { data: 'group' };
+    const group = { name: 'group' };
 
     describe('normal flow with string param', () => {
       const generator = getGroup({ apiUrl, apiPath }, groupId);
@@ -159,7 +158,7 @@ describe('app sagas', () => {
 
       it('should dispatch setGroup action with group', () => {
         expect(generator.next(group).value)
-        .to.eql(put(actions.setGroup(group.data)));
+        .to.eql(put(actions.setGroup(group)));
       });
 
       it('should finish', () => {
@@ -177,7 +176,7 @@ describe('app sagas', () => {
 
       it('should dispatch setGroup action with group', () => {
         expect(generator.next(group).value)
-        .to.eql(put(actions.setGroup(group.data)));
+        .to.eql(put(actions.setGroup(group)));
       });
 
       it('should finish', () => {
