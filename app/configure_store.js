@@ -3,11 +3,10 @@ import { call } from 'redux-saga/effects';
 import appSaga from './sagas';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import Bubbles from '@buzzn/module_bubbles';
-import Charts from '@buzzn/module_charts';
 import RootReducer from './reducers';
 
 function* rootSaga() {
-  yield [call(Bubbles.sagas), call(appSaga), call(Charts.sagas)];
+  yield [call(Bubbles.sagas), call(appSaga)];
 }
 
 export default function configureStore(initialState) {

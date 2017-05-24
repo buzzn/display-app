@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-register --require babel-polyfill --require tests-setup.js --require ignore-styles $(find . -name '*.tests.js' ! -ipath '*node_modules*')",
-    "dev-server": "webpack-dashboard -- webpack-dev-server --progress --inline --hot --host 0.0.0.0 --port=2999",
+    "dev-server": "webpack-dashboard -- webpack-dev-server --progress --inline --hot --port=2999",
     "build": "rimraf build && webpack --config ./webpack.production.config.js --progress --profile --colors",
     "start": "./node_modules/babel-cli/bin/babel-node.js server"
   },
@@ -62,13 +62,12 @@
     "webpack-hot-middleware": "^2.18.0"
   },
   "dependencies": {
-    "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#v1.0.12",
-    "@buzzn/module_charts": "git+https://github.com/buzzn/module-charts.git#v1.0.8",
+    "@buzzn/module_bubbles": "git://github.com/buzzn/module-bubbles.git#17_v2",
     "babel-polyfill": "^6.23.0",
     "bootstrap": "4.0.0-alpha.6",
+    "buzzn-style": "git://github.com/buzzn/buzzn-style.git",
     "d3": "^4.7.4",
     "font-awesome": "^4.7.0",
-    "highcharts": "^5.0.10",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
@@ -76,7 +75,6 @@
     "prop-types": "^15.5.4",
     "react": "^15.5.3",
     "react-dom": "^15.5.3",
-    "react-highcharts": "^12.0.0",
     "react-redux": "^5.0.4",
     "redux": "^3.6.0",
     "redux-saga": "^0.14.6",

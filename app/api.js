@@ -1,5 +1,6 @@
 import 'whatwg-fetch';
-import { prepareHeaders, parseResponse } from './_util';
+import map from 'lodash/map';
+import { prepareHeaders, parseResponse, camelizeResponseArray } from './_util';
 
 export default {
   fetchGroup({ apiUrl, apiPath, groupId }) {
@@ -7,6 +8,24 @@ export default {
       headers: prepareHeaders(),
     })
     .then(parseResponse);
+  },
+  fetchGroupChart({ apiUrl, apiPath, groupId }) {
+    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, {
+      headers: prepareHeaders(),
+    })
+    .then(parseResponse);
+  },
+  fetchGroupManagers({ apiUrl, apiPath, groupId }) {
+    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/managers`, {
+      headers: { ...prepareHeaders(), 'Cache-Control': 'no-cache' },
+    })
+    .then(parseResponse)
+    .then(managers => {console.log(managers); return managers;})
+    .then(managers => Promise.all(map(managers, manager => fetch(`${apiUrl}${apiPath}/users/${manager.id}/profile`, {
+      headers: prepareHeaders(),
+    }).then(parseResponse)
+    )))
+    .then(camelizeResponseArray);
   },
   fetchGroups({ apiUrl, apiPath }) {
     return fetch(`${apiUrl}${apiPath}/groups`, {

@@ -4,7 +4,6 @@ import { expect } from 'chai';
 import { Root } from '../../root';
 import GroupSelector from '../../components/group_selector';
 import Bubbles from '@buzzn/module_bubbles';
-import Charts from '@buzzn/module_charts';
 
 describe('app Root', () => {
   const props = {
@@ -15,7 +14,7 @@ describe('app Root', () => {
 
   it('should render empty container if there is no groups or group.id provided', () => {
     const wrapper = shallow(<Root />);
-    expect(wrapper.html()).to.eql('<div class="effect mainnav-lg" id="container"></div>');
+    expect(wrapper.html()).to.eql('<div></div>');
   });
 
   it('should render group selector if groups length > 0', () => {
@@ -28,9 +27,8 @@ describe('app Root', () => {
     expect(wrapper.find(GroupSelector)).to.have.length(0);
   });
 
-  it('should render bubbles and charts', () => {
+  it('should render bubbles', () => {
     const wrapper = shallow(<Root { ...props } group={ group } />);
     expect(wrapper.find(Bubbles.container)).to.have.length(1);
-    expect(wrapper.find(Charts.ChartWrapperContainer)).to.have.length(1);
   });
 });
