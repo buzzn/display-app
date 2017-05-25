@@ -28,7 +28,7 @@ export const Root = ({ groups, group, onGroupSelect, charts }) => (
             <div style={{ position: 'absolute', right: '20px', top: '-30px' }}><FullScreenButton /></div>
           </div>
           <div className="row">
-            <div style={{ width: '1880px', margin: '0 auto' }}>
+            <div style={{ minWidth: '1880px', margin: '0 auto' }}>
               <div style={{ width: '460px', float: 'left', minHeight: '750px', background: '#f5f5f5', marginTop: '88px', borderRadius: '40px 0 0 40px', paddingTop: '40px', position: 'relative' }}>
                 <EnergySource type={ 'solar' } value={ 1000 } />
                 <EnergySource type={ 'fire' } value={ 12500 } />

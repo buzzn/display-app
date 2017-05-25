@@ -11,13 +11,13 @@ export default {
   },
   fetchGroupChart({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, {
-      headers: prepareHeaders(),
+      headers: { ...prepareHeaders(), 'Cache-Control': 'no-cache' },
     })
     .then(parseResponse);
   },
   fetchGroupManagers({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/managers`, {
-      headers: { ...prepareHeaders(), 'Cache-Control': 'no-cache' },
+      headers: prepareHeaders(),
     })
     .then(parseResponse)
     .then(managers => {console.log(managers); return managers;})
