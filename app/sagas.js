@@ -35,7 +35,7 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
 export function* getGroup({ apiUrl, apiPath }, { groupId }) {
   try {
     const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
-    group.managers = yield call(api.fetchGroupManagers, { apiUrl, apiPath, groupId });
+    // group.managers = yield call(api.fetchGroupManagers, { apiUrl, apiPath, groupId });
     yield put(actions.setGroup(group));
   } catch (error) {
     console.log(error);
