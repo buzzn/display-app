@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import get from 'lodash/get';
+import last from 'lodash/last';
 import moment from 'moment';
 
 const d3 = require('d3');
@@ -28,20 +29,21 @@ export default class Chart extends Component {
   }
 
   draw() {
-    console.log('draw chart');
-    console.log(this.props.charts);
     const d3Date = timestamp => new Date(timestamp * 1000);
     const svgD3 = d3.select(this.svgDom);
-    const width = this.svgDom.getBoundingClientRect().width;
-    const height = this.svgDom.getBoundingClientRect().height;
+    const width = 10000;
+    const height = 1000;
     const x = d3.scaleTime().range([0, width]);
-    const y = d3.scaleLinear().range([height, 0]);
+    const y = d3.scaleLinear().range([height + 200, -200]);
     const line = d3.line().curve(d3.curveCardinal.tension(0.5)).x(d => x(d.timestamp)).y(d => y(d.value));
     const inData = this.props.charts.in.map(({ value, timestamp }) => ({ value, timestamp: d3Date(timestamp) }));
     const outData = this.props.charts.out.map(({ value, timestamp }) => ({ value, timestamp: d3Date(timestamp) }));
     const startInDate = get(this.props.charts.in[0], 'timestamp');
     const startOutDate = get(this.props.charts.out[0], 'timestamp');
     const startDate = Math.min(startInDate, startOutDate) || startInDate || startOutDate;
+    const endInDate = get(last(this.props.charts.in), 'timestamp');
+    const endOutDate = get(last(this.props.charts.out), 'timestamp');
+    const endDate = Math.max(endInDate, endOutDate) || endInDate || endOutDate;
 
     x.domain([d3Date(startDate), moment(startDate * 1000).add(1, 'day').toDate()]);
     y.domain(d3.extent([
@@ -57,7 +59,7 @@ export default class Chart extends Component {
     .append('path')
     .attr('d', d => line(inData))
     .attr('stroke', this.inColor)
-    .attr('stroke-width', 4)
+    .attr('stroke-width', 40)
     .attr('fill', 'none');
 
     const outLine = svgD3.selectAll('.out-line')
@@ -66,7 +68,17 @@ export default class Chart extends Component {
     .append('path')
     .attr('d', d => line(outData))
     .attr('stroke', this.outColor)
-    .attr('stroke-width', 4)
+    .attr('stroke-width', 40)
+    .attr('fill', 'none');
+
+    svgD3.append('line')
+    .attr('x1', x(d3Date(endDate)))
+    .attr('x2', x(d3Date(endDate)))
+    .attr('y1', -400)
+    .attr('y2', 1400)
+    .attr('stroke-dasharray', '80, 20')
+    .attr('stroke', 'black')
+    .attr('stroke-width', 20)
     .attr('fill', 'none');
 
     // inLine.append('path').attr('class', 'line').attr('d', d => line(inData));
@@ -75,7 +87,7 @@ export default class Chart extends Component {
 
   render() {
     return (
-      <svg ref={ svgDom => this.svgDom = svgDom } style={{ width: '100%', height: '100%' }} />
+      <svg ref={ svgDom => this.svgDom = svgDom } width="100%" height="100%" viewBox="0 0 10000 1000" />
     );
   }
 }

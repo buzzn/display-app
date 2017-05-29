@@ -24,6 +24,7 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   while (true) {
     try {
       const charts = yield call(api.fetchGroupChart, { apiUrl, apiPath, groupId });
+      charts.scores = yield call(api.fetchGroupScores, { apiUrl, apiPath, groupId });
       yield put(actions.setCharts(charts));
     } catch (error) {
       console.log(error);
@@ -35,7 +36,7 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
 export function* getGroup({ apiUrl, apiPath }, { groupId }) {
   try {
     const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
-    // group.managers = yield call(api.fetchGroupManagers, { apiUrl, apiPath, groupId });
+    group.mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
     yield put(actions.setGroup(group));
   } catch (error) {
     console.log(error);
@@ -52,7 +53,12 @@ export function* getGroups({ apiUrl, apiPath }) {
 }
 
 export default function* appLoop() {
-  const { apiUrl, apiPath } = yield select(getConfig);
+  const { apiUrl, apiPath, secure } = yield select(getConfig);
+
+  if (secure && window.location.protocol !== 'https:') {
+    window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`;
+  }
+
   const groupId = yield call(getGroupFromUrl);
   yield put(Bubbles.actions.setApiParams({ apiUrl, apiPath }));
   yield put(Bubbles.actions.setToken({ token: null }));

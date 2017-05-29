@@ -7,7 +7,7 @@ export function configReducer(state = config) {
   return state;
 }
 
-export function appReducer(state = { charts: { in: [], out: [] } }, action) {
+export function appReducer(state = { charts: { in: [], out: [], scores: {} } }, action) {
   switch (action.type) {
     case constants.SET_GROUP_ID:
       return { ...state, groupId: action.groupId };

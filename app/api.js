@@ -1,6 +1,17 @@
 import 'whatwg-fetch';
 import map from 'lodash/map';
+import find from 'lodash/find';
+import moment from 'moment';
 import { prepareHeaders, parseResponse, camelizeResponseArray } from './_util';
+
+function formatScores(json) {
+  const scores = {};
+  ['fitting', 'autarchy', 'closeness', 'sufficiency'].forEach(type => {
+    const score = find(json, j => j.mode === type);
+    scores[type] = score ? score.value : 0;
+  });
+  return scores;
+}
 
 export default {
   fetchGroup({ apiUrl, apiPath, groupId }) {
@@ -15,17 +26,19 @@ export default {
     })
     .then(parseResponse);
   },
-  fetchGroupManagers({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/managers`, {
+  fetchGroupMentors({ apiUrl, apiPath, groupId }) {
+    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/mentors`, {
       headers: prepareHeaders(),
     })
     .then(parseResponse)
-    .then(managers => {console.log(managers); return managers;})
-    .then(managers => Promise.all(map(managers, manager => fetch(`${apiUrl}${apiPath}/users/${manager.id}/profile`, {
-      headers: prepareHeaders(),
-    }).then(parseResponse)
-    )))
     .then(camelizeResponseArray);
+  },
+  fetchGroupScores({ apiUrl, apiPath, groupId }) {
+    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/scores?timestamp=${encodeURIComponent(moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'))}&interval=day`, {
+      headers: prepareHeaders(),
+    })
+    .then(parseResponse)
+    .then(formatScores);
   },
   fetchGroups({ apiUrl, apiPath }) {
     return fetch(`${apiUrl}${apiPath}/groups`, {

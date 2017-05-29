@@ -14,10 +14,10 @@ export default ({ registers, loading, Bubbles, InfoPanel, summedIn, summedOut, C
         <Chart/>
       </div>
       <div style={{ width: '832px', height: '150px', margin: 'auto' }}>
-        <div style={{ width: '400px', height: '40px', borderRadius: '0 0 0 20px', backgroundColor: '#d4e157', padding: '8px 110px', float: 'left', marginRight: '16px' }}>
+        <div style={{ width: '400px', height: '40px', fontSize: '20px', borderRadius: '0 0 0 20px', backgroundColor: '#d4e157', padding: '6px', textAlign: 'center', float: 'left', marginRight: '16px' }}>
           <InfoPanel type="out" data={ summedOut } />
         </div>
-        <div style={{ width: '400px', height: '40px', borderRadius: '0 0 20px 0', backgroundColor: '#80deea', padding: '8px 110px', float: 'left'}}>
+        <div style={{ width: '400px', height: '40px', fontSize: '20px', borderRadius: '0 0 20px 0', backgroundColor: '#80deea', padding: '6px', textAlign: 'center', float: 'left'}}>
           <InfoPanel type="in" data={ summedIn } />
         </div>
       </div>
