@@ -78,8 +78,7 @@ function mapStateToProps(state) {
 
   const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) };
   const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) };
-  const gridConsumption = calcSource('consumption', state.bubbles.registers) - (solar.value + fire.value);
-  const grid = { id: 3, value: gridConsumption > 0 ? gridConsumption : 0 };
+  const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) - (solar.value + fire.value) };
 
   return {
     groups: state.app.groups,

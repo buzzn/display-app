@@ -72,17 +72,14 @@ export default class Chart extends Component {
     .attr('fill', 'none');
 
     svgD3.append('line')
-    .attr('x1', x(d3Date(endDate)))
-    .attr('x2', x(d3Date(endDate)))
+    .attr('x1', x(d3Date(endDate)) || 0)
+    .attr('x2', x(d3Date(endDate)) || 0)
     .attr('y1', -400)
     .attr('y2', 1400)
     .attr('stroke-dasharray', '80, 20')
     .attr('stroke', 'black')
     .attr('stroke-width', 20)
     .attr('fill', 'none');
-
-    // inLine.append('path').attr('class', 'line').attr('d', d => line(inData));
-    // outLine.append('path').attr('class', 'line').attr('d', d => line(outData));
   }
 
   render() {
