@@ -2,7 +2,7 @@ import React from 'react';
 
 import './bubbles_layout.scss';
 
-export default ({ registers, loading, Bubbles, InfoPanel, summedIn, summedOut, Chart }) => (
+export default ({ registers, loading, Bubbles, InfoIn, InfoOut, Chart }) => (
   <div className="bubbles-wrapper">
     <div className="row">
       <div style={{ position: 'relative', margin: '44px auto' }}>
@@ -15,10 +15,10 @@ export default ({ registers, loading, Bubbles, InfoPanel, summedIn, summedOut, C
       </div>
       <div style={{ width: '832px', height: '150px', margin: 'auto' }}>
         <div style={{ width: '400px', height: '40px', fontSize: '20px', borderRadius: '0 0 0 20px', backgroundColor: '#d4e157', padding: '6px', textAlign: 'center', float: 'left', marginRight: '16px' }}>
-          <InfoPanel type="out" data={ summedOut } />
+          <InfoOut />
         </div>
         <div style={{ width: '400px', height: '40px', fontSize: '20px', borderRadius: '0 0 20px 0', backgroundColor: '#80deea', padding: '6px', textAlign: 'center', float: 'left'}}>
-          <InfoPanel type="in" data={ summedIn } />
+          <InfoIn />
         </div>
       </div>
     </div>

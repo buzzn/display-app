@@ -9,12 +9,13 @@ import BubblesLayout from './components/bubbles_layout';
 import Chart from './components/chart';
 import EnergySource from './components/energy_source';
 import GroupStatus from './components/group_status';
+import InfoPanel from './components/info_panel';
 
 import 'buzzn-style';
 import './styles/main.scss';
 import LogoImg from './images/bz_logo_115px_grey.png';
 
-export const Root = ({ groups, group, onGroupSelect, charts, sources }) => (
+export const Root = ({ groups, group, onGroupSelect, charts, sources, inSum, outSum }) => (
   <div>
     { (groups.length > 0 || group.id) &&
       <div>
@@ -35,7 +36,7 @@ export const Root = ({ groups, group, onGroupSelect, charts, sources }) => (
                 { Object.keys(sources).map(k => <EnergySource key={ sources[k].id } type={ k } value={ sources[k].value }/>) }
                 <GroupStatus value={ charts.scores.autarchy } text="Autarkie" />
               </div>
-              <Bubbles.container Layout={ BubblesLayout } Chart={ () => (<Chart charts={ charts } />) } />
+              <Bubbles.container Layout={ BubblesLayout } Chart={ () => (<Chart charts={ charts } />) } InfoIn={ () => <InfoPanel type="in" data={ inSum }/> } InfoOut={ () => <InfoPanel type="out" data={ outSum }/> } />
               <div style={{ width: '460px', float: 'left', height: '544px', background: '#f5f5f5', marginTop: '192px', borderRadius: '0 40px 40px 0' }}>
                 <div style={{ fontSize: '24px', margin: '40px auto', textAlign: 'center' }}>
                   Unsere Energiementoren
@@ -80,11 +81,16 @@ function mapStateToProps(state) {
   const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) };
   const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) - (solar.value + fire.value) };
 
+  const inSum = state.app.charts.in.reduce((d, s) => (d.value + s), 0) / (state.app.charts.in.length || 1) / 4;
+  const outSum = state.app.charts.out.reduce((d, s) => (d.value + s), 0) / (state.app.charts.out.length || 1) / 4;
+
   return {
     groups: state.app.groups,
     group: state.app.group,
     charts: state.app.charts,
     sources: { solar, fire, grid },
+    inSum,
+    outSum,
   };
 }
 
