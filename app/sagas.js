@@ -7,9 +7,11 @@ import Bubbles from '@buzzn/module_bubbles';
 export const getConfig = state => state.config;
 
 export function setScale() {
+  console.log('set scale')
   const scale = window.innerWidth / 1920;
-  document.documentElement.style['zoom'] = scale;
-  document.documentElement.style['-moz-transform'] = scale;
+  // document.body.setAttribute('style', `zoom:${scale}; -moz-transform:${scale}`);
+  document.body.style.zoom = scale;
+  document.body.style.MozTransform = `scale(${scale})`;
 }
 
 export function hackScale() {
