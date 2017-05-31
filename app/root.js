@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
+import last from 'lodash/last';
 import { connect } from 'react-redux';
 import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
@@ -81,8 +83,16 @@ function mapStateToProps(state) {
   const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) / 1000 };
   const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) / 1000 - (solar.value + fire.value) };
 
-  const inSum = state.app.charts.in.reduce((s, d) => (d.value + s), 0) / (state.app.charts.in.length || 1) / 4 / 1000;
-  const outSum = state.app.charts.out.reduce((s, d) => (d.value + s), 0) / (state.app.charts.out.length || 1) / 4 / 1000;
+  let inSum = 0;
+  let outSum = 0;
+  if (state.app.charts.in.length > 0) {
+    const inHours = moment(last(state.app.charts.in).timestamp).hour() + 1;
+    inSum = state.app.charts.in.reduce((s, d) => (d.value + s), 0) / inHours / 1000;
+  }
+  if (state.app.charts.out.length > 0) {
+    const outHours = moment(last(state.app.charts.out).timestamp).hour() + 1;
+    outSum = state.app.charts.out.reduce((s, d) => (d.value + s), 0) / outHours / 1000;
+  }
 
   return {
     groups: state.app.groups,
