@@ -6,6 +6,17 @@ import Bubbles from '@buzzn/module_bubbles';
 
 export const getConfig = state => state.config;
 
+export function setScale() {
+  const scale = window.innerWidth / 1920;
+  document.documentElement.style['zoom'] = scale;
+  document.documentElement.style['-moz-transform'] = scale;
+}
+
+export function hackScale() {
+  document.onload = setScale();
+  window.addEventListener('resize', setScale);
+}
+
 export function getGroupFromUrl() {
   return window.location.href.split('/')[3];
 }
@@ -54,6 +65,8 @@ export function* getGroups({ apiUrl, apiPath }) {
 
 export default function* appLoop() {
   const { apiUrl, apiPath, secure } = yield select(getConfig);
+
+  yield call(hackScale);
 
   if (secure && window.location.protocol !== 'https:') {
     window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`;
