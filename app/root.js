@@ -77,12 +77,12 @@ Root.defaultProps = {
 function mapStateToProps(state) {
   const calcSource = (type, registers) => registers.reduce((s, r) => (r.label === type ? s + r.value : s), 0);
 
-  const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) };
-  const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) };
-  const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) - (solar.value + fire.value) };
+  const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) / 1000 };
+  const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) / 1000 };
+  const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) / 1000 - (solar.value + fire.value) };
 
-  const inSum = state.app.charts.in.reduce((d, s) => (d.value + s), 0) / (state.app.charts.in.length || 1) / 4;
-  const outSum = state.app.charts.out.reduce((d, s) => (d.value + s), 0) / (state.app.charts.out.length || 1) / 4;
+  const inSum = state.app.charts.in.reduce((s, d) => (d.value + s), 0) / (state.app.charts.in.length || 1) / 4 / 1000;
+  const outSum = state.app.charts.out.reduce((s, d) => (d.value + s), 0) / (state.app.charts.out.length || 1) / 4 / 1000;
 
   return {
     groups: state.app.groups,
