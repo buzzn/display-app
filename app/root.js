@@ -33,7 +33,7 @@ export const Root = ({ groups, group, onGroupSelect, charts, sources, inSum, out
             </div>
           </div>
           <div className="row">
-            <div style={{ minWidth: '1880px', margin: '0 auto', position: 'relative' }}>
+            <div style={{ width: '1880px', margin: '0 auto', position: 'relative', minHeight: '960px' }}>
               <div style={{ width: '460px', float: 'left', minHeight: '750px', background: '#f5f5f5', marginTop: '88px', borderRadius: '40px 0 0 40px', paddingTop: '40px', position: 'relative' }}>
                 { Object.keys(sources).map(k => <EnergySource key={ sources[k].id } type={ k } value={ sources[k].value }/>) }
                 <GroupStatus value={ charts.scores.autarchy } text="Autarkie" />
