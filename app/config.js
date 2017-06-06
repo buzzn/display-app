@@ -15,7 +15,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   config = {
     apiUrl: 'http://localhost:3000/',
-    apiPath: 'api',
+    apiPath: 'api/display',
     secure: false,
   };
 }

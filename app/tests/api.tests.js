@@ -18,7 +18,7 @@ describe('app api', () => {
 
   it('should return all groups from old api', () => {
     nock(apiUrl)
-    .get(`${apiPath}/display/groups`)
+    .get(`${apiPath}/groups`)
     .reply(200, { data: [group1, group2] });
 
     return expect(api.fetchGroups({ apiUrl, apiPath }))
@@ -27,7 +27,7 @@ describe('app api', () => {
 
   it('should return all groups from new api', () => {
     nock(apiUrl)
-    .get(`${apiPath}/display/groups`)
+    .get(`${apiPath}/groups`)
     .reply(200, [group3, group4]);
 
     return expect(api.fetchGroups({ apiUrl, apiPath }))
@@ -36,7 +36,7 @@ describe('app api', () => {
 
   it('should fetch group', () => {
     nock(apiUrl)
-    .get(`${apiPath}/display/groups/${groupId}`)
+    .get(`${apiPath}/groups/${groupId}`)
     .reply(200, { data: group1 });
 
     return expect(api.fetchGroup({ apiUrl, apiPath, groupId }))
