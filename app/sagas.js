@@ -13,7 +13,7 @@ export function getGroupFromUrl() {
 export function windowReload() {
   setInterval(() => {
     window.location.reload(true);
-  }, 1000 * 60 * 60 * 24);
+  }, 1000 * 60 * 15);
 }
 
 export function* bubbles({ groupId }) {
