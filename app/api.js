@@ -15,33 +15,33 @@ function formatScores(json) {
 
 export default {
   fetchGroup({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}`, {
+    return fetch(`${apiUrl}${apiPath}/display/groups/${groupId}`, {
       headers: prepareHeaders(),
     })
     .then(parseResponse);
   },
   fetchGroupChart({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, {
+    return fetch(`${apiUrl}${apiPath}/display/groups/${groupId}/charts?duration=day`, {
       headers: { ...prepareHeaders(), 'Cache-Control': 'no-cache' },
     })
     .then(parseResponse);
   },
   fetchGroupMentors({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/mentors`, {
+    return fetch(`${apiUrl}${apiPath}/display/groups/${groupId}/mentors`, {
       headers: prepareHeaders(),
     })
     .then(parseResponse)
     .then(camelizeResponseArray);
   },
   fetchGroupScores({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/scores?timestamp=${encodeURIComponent(moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'))}&interval=day`, {
+    return fetch(`${apiUrl}${apiPath}/display/groups/${groupId}/scores?timestamp=${encodeURIComponent(moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'))}&interval=day`, {
       headers: prepareHeaders(),
     })
     .then(parseResponse)
     .then(formatScores);
   },
   fetchGroups({ apiUrl, apiPath }) {
-    return fetch(`${apiUrl}${apiPath}/groups`, {
+    return fetch(`${apiUrl}${apiPath}/display/groups`, {
       headers: prepareHeaders(),
     })
     .then(parseResponse)
