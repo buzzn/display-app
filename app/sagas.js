@@ -40,7 +40,7 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
     } catch (error) {
       console.log(error);
     }
-    yield call(delay, 10 * 1000);
+    yield call(delay, 15 * 60 * 1000);
   }
 }
 
