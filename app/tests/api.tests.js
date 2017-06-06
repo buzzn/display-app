@@ -6,7 +6,7 @@ import api from '../api';
 
 describe('app api', () => {
   const apiUrl = 'http://localhost:3000';
-  const apiPath = '/api/v1';
+  const apiPath = '/api';
   const groupId = 'groupId';
   const group1 = { id: 1, attributes: { name: 'group1' } };
   const group2 = { id: 2, attributes: { name: 'group2' } };
@@ -18,7 +18,7 @@ describe('app api', () => {
 
   it('should return all groups from old api', () => {
     nock(apiUrl)
-    .get(`${apiPath}/groups`)
+    .get(`${apiPath}/display/groups`)
     .reply(200, { data: [group1, group2] });
 
     return expect(api.fetchGroups({ apiUrl, apiPath }))
@@ -27,7 +27,7 @@ describe('app api', () => {
 
   it('should return all groups from new api', () => {
     nock(apiUrl)
-    .get(`${apiPath}/groups`)
+    .get(`${apiPath}/display/groups`)
     .reply(200, [group3, group4]);
 
     return expect(api.fetchGroups({ apiUrl, apiPath }))
@@ -36,7 +36,7 @@ describe('app api', () => {
 
   it('should fetch group', () => {
     nock(apiUrl)
-    .get(`${apiPath}/groups/${groupId}`)
+    .get(`${apiPath}/display/groups/${groupId}`)
     .reply(200, { data: group1 });
 
     return expect(api.fetchGroup({ apiUrl, apiPath, groupId }))
