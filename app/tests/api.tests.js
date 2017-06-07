@@ -16,22 +16,13 @@ describe('app api', () => {
   chai.use(chaiAsPromised);
   const expect = chai.expect;
 
-  it('should return all groups from old api', () => {
+  it('should return all groups', () => {
     nock(apiUrl)
     .get(`${apiPath}/groups`)
-    .reply(200, { data: [group1, group2] });
+    .reply(200, { array: [group3, group4] });
 
     return expect(api.fetchGroups({ apiUrl, apiPath }))
-    .to.eventually.eql([{ id: group1.id, ...group1.attributes }, { id: group2.id, ...group2.attributes }]);
-  });
-
-  it('should return all groups from new api', () => {
-    nock(apiUrl)
-    .get(`${apiPath}/groups`)
-    .reply(200, [group3, group4]);
-
-    return expect(api.fetchGroups({ apiUrl, apiPath }))
-    .to.eventually.eql([group3, group4]);
+    .to.eventually.eql({ array: [group3, group4] });
   });
 
   it('should fetch group', () => {
