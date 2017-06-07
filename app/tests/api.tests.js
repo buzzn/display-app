@@ -6,7 +6,7 @@ import api from '../api';
 
 describe('app api', () => {
   const apiUrl = 'http://localhost:3000';
-  const apiPath = '/api/v1';
+  const apiPath = '/api';
   const groupId = 'groupId';
   const group1 = { id: 1, attributes: { name: 'group1' } };
   const group2 = { id: 2, attributes: { name: 'group2' } };
