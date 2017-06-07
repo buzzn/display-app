@@ -2,7 +2,7 @@ import 'whatwg-fetch';
 import map from 'lodash/map';
 import find from 'lodash/find';
 import moment from 'moment';
-import { prepareHeaders, parseResponse, camelizeResponseArray } from './_util';
+import { prepareHeaders, parseResponse, camelizeResponseKeys } from './_util';
 
 function formatScores(json) {
   const scores = {};
@@ -31,20 +31,13 @@ export default {
       headers: prepareHeaders(),
     })
     .then(parseResponse)
-    .then(camelizeResponseArray);
-  },
-  fetchGroupScores({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/scores?timestamp=${encodeURIComponent(moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'))}&interval=day`, {
-      headers: prepareHeaders(),
-    })
-    .then(parseResponse)
-    .then(formatScores);
+    .then(camelizeResponseKeys);
   },
   fetchGroups({ apiUrl, apiPath }) {
     return fetch(`${apiUrl}${apiPath}/groups`, {
       headers: prepareHeaders(),
     })
     .then(parseResponse)
-    .then(json => json.data ? json.data.map(g => ({ id: g.id, ...g.attributes })) : json);
+    .then(camelizeResponseKeys);
   },
 };

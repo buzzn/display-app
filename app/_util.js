@@ -1,5 +1,6 @@
 import forEach from 'lodash/forEach';
 import camelCase from 'lodash/camelCase';
+import find from 'lodash/find';
 
 export function prepareHeaders(token) {
   return {
@@ -108,4 +109,29 @@ export function formatLabel(value, type) {
     result = `${number} W`;
   }
   return type === 'h' ? `${result}h` : result;
+}
+
+export function calculateAutarchy({ in: inData, out: outData }) {
+  let ownConsumption = 0;
+  let foreignConsumption = 0;
+  let totalConsumption = 0;
+  let totalProduction = 0;
+  let autarchy = null;
+
+  inData.forEach((inValue) => {
+    totalConsumption += inValue.value;
+    const outValue = find(outData, o => o.timestamp === inValue.timestamp);
+    if (!outValue) return;
+    totalProduction += outValue.value;
+    if (outValue.value >= inValue.value) {
+      ownConsumption += inValue.value;
+    } else {
+      ownConsumption += outValue.value;
+      foreignConsumption += inValue.value - outValue.value;
+    }
+  });
+
+  if (foreignConsumption + ownConsumption !== 0) autarchy = (ownConsumption / (foreignConsumption + ownConsumption)).toFixed(2);
+
+  return autarchy;
 }

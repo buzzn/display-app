@@ -35,7 +35,6 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   while (true) {
     try {
       const charts = yield call(api.fetchGroupChart, { apiUrl, apiPath, groupId });
-      charts.scores = yield call(api.fetchGroupScores, { apiUrl, apiPath, groupId });
       yield put(actions.setCharts(charts));
     } catch (error) {
       console.log(error);
@@ -47,7 +46,8 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
 export function* getGroup({ apiUrl, apiPath }, { groupId }) {
   try {
     const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
-    group.mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
+    const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
+    group.mentors = mentors.array;
     yield put(actions.setGroup(group));
   } catch (error) {
     console.log(error);
@@ -57,7 +57,7 @@ export function* getGroup({ apiUrl, apiPath }, { groupId }) {
 export function* getGroups({ apiUrl, apiPath }) {
   try {
     const groups = yield call(api.fetchGroups, { apiUrl, apiPath });
-    yield put(actions.setGroups(groups));
+    yield put(actions.setGroups(groups.array));
   } catch (error) {
     console.log(error);
   }

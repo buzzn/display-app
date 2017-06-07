@@ -5,6 +5,7 @@ import last from 'lodash/last';
 import { connect } from 'react-redux';
 import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
+import { calculateAutarchy } from './_util';
 import GroupSelector from './components/group_selector';
 import FullScreenButton from './components/full_screen_button';
 import BubblesLayout from './components/bubbles_layout';
@@ -17,7 +18,7 @@ import 'buzzn-style';
 import './styles/main.scss';
 import LogoImg from './images/bz_logo_115px_grey.png';
 
-export const Root = ({ groups, group, onGroupSelect, charts, sources, inSum, outSum }) => (
+export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sources, inSum, outSum }) => (
   <div>
     { (groups.length > 0 || group.id) &&
       <div>
@@ -36,7 +37,7 @@ export const Root = ({ groups, group, onGroupSelect, charts, sources, inSum, out
             <div style={{ width: '1880px', margin: '0 auto', position: 'relative', minHeight: '960px' }}>
               <div style={{ width: '460px', float: 'left', minHeight: '750px', background: '#f5f5f5', marginTop: '88px', borderRadius: '40px 0 0 40px', paddingTop: '40px', position: 'relative' }}>
                 { Object.keys(sources).map(k => <EnergySource key={ sources[k].id } type={ k } value={ sources[k].value }/>) }
-                <GroupStatus value={ charts.scores.autarchy } text="Autarkie" />
+                <GroupStatus value={ autarchy } text="Autarkie" />
               </div>
               <Bubbles.container Layout={ BubblesLayout } Chart={ () => (<Chart charts={ charts } />) } InfoIn={ () => <InfoPanel type="in" data={ inSum }/> } InfoOut={ () => <InfoPanel type="out" data={ outSum }/> } />
               <div style={{ width: '460px', float: 'left', height: '544px', background: '#f5f5f5', marginTop: '192px', borderRadius: '0 40px 40px 0' }}>
@@ -99,6 +100,7 @@ function mapStateToProps(state) {
     group: state.app.group,
     charts: state.app.charts,
     sources: { solar, fire, grid },
+    autarchy: calculateAutarchy(state.app.charts),
     inSum,
     outSum,
   };
