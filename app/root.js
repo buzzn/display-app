@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import Helmet from 'react-helmet';
 import last from 'lodash/last';
 import { connect } from 'react-redux';
 import { actions } from './actions';
@@ -25,8 +26,12 @@ export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sources, 
         { groups.length > 0 &&
           <div className="row">
             <GroupSelector groups={ groups } onGroupSelect={ onGroupSelect } />
+            <span style={{ color: 'white', marginLeft: '20px' }}>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ group.slug }</span>
           </div>
         }
+        <Helmet>
+          <title>Display: { group.name }</title>
+        </Helmet>
         <div>
           <div className="row">
             <div style={{ margin: '0 auto', fontSize: '66px', textAlign: 'center', color: 'white', textTransform: 'uppercase' }}>
@@ -72,7 +77,7 @@ Root.propTypes = {
 
 Root.defaultProps = {
   groups: [],
-  group: { name: '', mentors: [] },
+  group: { name: '', mentors: [], slug: '' },
   charts: { in: [], out: [] },
   sources: {},
 };
