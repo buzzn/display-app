@@ -73,7 +73,7 @@ export default function* appLoop() {
   }
 
   const groupId = yield call(getGroupFromUrl);
-  yield put(Bubbles.actions.setApiParams({ apiUrl, apiPath }));
+  yield put(Bubbles.actions.setApiParams({ apiUrl, apiPath: `${apiPath}/groups` }));
   yield put(Bubbles.actions.setToken({ token: null }));
   if (groupId) {
     yield put(actions.setUrlGroupId(groupId));
