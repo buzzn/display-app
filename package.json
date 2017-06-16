@@ -62,7 +62,7 @@
     "webpack-hot-middleware": "^2.18.0"
   },
   "dependencies": {
-    "@buzzn/module_bubbles": "git://github.com/buzzn/module-bubbles.git#ed9884d54189e096455ebbf2b29268a11809c329",
+    "@buzzn/module_bubbles": "git://github.com/buzzn/module-bubbles.git#5ca4acb1211453d834707082fe5eef47f9ec3931",
     "babel-polyfill": "^6.23.0",
     "bootstrap": "4.0.0-alpha.6",
     "buzzn-style": "git://github.com/buzzn/buzzn-style.git",
