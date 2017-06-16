@@ -4,6 +4,7 @@ import moment from 'moment';
 import Helmet from 'react-helmet';
 import last from 'lodash/last';
 import { connect } from 'react-redux';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
 import { calculateAutarchy } from './_util';
@@ -24,9 +25,11 @@ export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sources, 
     { (groups.length > 0 || group.id) &&
       <div>
         { groups.length > 0 &&
-          <div className="row">
+          <div className="row" style={{ marginBottom: '10px' }}>
             <GroupSelector groups={ groups } onGroupSelect={ onGroupSelect } />
-            <span style={{ color: 'white', marginLeft: '20px' }}>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ group.slug }</span>
+            <span style={{ color: 'white', marginLeft: '20px' }}>URL:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ `${window.location.href}${group.slug}` }</span>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <CopyToClipboard text={ `${window.location.href}${group.slug}` }><button className="btn btn-sm"><i className="fa fa-copy"/></button></CopyToClipboard>
           </div>
         }
         <Helmet>
