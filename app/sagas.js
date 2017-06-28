@@ -48,6 +48,7 @@ export function* getGroup({ apiUrl, apiPath }, { groupId }) {
     const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
     const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
     group.mentors = mentors.array;
+    // group.mentors = mentors.array.concat({ ...mentors.array[0], id: '12123132' });
     yield put(actions.setGroup(group));
   } catch (error) {
     console.log(error);
