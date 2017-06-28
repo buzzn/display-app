@@ -20,7 +20,7 @@ import 'buzzn-style';
 import './styles/main.scss';
 import LogoImg from './images/bz_logo_115px_grey.png';
 
-export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sources, inSum, outSum }) => (
+export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sourcesLeft, sourcesRight, inSum, outSum }) => (
   <div>
     { (groups.length > 0 || group.id) &&
       <div>
@@ -43,12 +43,29 @@ export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sources, 
           </div>
           <div className="row">
             <div style={{ width: '1880px', margin: '0 auto', position: 'relative', minHeight: '960px' }}>
-              <div style={{ width: '460px', float: 'left', minHeight: '750px', background: '#f5f5f5', marginTop: '88px', borderRadius: '40px 0 0 40px', paddingTop: '40px', position: 'relative' }}>
-                { Object.keys(sources).map(k => <EnergySource key={ sources[k].id } type={ k } value={ sources[k].value }/>) }
+              <div style={{
+                width: '460px',
+                float: 'left',
+                minHeight: '650px',
+                background: '#f5f5f5',
+                marginTop: '148px',
+                borderRadius: '40px 0 0 40px',
+                paddingTop: '40px',
+                position: 'relative' }}>
+                { Object.keys(sourcesLeft).map(k => <EnergySource key={ sourcesLeft[k].id } position="left" type={ k } value={ sourcesLeft[k].value }/>) }
                 <GroupStatus value={ autarchy } text="Autarkie" />
               </div>
               <Bubbles.container Layout={ BubblesLayout } Chart={ () => (<Chart charts={ charts } />) } InfoIn={ () => <InfoPanel type="in" data={ inSum }/> } InfoOut={ () => <InfoPanel type="out" data={ outSum }/> } />
-              <div style={{ width: '460px', float: 'left', height: '544px', background: '#f5f5f5', marginTop: '192px', borderRadius: '0 40px 40px 0' }}>
+              <div style={{
+                width: '460px',
+                float: 'left',
+                minHeight: '650px',
+                background: '#f5f5f5',
+                marginTop: group.mentors.length < 2 ? '148px' : '50px',
+                borderRadius: '0 40px 40px 0',
+                paddingTop: '40px',
+                position: 'relative' }}>
+                { Object.keys(sourcesRight).map(k => <EnergySource key={ sourcesRight[k].id } position="right" type={ k } value={ sourcesRight[k].value }/>) }
                 <div style={{ fontSize: '24px', margin: '40px auto', textAlign: 'center' }}>
                   Unsere Energiementoren
                 </div>
@@ -75,14 +92,16 @@ Root.propTypes = {
   group: PropTypes.object.isRequired,
   onGroupSelect: PropTypes.func.isRequired,
   charts: PropTypes.object.isRequired,
-  sources: PropTypes.object.isRequired,
+  sourcesLeft: PropTypes.object.isRequired,
+  sourcesRight: PropTypes.object.isRequired,
 };
 
 Root.defaultProps = {
   groups: [],
   group: { name: '', mentors: [], slug: '' },
   charts: { in: [], out: [] },
-  sources: {},
+  sourcesLeft: {},
+  sourcesRight: {},
 };
 
 function mapStateToProps(state) {
@@ -91,6 +110,7 @@ function mapStateToProps(state) {
   const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) / 1000 };
   const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) / 1000 };
   const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) / 1000 - (solar.value + fire.value) };
+  const consumption = { id: 4, value: calcSource('consumption', state.bubbles.registers) / 1000 };
 
   let inSum = 0;
   let outSum = 0;
@@ -107,7 +127,8 @@ function mapStateToProps(state) {
     groups: state.app.groups,
     group: state.app.group,
     charts: state.app.charts,
-    sources: { solar, fire, grid },
+    sourcesLeft: { solar, fire },
+    sourcesRight: { grid, consumption },
     autarchy: calculateAutarchy(state.app.charts),
     inSum,
     outSum,
