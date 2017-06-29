@@ -71,7 +71,7 @@ const EnergySource = ({ type, value, position }) => {
             marginTop: '-8px',
             [`margin${position === 'right' ? 'Right' : 'Left'}`]: '60px',
             fontSize: '34px' }}>
-            <div>Current consumption</div>
+            <div>Aktueller Verbrauch</div>
             <div>{ formatLabel(Math.abs(value)) }</div>
           </div>
       }
