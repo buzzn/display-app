@@ -13,7 +13,6 @@ import FullScreenButton from './components/full_screen_button';
 import BubblesLayout from './components/bubbles_layout';
 import Chart from './components/chart';
 import EnergySource from './components/energy_source';
-import GroupStatus from './components/group_status';
 import InfoPanel from './components/info_panel';
 
 import 'buzzn-style';
@@ -53,7 +52,6 @@ export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sourcesLe
                 paddingTop: '40px',
                 position: 'relative' }}>
                 { Object.keys(sourcesLeft).map(k => <EnergySource key={ sourcesLeft[k].id } position="left" type={ k } value={ sourcesLeft[k].value }/>) }
-                <GroupStatus value={ autarchy } text="Autarkie" />
               </div>
               <Bubbles.container Layout={ BubblesLayout } Chart={ () => (<Chart charts={ charts } />) } InfoIn={ () => <InfoPanel type="in" data={ inSum }/> } InfoOut={ () => <InfoPanel type="out" data={ outSum }/> } />
               <div style={{
@@ -61,13 +59,13 @@ export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sourcesLe
                 float: 'left',
                 minHeight: '650px',
                 background: '#f5f5f5',
-                marginTop: group.mentors.length < 2 ? '148px' : '50px',
+                marginTop: group.mentors.length < 2 ? '148px' : '40px',
                 borderRadius: '0 40px 40px 0',
                 paddingTop: '40px',
                 position: 'relative' }}>
                 { Object.keys(sourcesRight).map(k => <EnergySource key={ sourcesRight[k].id } position="right" type={ k } value={ sourcesRight[k].value }/>) }
                 <div style={{ fontSize: '24px', margin: '40px auto', textAlign: 'center' }}>
-                  Unsere Energiementoren
+                  Unsere Ansprechpartner
                 </div>
                 {
                   group.mentors.slice(0, 2).map(m => (
@@ -111,6 +109,7 @@ function mapStateToProps(state) {
   const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) / 1000 };
   const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) / 1000 - (solar.value + fire.value) };
   const consumption = { id: 4, value: calcSource('consumption', state.bubbles.registers) / 1000 };
+  const autarchy = { id: 5, value: calculateAutarchy(state.app.charts) };
 
   let inSum = 0;
   let outSum = 0;
@@ -127,8 +126,8 @@ function mapStateToProps(state) {
     groups: state.app.groups,
     group: state.app.group,
     charts: state.app.charts,
-    sourcesLeft: { solar, fire },
-    sourcesRight: { grid, consumption },
+    sourcesLeft: { solar, fire, grid },
+    sourcesRight: { consumption, autarchy },
     autarchy: calculateAutarchy(state.app.charts),
     inSum,
     outSum,

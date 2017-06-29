@@ -7,6 +7,7 @@ const EnergySource = ({ type, value, position }) => {
     type: '',
     arrow: 'fa-square',
     color: '#ffffff',
+    formatter: v => formatLabel(Math.abs(v)),
   };
 
   const arrow = `fa-4x ${(value > 0 && position === 'left') || (value < 0 && position === 'right') ? 'fa-chevron-right' : 'fa-chevron-left'}`;
@@ -24,7 +25,13 @@ const EnergySource = ({ type, value, position }) => {
       icons.color = '#bdbdbd';
       break;
     case 'consumption':
+      icons.title = 'Aktueller Verbrauch';
       icons.color = '#80deea';
+      break;
+    case 'autarchy':
+      icons.title = 'Autarkie heute';
+      icons.color = '#80deea';
+      icons.formatter = v => v ? `${Math.round(v * 100)}%` : 'n.a.';
       break;
   }
 
@@ -36,6 +43,8 @@ const EnergySource = ({ type, value, position }) => {
       backgroundImage: `linear-gradient(to ${position === 'right' ? 'right' : 'left'}, #ffffff, ${icons.color})`,
       marginBottom: '20px' }}>
       {
+        ['consumption', 'autarchy'].includes(type) ?
+          false :
         type !== 'grid' ?
           <i className={ `fa fa-5x ${icons.type}` } style={{
             minWidth: '80px',
@@ -59,24 +68,23 @@ const EnergySource = ({ type, value, position }) => {
           </div>
       }
       {
-        type !== 'consumption' ?
+        !['consumption', 'autarchy'].includes(type) ?
           <div className="power" style={{
             float: position === 'right' ? 'right' : 'left',
             marginTop: '40px',
             [`margin${position === 'right' ? 'Right' : 'Left'}`]: '60px',
-            fontSize: '34px' }}>{ formatLabel(Math.abs(value)) }</div> :
+            fontSize: '34px' }}>{ icons.formatter(value) }</div> :
           <div className="power" style={{
             textAlign: 'center',
-            float: position === 'right' ? 'right' : 'left',
-            marginTop: '-8px',
-            [`margin${position === 'right' ? 'Right' : 'Left'}`]: '60px',
+            paddingTop: '20px',
+            width: '100%',
             fontSize: '34px' }}>
-            <div>Aktueller Verbrauch</div>
-            <div>{ formatLabel(Math.abs(value)) }</div>
+            <div>{ icons.formatter(value) }</div>
+            <div style={{ fontSize: '20px' }}>{ icons.title }</div>
           </div>
       }
       {
-        type !== 'consumption' &&
+        !['consumption', 'autarchy'].includes(type) &&
         <div style={{
           position: 'absolute',
           background: 'white',
