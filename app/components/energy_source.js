@@ -28,9 +28,17 @@ const EnergySource = ({ type, value, position }) => {
       icons.title = 'Aktueller Verbrauch';
       icons.color = '#80deea';
       break;
+    case 'prodStat':
+      icons.title = 'Tagesproduktion';
+      icons.color = '#d4e157';
+      break;
+    case 'consStat':
+      icons.title = 'Tagesverbrauch';
+      icons.color = '#80deea';
+      break;
     case 'autarchy':
       icons.title = 'Autarkie heute';
-      icons.color = '#80deea';
+      icons.color = '#bdbdbd';
       icons.formatter = v => v ? `${Math.round(v * 100)}%` : 'n.a.';
       break;
   }
@@ -43,7 +51,7 @@ const EnergySource = ({ type, value, position }) => {
       backgroundImage: `linear-gradient(to ${position === 'right' ? 'right' : 'left'}, #ffffff, ${icons.color})`,
       marginBottom: '20px' }}>
       {
-        ['consumption', 'autarchy'].includes(type) ?
+        ['consumption', 'autarchy', 'prodStat', 'consStat'].includes(type) ?
           false :
         type !== 'grid' ?
           <i className={ `fa fa-5x ${icons.type}` } style={{
@@ -68,7 +76,7 @@ const EnergySource = ({ type, value, position }) => {
           </div>
       }
       {
-        !['consumption', 'autarchy'].includes(type) ?
+        !['consumption', 'autarchy', 'prodStat', 'consStat'].includes(type) ?
           <div className="power" style={{
             float: position === 'right' ? 'right' : 'left',
             marginTop: '40px',
@@ -84,7 +92,7 @@ const EnergySource = ({ type, value, position }) => {
           </div>
       }
       {
-        !['consumption', 'autarchy'].includes(type) &&
+        !['consumption', 'autarchy', 'prodStat', 'consStat'].includes(type) &&
         <div style={{
           position: 'absolute',
           background: 'white',

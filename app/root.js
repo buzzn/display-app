@@ -60,18 +60,23 @@ export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sourcesLe
                 float: 'left',
                 minHeight: '650px',
                 background: '#f5f5f5',
-                marginTop: group.mentors.length < 2 ? '148px' : '40px',
+                marginTop: '100px',
                 borderRadius: '0 40px 40px 0',
                 paddingTop: '40px',
                 position: 'relative' }}>
-                <GroupStatus value={ autarchy } text="Autarkie" />
                 { Object.keys(sourcesRight).map(k => <EnergySource key={ sourcesRight[k].id } position="right" type={ k } value={ sourcesRight[k].value }/>) }
-                <div style={{ fontSize: '24px', margin: '300px auto 20px auto', textAlign: 'center' }}>
-                  Unsere Ansprechpartner
+                <div style={{ fontSize: '24px', margin: '40px auto 20px auto', textAlign: 'center' }}>
+                  Ansprechpartner
                 </div>
                 {
                   group.mentors.slice(0, 2).map(m => (
-                    <div style={{ width: '152px', textAlign: 'center', margin: 'auto', fontSize: '18px', marginBottom: '40px' }} key={ m.id }>
+                    <div style={{
+                      float: group.mentors.length > 1 ? 'left' : 'none',
+                      width: '152px',
+                      textAlign: 'center',
+                      margin: group.mentors.length > 1 ? '0 0 0 50px' : 'auto',
+                      fontSize: '18px',
+                      marginBottom: '40px' }} key={ m.id }>
                       <img style={{ width: '152px', height: '152px', borderRadius: '76px', marginBottom: '10px' }} src={ m.image } />
                       { `${m.firstName} ${m.lastName}` }
                     </div>
@@ -107,12 +112,6 @@ Root.defaultProps = {
 function mapStateToProps(state) {
   const calcSource = (type, registers) => registers.reduce((s, r) => (r.label === type ? s + r.value : s), 0);
 
-  const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) / 1000 };
-  const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) / 1000 };
-  const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) / 1000 - (solar.value + fire.value) };
-  const consumption = { id: 4, value: calcSource('consumption', state.bubbles.registers) / 1000 };
-  const autarchy = { id: 5, value: calculateAutarchy(state.app.charts) };
-
   let inSum = 0;
   let outSum = 0;
   if (state.app.charts.in.length > 0) {
@@ -124,12 +123,20 @@ function mapStateToProps(state) {
     outSum = state.app.charts.out.reduce((s, d) => (d.value + s), 0) / outHours / 1000;
   }
 
+  const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) / 1000 };
+  const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) / 1000 };
+  const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) / 1000 - (solar.value + fire.value) };
+  const consumption = { id: 4, value: calcSource('consumption', state.bubbles.registers) / 1000 };
+  const autarchy = { id: 5, value: calculateAutarchy(state.app.charts) };
+  const prodStat = { id: 6, value: outSum };
+  const consStat = { id: 7, value: inSum };
+
   return {
     groups: state.app.groups,
     group: state.app.group,
     charts: state.app.charts,
     sourcesLeft: { solar, fire, grid, consumption },
-    sourcesRight: {  },
+    sourcesRight: { autarchy, prodStat, consStat },
     autarchy: calculateAutarchy(state.app.charts),
     inSum,
     outSum,

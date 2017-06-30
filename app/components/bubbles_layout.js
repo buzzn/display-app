@@ -10,16 +10,8 @@ export default ({ registers, loading, Bubbles, InfoIn, InfoOut, Chart }) => (
           <Bubbles registers={ registers } />
         </div>
       </div>
-      <div style={{ width: '832px', height: '150px', margin: 'auto' }}>
+      <div style={{ width: '832px', height: '150px', margin: '30px auto' }}>
         <Chart/>
-      </div>
-      <div style={{ width: '832px', height: '150px', margin: 'auto' }}>
-        <div style={{ width: '400px', height: '40px', fontSize: '20px', borderRadius: '0 0 0 20px', backgroundColor: '#d4e157', padding: '6px', textAlign: 'center', float: 'left', marginRight: '16px' }}>
-          <InfoOut />
-        </div>
-        <div style={{ width: '400px', height: '40px', fontSize: '20px', borderRadius: '0 0 20px 0', backgroundColor: '#80deea', padding: '6px', textAlign: 'center', float: 'left'}}>
-          <InfoIn />
-        </div>
       </div>
     </div>
   </div>
