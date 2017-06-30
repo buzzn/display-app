@@ -31,10 +31,12 @@ const EnergySource = ({ type, value, position }) => {
     case 'prodStat':
       icons.title = 'Tagesproduktion';
       icons.color = '#d4e157';
+      icons.formatter = v => v ? formatLabel(v, 'h') : 'n.a.';
       break;
     case 'consStat':
       icons.title = 'Tagesverbrauch';
       icons.color = '#80deea';
+      icons.formatter = v => v ? formatLabel(v, 'h') : 'n.a.';
       break;
     case 'autarchy':
       icons.title = 'Autarkie heute';
@@ -112,7 +114,10 @@ const EnergySource = ({ type, value, position }) => {
 
 EnergySource.propTypes = {
   type: PropTypes.string.isRequired,
-  value: PropTypes.number.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]),
 };
 
 EnergySource.defaultProps = {
