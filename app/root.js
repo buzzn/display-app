@@ -14,6 +14,7 @@ import BubblesLayout from './components/bubbles_layout';
 import Chart from './components/chart';
 import EnergySource from './components/energy_source';
 import InfoPanel from './components/info_panel';
+import GroupStatus from './components/group_status';
 
 import 'buzzn-style';
 import './styles/main.scss';
@@ -63,14 +64,15 @@ export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sourcesLe
                 borderRadius: '0 40px 40px 0',
                 paddingTop: '40px',
                 position: 'relative' }}>
+                <GroupStatus value={ autarchy } text="Autarkie" />
                 { Object.keys(sourcesRight).map(k => <EnergySource key={ sourcesRight[k].id } position="right" type={ k } value={ sourcesRight[k].value }/>) }
-                <div style={{ fontSize: '24px', margin: '40px auto', textAlign: 'center' }}>
+                <div style={{ fontSize: '24px', margin: '300px auto 20px auto', textAlign: 'center' }}>
                   Unsere Ansprechpartner
                 </div>
                 {
                   group.mentors.slice(0, 2).map(m => (
                     <div style={{ width: '152px', textAlign: 'center', margin: 'auto', fontSize: '18px', marginBottom: '40px' }} key={ m.id }>
-                      <img style={{ width: '152px', height: '152px', borderRadius: '76px' }} src={ m.image } />
+                      <img style={{ width: '152px', height: '152px', borderRadius: '76px', marginBottom: '10px' }} src={ m.image } />
                       { `${m.firstName} ${m.lastName}` }
                     </div>
                   ))
@@ -126,8 +128,8 @@ function mapStateToProps(state) {
     groups: state.app.groups,
     group: state.app.group,
     charts: state.app.charts,
-    sourcesLeft: { solar, fire, grid },
-    sourcesRight: { consumption, autarchy },
+    sourcesLeft: { solar, fire, grid, consumption },
+    sourcesRight: {  },
     autarchy: calculateAutarchy(state.app.charts),
     inSum,
     outSum,

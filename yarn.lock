@@ -2,9 +2,8 @@
 # yarn lockfile v1
 
 
-"@buzzn/module_bubbles@git+https://github.com/buzzn/module-bubbles.git#v2.0.1":
+"@buzzn/module_bubbles@file:../modules/bubbles":
   version "1.0.0"
-  resolved "git+https://github.com/buzzn/module-bubbles.git#016ebfb422fa62e6fa140f6cb3842ec814084c84"
 
 abab@^1.0.0:
   version "1.0.3"
