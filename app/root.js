@@ -21,7 +21,7 @@ import './styles/main.scss';
 import LogoImg from './images/bz_logo_115px_grey.png';
 
 export const Root = ({ groups, group, onGroupSelect, charts, autarchy, sourcesLeft, sourcesRight, inSum, outSum }) => (
-  <div>
+  <div style={{ width: '1920px' }}>
     { (groups.length > 0 || group.id) &&
       <div>
         { groups.length > 0 &&
