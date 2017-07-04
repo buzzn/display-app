@@ -5,22 +5,33 @@
   <meta name="viewport" content="width=1920">
   <link rel="icon" type="image/png" href="./images/32.png" />
   <title>Document</title>
+  <script src="https://cdn.ravenjs.com/3.16.1/raven.min.js" crossorigin="anonymous"></script>
+  <script>
+    Raven.config('https://e30425e068d749a1a3a6a202342ab94d@sentry.io/187521').install();
+
+    if (Raven.isSetup()) {
+      var oldErr = console.error;
+      console.error = function (error) {
+        Raven.captureException(error);
+        oldErr(error);
+      }
+    }
+
+//    if (Raven.isSetup()) {
+//      window.logException = function (ex, context) {
+//        Raven.captureException(ex, {
+//          extra: context
+//        });
+//        window.console && console.error && console.error(ex);
+//      }
+//    } else {
+//      window.logException = function (ex, context) {
+//        window.console && console.error && console.error(ex);
+//      }
+//    }
+  </script>
 </head>
 <body>
   <div id="root"></div>
-  <!--<div id="log"></div>-->
-  <script>
-//    (function () {
-//      var old = console.log;
-//      var logger = document.getElementById('log');
-//      console.log = function (message) {
-//        if (typeof message == 'object') {
-//          logger.innerHTML += (JSON && JSON.stringify ? JSON.stringify(message) : message) + '<br />';
-//        } else {
-//          logger.innerHTML += message + '<br />';
-//        }
-//      }
-//    })();
-  </script>
 </body>
 </html>

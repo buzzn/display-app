@@ -37,7 +37,7 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
       const charts = yield call(api.fetchGroupChart, { apiUrl, apiPath, groupId });
       yield put(actions.setCharts(charts));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     yield call(delay, 15 * 60 * 1000);
   }
@@ -50,7 +50,7 @@ export function* getGroup({ apiUrl, apiPath }, { groupId }) {
     group.mentors = mentors.array;
     yield put(actions.setGroup(group));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -59,7 +59,7 @@ export function* getGroups({ apiUrl, apiPath }) {
     const groups = yield call(api.fetchGroups, { apiUrl, apiPath });
     yield put(actions.setGroups(groups.array));
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
