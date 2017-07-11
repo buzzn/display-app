@@ -110,7 +110,7 @@ Root.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  const calcSource = (type, registers) => registers.reduce((s, r) => (r.label === type ? s + r.value : s), 0);
+  const calcSource = (type, registers) => registers.reduce((s, r) => (r.label.toLowerCase() === type ? s + r.value : s), 0);
 
   let inSum = 0;
   let outSum = 0;
