@@ -116,10 +116,10 @@ function mapStateToProps(state) {
   let inSum = 0;
   let outSum = 0;
   if (state.app.charts.in.length > 0) {
-    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
+    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value / 1000), 0) / h.length) + sh, 0);
   }
   if (state.app.charts.out.length > 0) {
-    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
+    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value / 1000), 0) / h.length) + sh, 0);
   }
 
   const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) / 1000 };
