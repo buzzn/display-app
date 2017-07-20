@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import Helmet from 'react-helmet';
 import last from 'lodash/last';
+import chunk from 'lodash/chunk';
 import { connect } from 'react-redux';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { actions } from './actions';
@@ -115,12 +116,10 @@ function mapStateToProps(state) {
   let inSum = 0;
   let outSum = 0;
   if (state.app.charts.in.length > 0) {
-    const inHours = moment(last(state.app.charts.in).timestamp).hour() + 1;
-    inSum = state.app.charts.in.reduce((s, d) => (d.value + s), 0) / inHours / 1000;
+    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
   }
   if (state.app.charts.out.length > 0) {
-    const outHours = moment(last(state.app.charts.out).timestamp).hour() + 1;
-    outSum = state.app.charts.out.reduce((s, d) => (d.value + s), 0) / outHours / 1000;
+    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
   }
 
   const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) / 1000 };
