@@ -8,7 +8,8 @@ if (process.env.NODE_ENV === 'production') {
   };
 } else if (process.env.NODE_ENV === 'staging') {
   config = {
-    apiUrl: 'https://staging-core.buzzn.io/',
+    // apiUrl: 'https://staging-core.buzzn.io/',
+    apiUrl: 'https://core.buzzn.io/',
     apiPath: 'api/display',
     secure: true,
   };
