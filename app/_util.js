@@ -135,3 +135,12 @@ export function calculateAutarchy({ in: inData, out: outData }) {
 
   return autarchy;
 }
+
+export function logException(ex, context) {
+  if (Raven.isSetup()) {
+    Raven.captureException(ex, {
+      extra: context,
+    });
+  }
+  console.error(ex);
+}

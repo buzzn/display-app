@@ -1,12 +1,13 @@
 import createSagaMiddleware from 'redux-saga';
-import { call } from 'redux-saga/effects';
+import { all, call } from 'redux-saga/effects';
 import appSaga from './sagas';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import Bubbles from '@buzzn/module_bubbles';
 import RootReducer from './reducers';
+import { logException } from './_util';
 
 function* rootSaga() {
-  yield [call(Bubbles.sagas), call(appSaga)];
+  yield all([call(Bubbles.sagas, logException), call(appSaga)]);
 }
 
 export default function configureStore(initialState) {

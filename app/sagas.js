@@ -1,8 +1,9 @@
 import { put, select, fork, spawn, call, takeLatest } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
+import Bubbles from '@buzzn/module_bubbles';
 import { constants, actions } from './actions';
 import api from './api';
-import Bubbles from '@buzzn/module_bubbles';
+import { logException } from './_util';
 
 export const getConfig = state => state.config;
 
@@ -37,7 +38,7 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
       const charts = yield call(api.fetchGroupChart, { apiUrl, apiPath, groupId });
       yield put(actions.setCharts(charts));
     } catch (error) {
-      console.error(error);
+      logException(error);
     }
     yield call(delay, 15 * 60 * 1000);
   }
@@ -50,7 +51,7 @@ export function* getGroup({ apiUrl, apiPath }, { groupId }) {
     group.mentors = mentors.array;
     yield put(actions.setGroup(group));
   } catch (error) {
-    console.error(error);
+    logException(error);
   }
 }
 
@@ -59,7 +60,7 @@ export function* getGroups({ apiUrl, apiPath }) {
     const groups = yield call(api.fetchGroups, { apiUrl, apiPath });
     yield put(actions.setGroups(groups.array));
   } catch (error) {
-    console.error(error);
+    logException(error);
   }
 }
 
