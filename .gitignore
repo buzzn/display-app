@@ -6,6 +6,7 @@ typings/
 npm-debug.log
 yarn-error.log
 settings.json
+coverage
 
 node_modules/*
 
