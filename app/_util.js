@@ -49,7 +49,7 @@ export function camelizeResponseKeys(data) {
   return result;
 }
 
-function formatNumber(value) {
+export function formatNumber(value) {
   const decimalPoint = ',';
   let remainder = 0;
   let leadingNumber = 0;

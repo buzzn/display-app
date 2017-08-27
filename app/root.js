@@ -10,7 +10,6 @@ import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
 import { calculateAutarchy } from './_util';
 import GroupSelector from './components/group_selector';
-import FullScreenButton from './components/full_screen_button';
 import BubblesLayout from './components/bubbles_layout';
 import Chart from './components/chart';
 import EnergySource from './components/energy_source';

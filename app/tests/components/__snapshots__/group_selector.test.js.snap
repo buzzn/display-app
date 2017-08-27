@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`group selector component tests renders group list correctly 1`] = `
+<select
+  onChange={[Function]}
+>
+  <option
+    value=""
+  >
+    -----
+  </option>
+  <option
+    value="1"
+  >
+    group1
+  </option>
+  <option
+    value="2"
+  >
+    group2
+  </option>
+</select>
+`;

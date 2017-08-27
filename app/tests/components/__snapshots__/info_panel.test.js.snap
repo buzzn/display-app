@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`info panel component tests renders data correctly 1`] = `
+<div>
+  Tagesproduktion 
+  <span
+    style={
+      Object {
+        "fontWeight": "bold",
+      }
+    }
+  >
+    10 kWh
+  </span>
+</div>
+`;
+
+exports[`info panel component tests renders in text correctly 1`] = `
+<div>
+  Tagesverbrauch 
+  <span
+    style={
+      Object {
+        "fontWeight": "bold",
+      }
+    }
+  >
+    n.a.
+  </span>
+</div>
+`;
+
+exports[`info panel component tests renders out text correctly 1`] = `
+<div>
+  Tagesproduktion 
+  <span
+    style={
+      Object {
+        "fontWeight": "bold",
+      }
+    }
+  >
+    n.a.
+  </span>
+</div>
+`;
