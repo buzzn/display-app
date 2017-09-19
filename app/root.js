@@ -87,7 +87,7 @@ export class Root extends Component {
               </div>
             }
             <div className="row">
-              <div style={{ width: '1880px', margin: '0 auto', position: 'relative', minHeight: '960px' }}>
+              <div style={{ width: '1880px', margin: this.state.noTitle ? '20px auto' : '0 auto', position: 'relative', minHeight: '960px' }}>
                 <div style={{
                   width: '460px',
                   float: 'left',
