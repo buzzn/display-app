@@ -19,7 +19,7 @@ export function hackScale() {
 }
 
 export function getGroupFromUrl() {
-  return window.location.href.split('/')[3];
+  return window.location.href.split('/')[3].split('?')[0];
 }
 
 export function windowReload() {
