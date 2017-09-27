@@ -18,7 +18,7 @@ import GroupStatus from './components/group_status';
 
 import 'buzzn-style';
 import './styles/main.scss';
-import LogoImg from './images/bz_logo_115px_grey.png';
+import LogoImg from './images/bz_logo_115px_white.png';
 
 export class Root extends Component {
   static propTypes = {
