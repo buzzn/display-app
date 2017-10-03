@@ -18,26 +18,26 @@ export default {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}`, {
       headers: prepareHeaders(),
     })
-    .then(parseResponse);
+      .then(parseResponse);
   },
   fetchGroupChart({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, {
       headers: { ...prepareHeaders(), 'Cache-Control': 'no-cache' },
     })
-    .then(parseResponse);
+      .then(parseResponse);
   },
   fetchGroupMentors({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/mentors`, {
       headers: prepareHeaders(),
     })
-    .then(parseResponse)
-    .then(camelizeResponseKeys);
+      .then(parseResponse)
+      .then(camelizeResponseKeys);
   },
   fetchGroups({ apiUrl, apiPath }) {
     return fetch(`${apiUrl}${apiPath}/groups`, {
       headers: prepareHeaders(),
     })
-    .then(parseResponse)
-    .then(camelizeResponseKeys);
+      .then(parseResponse)
+      .then(camelizeResponseKeys);
   },
 };

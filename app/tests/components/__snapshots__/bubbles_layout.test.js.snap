@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`bubbles layout component tests should render proper styles 1`] = `
+<div
+  className="bubbles-wrapper"
+>
+  <div
+    className="row"
+  >
+    <div
+      style={
+        Object {
+          "margin": "44px 156px",
+          "position": "relative",
+        }
+      }
+    >
+      <div
+        style={
+          Object {
+            "display": "inline-block",
+            "height": "648px",
+            "position": "relative",
+            "width": "648px",
+          }
+        }
+      >
+        <Bubbles
+          registers={Object {}}
+        />
+      </div>
+    </div>
+    <div
+      style={
+        Object {
+          "height": "150px",
+          "margin": "30px auto",
+          "width": "832px",
+        }
+      }
+    >
+      <Chart />
+    </div>
+  </div>
+</div>
+`;
