@@ -5,6 +5,7 @@ if (process.env.NODE_ENV === 'production') {
     apiUrl: 'https://aws-core.buzzn.io/',
     apiPath: 'api/display',
     secure: true,
+    timeout: 60 * 1000,
   };
 } else if (process.env.NODE_ENV === 'staging') {
   config = {
@@ -12,12 +13,14 @@ if (process.env.NODE_ENV === 'production') {
     // apiUrl: 'https://core.buzzn.io/',
     apiPath: 'api/display',
     secure: true,
+    timeout: 60 * 1000,
   };
 } else {
   config = {
     apiUrl: 'http://localhost:3000/',
     apiPath: 'api/display',
     secure: false,
+    timeout: 60 * 1000,
   };
 }
 
