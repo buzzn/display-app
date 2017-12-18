@@ -1,4 +1,4 @@
-import { put, select, fork, spawn, call, takeLatest } from 'redux-saga/effects';
+import { put, select, fork, spawn, call, take, cancel } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 import Bubbles from '@buzzn/module_bubbles';
 import { constants, actions } from './actions';
@@ -44,26 +44,6 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   }
 }
 
-export function* getGroup({ apiUrl, apiPath }, { groupId }) {
-  try {
-    const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
-    const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
-    group.mentors = mentors.array;
-    yield put(actions.setGroup(group));
-  } catch (error) {
-    logException(error);
-  }
-}
-
-export function* getGroups({ apiUrl, apiPath }) {
-  try {
-    const groups = yield call(api.fetchGroups, { apiUrl, apiPath });
-    yield put(actions.setGroups(groups.array));
-  } catch (error) {
-    logException(error);
-  }
-}
-
 export default function* appLoop() {
   const { apiUrl, apiPath, secure, timeout } = yield select(getConfig);
 
@@ -74,18 +54,36 @@ export default function* appLoop() {
   }
 
   const groupId = yield call(getGroupFromUrl);
+
+  if (!groupId) return false;
+
+  yield spawn(windowReload);
+  yield put(actions.setUrlGroupId(groupId));
   yield put(Bubbles.actions.setApiParams({ apiUrl, apiPath: `${apiPath}/groups`, timeout }));
   yield put(Bubbles.actions.setToken({ token: null }));
-  if (groupId) {
-    yield put(actions.setUrlGroupId(groupId));
-    yield call(getGroup, { apiUrl, apiPath }, { groupId });
-    yield fork(getCharts, { apiUrl, apiPath }, { groupId });
-    yield put(Bubbles.actions.setGroupId(groupId));
-    yield spawn(windowReload);
-  } else {
-    yield call(getGroups, { apiUrl, apiPath });
-    yield fork(takeLatest, constants.SET_GROUP_ID, getGroup, { apiUrl, apiPath });
-    yield fork(takeLatest, constants.SET_GROUP_ID, getCharts, { apiUrl, apiPath });
-    yield fork(takeLatest, constants.SET_GROUP_ID, bubbles);
+
+  while (true) {
+    try {
+      const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
+      if (group.id) {
+        const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
+        group.mentors = mentors.array;
+        yield put(actions.setGroup(group));
+        const chartSaga = yield fork(getCharts, { apiUrl, apiPath }, { groupId });
+        yield put(Bubbles.actions.setGroupId(groupId));
+
+        yield take(constants.CANCEL);
+
+        yield put(actions.setGroup({}));
+        yield cancel(chartSaga);
+        yield put(Bubbles.actions.stopRequests());
+      } else {
+        yield call(delay, 10 * 60 * 1000);
+      }
+    } catch (error) {
+      logException(error);
+      // FIXME: temporary hack, please change to proper err code handling
+      yield call(delay, 10 * 60 * 1000);
+    }
   }
 }
