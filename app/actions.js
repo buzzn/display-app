@@ -4,12 +4,14 @@ export const constants = {
   SET_GROUPS: 'buzzn_display/SET_GROUPS',
   SET_GROUP: 'buzzn_display/SET_GROUP',
   SET_CHARTS: 'buzzn_display/SET_CHARTS',
+  CANCEL: 'buzzn_display/CANCEL',
 };
 
 export const actions = {
-  setGroupId: (groupId) => ({ type: constants.SET_GROUP_ID, groupId }),
-  setUrlGroupId: (urlGroupId) => ({ type: constants.SET_URL_GROUP_ID, urlGroupId }),
-  setGroups: (groups) => ({ type: constants.SET_GROUPS, groups }),
-  setGroup: (group) => ({ type: constants.SET_GROUP, group }),
+  setGroupId: groupId => ({ type: constants.SET_GROUP_ID, groupId }),
+  setUrlGroupId: urlGroupId => ({ type: constants.SET_URL_GROUP_ID, urlGroupId }),
+  setGroups: groups => ({ type: constants.SET_GROUPS, groups }),
+  setGroup: group => ({ type: constants.SET_GROUP, group }),
   setCharts: charts => ({ type: constants.SET_CHARTS, charts }),
+  cancel: () => ({ type: constants.CANCEL }),
 };
