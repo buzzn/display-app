@@ -47,12 +47,12 @@ export class Root extends Component {
       let result = null;
       let tmp = [];
       location.search
-      .substr(1)
-      .split("&")
-      .forEach(function (item) {
-        tmp = item.split("=");
-        if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-      });
+        .substr(1)
+        .split('&')
+        .forEach(function (item) {
+          tmp = item.split('=');
+          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        });
       return result;
     }
 
@@ -145,16 +145,16 @@ function mapStateToProps(state) {
   let inSum = 0;
   let outSum = 0;
   if (state.app.charts.in.length > 0) {
-    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value / 1000), 0) / h.length) + sh, 0);
+    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
   }
   if (state.app.charts.out.length > 0) {
-    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value / 1000), 0) / h.length) + sh, 0);
+    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
   }
 
-  const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) / 1000 };
-  const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) / 1000 };
-  const grid = { id: 3, value: calcSource('consumption', state.bubbles.registers) / 1000 - (solar.value + fire.value) };
-  const consumption = { id: 4, value: calcSource('consumption', state.bubbles.registers) / 1000 };
+  const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers) };
+  const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers) };
+  const consumption = { id: 4, value: calcSource('consumption', state.bubbles.registers) };
+  const grid = { id: 3, value: consumption.value - (solar.value + fire.value) };
   const autarchy = { id: 5, value: calculateAutarchy(state.app.charts) };
   const prodStat = { id: 6, value: outSum };
   const consStat = { id: 7, value: inSum };
