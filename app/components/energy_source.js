@@ -21,6 +21,14 @@ const EnergySource = ({ type, value, position }) => {
       icons.type = 'fa-fire';
       icons.color = '#ffa726';
       break;
+    case 'water':
+      icons.type = 'fa-tint';
+      icons.color = '#1e88e5';
+      break;
+    case 'wind':
+      icons.type = 'fa-modx';
+      icons.color = '#90caf9';
+      break;
     case 'grid':
       icons.color = '#bdbdbd';
       break;
@@ -59,7 +67,7 @@ const EnergySource = ({ type, value, position }) => {
           <i className={ `fa fa-5x ${icons.type}` } style={{
             minWidth: '80px',
             float: position === 'right' ? 'right' : 'left',
-            marginTop: '19px',
+            marginTop: '25px',
             [`margin${position === 'right' ? 'Right' : 'Left'}`]: '32px',
             color: '#9e9e9e' }} /> :
           <div style={{
