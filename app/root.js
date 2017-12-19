@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import chunk from 'lodash/chunk';
+import reduce from 'lodash/reduce';
 import { connect } from 'react-redux';
 import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
@@ -21,6 +22,7 @@ export class Root extends Component {
     charts: PropTypes.object.isRequired,
     sourcesLeft: PropTypes.object.isRequired,
     sourcesRight: PropTypes.object.isRequired,
+    productionSources: PropTypes.number.isRequired,
     bubblesStatus: PropTypes.number,
   };
 
@@ -29,6 +31,7 @@ export class Root extends Component {
     charts: { in: [], out: [] },
     sourcesLeft: {},
     sourcesRight: {},
+    productionSources: 0,
   };
 
   state = {
@@ -58,7 +61,7 @@ export class Root extends Component {
   }
 
   render() {
-    const { group, charts, autarchy, sourcesLeft, sourcesRight, inSum, outSum } = this.props;
+    const { group, charts, autarchy, productionSources, sourcesLeft, sourcesRight, inSum, outSum } = this.props;
 
     return (
       <div style={{ width: '1920px' }}>
@@ -84,7 +87,7 @@ export class Root extends Component {
                       float: 'left',
                       minHeight: '650px',
                       background: '#f5f5f5',
-                      marginTop: '148px',
+                      marginTop: productionSources < 3 ? '148px' : productionSources < 4 ? '108px' : '38px',
                       borderRadius: '40px 0 0 40px',
                       paddingTop: '40px',
                       position: 'relative' }}>
@@ -142,7 +145,7 @@ export class Root extends Component {
 }
 
 function mapStateToProps(state) {
-  const calcSource = (type, registers) => registers.reduce((s, r) => (r.label.toLowerCase() === type ? s + r.value : s), 0);
+  const calcSource = (types, registers) => registers.reduce((s, r) => (types.includes(r.label.toLowerCase()) ? s + r.value : s), 0);
 
   let inSum = 0;
   let outSum = 0;
@@ -153,10 +156,13 @@ function mapStateToProps(state) {
     outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
   }
 
-  const solar = { id: 1, value: calcSource('production_pv', state.bubbles.registers.array) };
-  const fire = { id: 2, value: calcSource('production_chp', state.bubbles.registers.array) };
-  const consumption = { id: 4, value: calcSource('consumption', state.bubbles.registers.array) };
-  const grid = { id: 3, value: consumption.value - (solar.value + fire.value) };
+  const sources = { solar: 'production_pv', fire: 'production_chp', wind: 'production_wind', water: 'production_water' };
+  const production = reduce(sources, (res, v, k) => {
+    if (!state.bubbles.registers.array.find(r => r.label.toLowerCase() === v)) return res;
+    return { ...res, [k]: { id: v, value: calcSource([v], state.bubbles.registers.array) } };
+  }, {});
+  const consumption = { id: 3, value: calcSource(['consumption', 'consumption_common'], state.bubbles.registers.array) };
+  const grid = { id: 4, value: consumption.value - reduce(production, (res, v) => (res + v.value), 0) };
   const autarchy = { id: 5, value: calculateAutarchy(state.app.charts) };
   const prodStat = { id: 6, value: outSum };
   const consStat = { id: 7, value: inSum };
@@ -164,7 +170,8 @@ function mapStateToProps(state) {
   return {
     group: state.app.group,
     charts: state.app.charts,
-    sourcesLeft: { solar, fire, grid, consumption },
+    productionSources: Object.keys(production).length,
+    sourcesLeft: { ...production, grid, consumption },
     sourcesRight: { autarchy, prodStat, consStat },
     autarchy: calculateAutarchy(state.app.charts),
     inSum,
