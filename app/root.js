@@ -145,15 +145,15 @@ export class Root extends Component {
 }
 
 function mapStateToProps(state) {
-  const calcSource = (types, registers) => registers.reduce((s, r) => (types.includes(r.label.toLowerCase()) ? s + r.value : s), 0);
+  const calcSource = (types, registers) => registers.reduce((s, r) => (types.includes(r.label.toLowerCase()) ? s + Math.round(r.value) : s), 0);
 
   let inSum = 0;
   let outSum = 0;
   if (state.app.charts.in.length > 0) {
-    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
+    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + Math.round(v.value)), 0) / h.length) + sh, 0);
   }
   if (state.app.charts.out.length > 0) {
-    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + v.value), 0) / h.length) + sh, 0);
+    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + Math.round(v.value)), 0) / h.length) + sh, 0);
   }
 
   const sources = { solar: 'production_pv', fire: 'production_chp', wind: 'production_wind', water: 'production_water' };
