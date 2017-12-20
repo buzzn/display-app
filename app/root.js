@@ -64,7 +64,7 @@ export class Root extends Component {
     const { group, charts, autarchy, productionSources, sourcesLeft, sourcesRight, inSum, outSum } = this.props;
 
     return (
-      <div style={{ width: '1920px' }}>
+      <div style={{ width: '1920px', margin: 'auto' }}>
         {
           group.id ?
             <div>
