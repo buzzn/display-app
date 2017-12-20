@@ -8,7 +8,9 @@ import { logException } from './_util';
 export const getConfig = state => state.config;
 
 export function setScale() {
-  const scale = window.innerWidth / 1920;
+  const scaleX = window.innerWidth / 1920;
+  const scaleY = window.innerHeight / 1080;
+  const scale = scaleX < scaleY ? scaleX : scaleY;
   document.body.style.zoom = scale;
   document.body.style.MozTransform = `scale(${scale})`;
 }
