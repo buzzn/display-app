@@ -18,6 +18,7 @@ import LogoImg from './images/bz_logo_115px_white.png';
 
 export class Root extends Component {
   static propTypes = {
+    loading: PropTypes.bool.isRequired,
     group: PropTypes.object.isRequired,
     charts: PropTypes.object.isRequired,
     sourcesLeft: PropTypes.object.isRequired,
@@ -61,7 +62,7 @@ export class Root extends Component {
   }
 
   render() {
-    const { group, charts, autarchy, productionSources, sourcesLeft, sourcesRight, inSum, outSum } = this.props;
+    const { loading, group, charts, autarchy, productionSources, sourcesLeft, sourcesRight, inSum, outSum } = this.props;
 
     return (
       <div style={{ width: '1920px', margin: 'auto' }}>
@@ -136,7 +137,7 @@ export class Root extends Component {
               color: 'white',
               marginTop: '50vh',
             }}>
-              Deine Energiegruppe ist aktuell nicht für diese Ansicht freigeschaltet.
+              { loading ? 'Loading...' : 'Deine Energiegruppe ist aktuell nicht für diese Ansicht freigeschaltet.'}
             </div>
         }
       </div>
@@ -168,6 +169,7 @@ function mapStateToProps(state) {
   const consStat = { id: 7, value: inSum };
 
   return {
+    loading: state.app.loading,
     group: state.app.group,
     charts: state.app.charts,
     productionSources: Object.keys(production).length,

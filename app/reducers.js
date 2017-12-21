@@ -7,7 +7,7 @@ export function configReducer(state = config) {
   return state;
 }
 
-export function appReducer(state = { group: {}, charts: { in: [], out: [], scores: {} } }, action) {
+export function appReducer(state = { loading: true, group: {}, charts: { in: [], out: [], scores: {} } }, action) {
   switch (action.type) {
     case constants.SET_GROUP_ID:
       return { ...state, groupId: action.groupId };
@@ -15,6 +15,10 @@ export function appReducer(state = { group: {}, charts: { in: [], out: [], score
       return { ...state, urlGroupId: action.urlGroupId };
     case constants.SET_GROUP:
       return { ...state, group: action.group };
+    case constants.LOADING_GROUP:
+      return { ...state, loading: true };
+    case constants.LOADED_GROUP:
+      return { ...state, loading: false };
     case constants.SET_CHARTS:
       return { ...state, charts: action.charts };
     default:

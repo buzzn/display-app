@@ -66,11 +66,13 @@ export default function* appLoop() {
 
   while (true) {
     try {
+      yield put(actions.loadingGroup());
       const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
       if (group.id) {
         const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
         group.mentors = mentors.array;
         yield put(actions.setGroup(group));
+        yield put(actions.loadedGroup());
         const chartSaga = yield fork(getCharts, { apiUrl, apiPath }, { groupId });
         yield put(Bubbles.actions.setGroupId(groupId));
 
@@ -85,6 +87,7 @@ export default function* appLoop() {
     } catch (error) {
       logException(error);
       // FIXME: temporary hack, please change to proper err code handling
+      yield put(actions.loadedGroup());
       yield call(delay, 10 * 60 * 1000);
     }
   }
