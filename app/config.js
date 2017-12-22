@@ -15,6 +15,13 @@ if (process.env.NODE_ENV === 'production') {
     secure: true,
     timeout: 60 * 1000,
   };
+} else if (process.env.NODE_ENV === 'develop') {
+  config = {
+    apiUrl: 'https://core.buzzn.io/',
+    apiPath: 'api/display',
+    secure: true,
+    timeout: 60 * 1000,
+  };
 } else {
   config = {
     apiUrl: 'http://localhost:3000/',
