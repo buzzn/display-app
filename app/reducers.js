@@ -7,7 +7,24 @@ export function configReducer(state = config) {
   return state;
 }
 
-export function appReducer(state = { loading: true, group: {}, charts: { in: [], out: [], scores: {} } }, action) {
+export const initialState = {
+  loading: true,
+  group: {},
+  charts: { in: [], out: [], scores: {} },
+  ui: { display: 'computer' },
+};
+
+export function uiReducer(state, action) {
+  switch (action.type) {
+    case constants.SET_UI:
+      return { ...state, ...action.ui };
+
+    default:
+      return state;
+  }
+}
+
+export function appReducer(state = initialState, action) {
   switch (action.type) {
     case constants.SET_GROUP_ID:
       return { ...state, groupId: action.groupId };
@@ -21,6 +38,10 @@ export function appReducer(state = { loading: true, group: {}, charts: { in: [],
       return { ...state, loading: false };
     case constants.SET_CHARTS:
       return { ...state, charts: action.charts };
+
+    case constants.SET_UI:
+      return { ...state, ui: uiReducer(state.ui, action) };
+
     default:
       return state;
   }

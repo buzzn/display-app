@@ -13,6 +13,7 @@ export function setScale() {
   const scale = scaleX < scaleY ? scaleX : scaleY;
   document.body.style.zoom = scale;
   document.body.style.MozTransform = `scale(${scale})`;
+  document.body.style.MozTransformOrigin = `${(window.innerWidth - (1920 * scale)) / 2}px 0%`;
 }
 
 export function hackScale() {
@@ -21,7 +22,7 @@ export function hackScale() {
 }
 
 export function getGroupFromUrl() {
-  return window.location.href.split('/')[3].split('?')[0];
+  return (new URL(window.location.href)).pathname.split('/')[1];
 }
 
 export function windowReload() {
@@ -46,8 +47,34 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   }
 }
 
+export function* setUI() {
+  const parsedURL = new URL(window.location.href);
+  let urlDisplay = parsedURL.searchParams.get('display');
+  const urlNoTitle = parsedURL.searchParams.get('no-title');
+  let ui = yield call(api.getUI);
+  if (urlDisplay) {
+    if (!['computer', 'tizen'].includes(urlDisplay)) urlDisplay = 'computer';
+    ui.display = urlDisplay;
+    yield call(api.setUI, ui);
+  }
+  if (urlNoTitle) {
+    ui.noTitle = urlNoTitle === 'true';
+    yield call(api.setUI, ui);
+  }
+  yield put(actions.setUI(ui));
+
+  while (true) {
+    const { ui: uiPart } = yield take(constants.SET_UI);
+    ui = { ...ui, ...uiPart };
+    yield put(actions.setUI(ui));
+    yield call(api.setUI, ui);
+  }
+}
+
 export default function* appLoop() {
   const { apiUrl, apiPath, secure, timeout } = yield select(getConfig);
+
+  yield fork(setUI);
 
   yield call(hackScale);
 

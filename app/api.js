@@ -1,17 +1,4 @@
-import 'whatwg-fetch';
-import map from 'lodash/map';
-import find from 'lodash/find';
-import moment from 'moment';
 import { prepareHeaders, parseResponse, camelizeResponseKeys } from './_util';
-
-function formatScores(json) {
-  const scores = {};
-  ['fitting', 'autarchy', 'closeness', 'sufficiency'].forEach(type => {
-    const score = find(json, j => j.mode === type);
-    scores[type] = score ? score.value : 0;
-  });
-  return scores;
-}
 
 export default {
   fetchGroup({ apiUrl, apiPath, groupId }) {
@@ -40,4 +27,6 @@ export default {
       .then(parseResponse)
       .then(camelizeResponseKeys);
   },
+  setUI(ui) { localStorage.setItem('buzznDisplayUI', JSON.stringify(ui || {})); },
+  getUI() { return JSON.parse(localStorage.getItem('buzznDisplayUI')) || {}; },
 };

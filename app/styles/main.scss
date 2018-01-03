@@ -12,13 +12,12 @@ body {
 
   font-family: 'Asap', Helvetica;
 
-  //zoom: 0.90;
-  //-moz-transform: scale(0.90);
   -moz-transform-origin: 4% 0;
+  //-moz-transform-origin: 50% 0;
 
-  //transform: scale(.5);
-  //-webkit-transform: scale(.5);
-  //-moz-transform: scale(.5);
-  //-ms-transform: scale(.5);
-  //-o-transform: scale(.5);
+  overflow: hidden;
+
+  #root {
+    -moz-transform-origin: 0 0;
+  }
 }

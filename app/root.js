@@ -18,6 +18,8 @@ import LogoImg from './images/bz_logo_115px_white.png';
 
 export class Root extends Component {
   static propTypes = {
+    noTitle: PropTypes.bool,
+    display: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     group: PropTypes.object.isRequired,
     charts: PropTypes.object.isRequired,
@@ -35,37 +37,28 @@ export class Root extends Component {
     productionSources: 0,
   };
 
-  state = {
-    noTitle: false,
-  };
-
-  componentWillMount() {
-    function findGetParameter(parameterName) {
-      let result = null;
-      let tmp = [];
-      location.search
-        .substr(1)
-        .split('&')
-        .forEach(function (item) {
-          tmp = item.split('=');
-          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-        });
-      return result;
-    }
-
-    this.setState({ noTitle: findGetParameter('no-title') === 'true' });
-  }
-
   componentWillReceiveProps(nextProps) {
     const { bubblesStatus, cancel } = nextProps;
     if (bubblesStatus === 403) cancel();
   }
 
   render() {
-    const { loading, group, charts, autarchy, productionSources, sourcesLeft, sourcesRight, inSum, outSum } = this.props;
+    const {
+      display,
+      loading,
+      group,
+      charts,
+      autarchy,
+      productionSources,
+      sourcesLeft,
+      sourcesRight,
+      inSum,
+      outSum,
+      noTitle,
+    } = this.props;
 
     return (
-      <div style={{ width: '1920px', margin: 'auto' }}>
+      <div id={ `display-${display}` } style={{ width: '1920px', margin: 'auto' }}>
         {
           group.id ?
             <div>
@@ -74,7 +67,7 @@ export class Root extends Component {
               </Helmet>
               <div>
                 {
-                  !this.state.noTitle &&
+                  !noTitle &&
                   <div className="row">
                     <div style={{ margin: '0 auto', fontSize: '66px', textAlign: 'center', color: 'white', textTransform: 'uppercase' }}>
                       { group.name }
@@ -82,7 +75,7 @@ export class Root extends Component {
                   </div>
                 }
                 <div className="row">
-                  <div style={{ width: '1880px', margin: this.state.noTitle ? '20px auto' : '0 auto', position: 'relative', minHeight: '960px' }}>
+                  <div style={{ width: '1880px', margin: noTitle ? '20px auto' : '0 auto', position: 'relative', minHeight: '960px' }}>
                     <div style={{
                       width: '460px',
                       float: 'left',
@@ -169,6 +162,8 @@ function mapStateToProps(state) {
   const consStat = { id: 7, value: inSum };
 
   return {
+    noTitle: state.app.ui.noTitle,
+    display: state.app.ui.display,
     loading: state.app.loading,
     group: state.app.group,
     charts: state.app.charts,

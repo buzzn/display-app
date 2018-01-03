@@ -83,6 +83,7 @@
     "redux-saga": "^1.0.0-beta.0",
     "redux-thunk": "^2.2.0",
     "tether": "^1.4.3",
+    "url-polyfill": "^1.0.10",
     "whatwg-fetch": "^2.0.3"
   },
   "eslintConfig": {

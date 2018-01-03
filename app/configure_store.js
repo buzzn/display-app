@@ -1,8 +1,10 @@
+import 'url-polyfill';
+import 'whatwg-fetch';
 import createSagaMiddleware from 'redux-saga';
 import { all, call } from 'redux-saga/effects';
-import appSaga from './sagas';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import Bubbles from '@buzzn/module_bubbles';
+import appSaga from './sagas';
 import RootReducer from './reducers';
 import { logException } from './_util';
 
