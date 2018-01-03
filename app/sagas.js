@@ -19,6 +19,19 @@ export function setScale() {
 export function hackScale() {
   document.onload = setScale();
   window.addEventListener('resize', setScale);
+
+  window.addEventListener('touchmove', (event) => {
+    if (event.scale !== 1) { event.preventDefault(); }
+  }, false);
+
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', (event) => {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 500) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
 }
 
 export function getGroupFromUrl() {
