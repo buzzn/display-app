@@ -28,10 +28,10 @@ module.exports = {
           presets: [
             ['@babel/env', {
               targets: {
-                browsers: ['last 2 versions', 'safari >= 7'],
-                modules: false,
+                browsers: ['last 2 versions', 'safari >= 7', 'ie 11', 'last 4 Edge versions'],
                 debug: true,
               },
+              useBuiltIns: 'usage',
             }],
             '@babel/react',
           ],
