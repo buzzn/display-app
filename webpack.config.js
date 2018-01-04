@@ -8,7 +8,6 @@ module.exports = {
     historyApiFallback: true,
   },
   entry: [
-    // '@babel/polyfill',
     'bootstrap-loader',
     'react-hot-loader/patch',
     'webpack/hot/only-dev-server',

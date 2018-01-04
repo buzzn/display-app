@@ -7,7 +7,6 @@ const StatsPlugin = require('stats-webpack-plugin');
 module.exports = {
   entry: {
     app: [
-      '@babel/polyfill',
       'bootstrap-loader',
       'whatwg-fetch',
       './app/index.production.js',
