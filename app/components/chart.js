@@ -54,32 +54,32 @@ export default class Chart extends Component {
     ]));
 
     const inLine = svgD3.selectAll('.in-line')
-    .data(inData)
-    .enter()
-    .append('path')
-    .attr('d', d => line(inData))
-    .attr('stroke', this.inColor)
-    .attr('stroke-width', 40)
-    .attr('fill', 'none');
+      .data(inData)
+      .enter()
+      .append('path')
+      .attr('d', d => line(inData))
+      .attr('stroke', this.inColor)
+      .attr('stroke-width', 40)
+      .attr('fill', 'none');
 
     const outLine = svgD3.selectAll('.out-line')
-    .data(outData)
-    .enter()
-    .append('path')
-    .attr('d', d => line(outData))
-    .attr('stroke', this.outColor)
-    .attr('stroke-width', 40)
-    .attr('fill', 'none');
+      .data(outData)
+      .enter()
+      .append('path')
+      .attr('d', d => line(outData))
+      .attr('stroke', this.outColor)
+      .attr('stroke-width', 40)
+      .attr('fill', 'none');
 
     svgD3.append('line')
-    .attr('x1', x(d3Date(endDate)) || 0)
-    .attr('x2', x(d3Date(endDate)) || 0)
-    .attr('y1', -400)
-    .attr('y2', 1400)
-    .attr('stroke-dasharray', '80, 20')
-    .attr('stroke', 'black')
-    .attr('stroke-width', 20)
-    .attr('fill', 'none');
+      .attr('x1', x(d3Date(endDate)) || 0)
+      .attr('x2', x(d3Date(endDate)) || 0)
+      .attr('y1', -400)
+      .attr('y2', 1400)
+      .attr('stroke-dasharray', '80, 20')
+      .attr('stroke', 'black')
+      .attr('stroke-width', 20)
+      .attr('fill', 'none');
   }
 
   render() {
