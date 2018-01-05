@@ -17,7 +17,8 @@ if (process.env.NODE_ENV === 'production') {
   };
 } else if (process.env.NODE_ENV === 'develop') {
   config = {
-    apiUrl: 'https://core.buzzn.io/',
+    // apiUrl: 'https://core.buzzn.io/',
+    apiUrl: 'https://staging-core.buzzn.io/',
     apiPath: 'api/display',
     secure: true,
     timeout: 60 * 1000,
