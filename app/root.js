@@ -67,7 +67,8 @@ export class Root extends Component {
               </Helmet>
               <div>
                 {
-                  !noTitle &&
+                  noTitle ?
+                  <div className="row" style={{ height: '70px' }}></div> :
                   <div className="row">
                     <div style={{ margin: '0 auto', fontSize: '66px', textAlign: 'center', color: 'white', textTransform: 'uppercase' }}>
                       { group.name }
