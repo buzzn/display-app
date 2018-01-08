@@ -14,7 +14,7 @@ import InfoPanel from './components/info_panel';
 
 import 'buzzn-style';
 import './styles/main.scss';
-import LogoImg from './images/bz_logo_115px_white.png';
+import LogoImg from './images/bz_logo_180px_white.png';
 
 export class Root extends Component {
   static propTypes = {
