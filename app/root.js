@@ -15,6 +15,7 @@ import InfoPanel from './components/info_panel';
 import 'buzzn-style';
 import './styles/main.scss';
 import LogoImg from './images/bz_logo_180px_white.png';
+import UserImg from './images/default_user.png';
 
 export class Root extends Component {
   static propTypes = {
@@ -111,7 +112,7 @@ export class Root extends Component {
                             margin: group.mentors.length > 1 ? '0 0 0 50px' : 'auto',
                             fontSize: '18px',
                             marginBottom: '40px' }} key={ m.id }>
-                            <img style={{ width: '152px', height: '152px', borderRadius: '76px', marginBottom: '10px' }} src={ m.image } />
+                            <img style={{ width: '152px', height: '152px', borderRadius: '76px', marginBottom: '10px' }} src={ m.image || UserImg } />
                             { `${m.firstName} ${m.lastName}` }
                           </div>
                         ))
