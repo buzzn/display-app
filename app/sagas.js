@@ -13,29 +13,43 @@ export function setScale() {
   const scale = scaleX < scaleY ? scaleX : scaleY;
   document.body.style.zoom = scale;
   document.body.style.MozTransform = `scale(${scale})`;
-  document.body.style.MozTransformOrigin = `${(window.innerWidth - (1920 * scale)) / 2}px 0%`;
+  if (scale < 1) {
+    document.body.style.MozTransformOrigin = `${window.innerWidth - (1920 * scale)}px 0 0`;
+  } else {
+    document.body.style.MozTransformOrigin = `${window.innerWidth - (1600 / scale)}px 0 0`;
+  }
 }
 
 export function hackScale() {
   document.onload = setScale();
   window.addEventListener('resize', setScale);
 
-  window.addEventListener('touchmove', (event) => {
-    if (event.scale !== 1) { event.preventDefault(); }
-  }, false);
+  window.addEventListener(
+    'touchmove',
+    (event) => {
+      if (event.scale !== 1) {
+        event.preventDefault();
+      }
+    },
+    false,
+  );
 
   let lastTouchEnd = 0;
-  document.addEventListener('touchend', (event) => {
-    const now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 500) {
-      event.preventDefault();
-    }
-    lastTouchEnd = now;
-  }, false);
+  document.addEventListener(
+    'touchend',
+    (event) => {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 500) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    },
+    false,
+  );
 }
 
 export function getGroupFromUrl() {
-  return (new URL(window.location.href)).pathname.split('/')[1];
+  return new URL(window.location.href).pathname.split('/')[1];
 }
 
 export function windowReload() {
@@ -85,7 +99,9 @@ export function* setUI() {
 }
 
 export default function* appLoop() {
-  const { apiUrl, apiPath, secure, timeout } = yield select(getConfig);
+  const {
+    apiUrl, apiPath, secure, timeout,
+  } = yield select(getConfig);
 
   yield fork(setUI);
 
