@@ -9,7 +9,7 @@ export default {
   },
   fetchGroupChart({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, {
-      headers: { ...prepareHeaders(), 'Cache-Control': 'no-cache' },
+      headers: prepareHeaders(),
     })
       .then(parseResponse);
   },
