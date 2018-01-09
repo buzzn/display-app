@@ -138,7 +138,7 @@ export function calculateAutarchy({ in: inData, out: outData }) {
 
 export function logException(ex, context) {
   if (Raven.isSetup()) {
-    Raven.captureException(ex, {
+    Raven.captureException(JSON.stringify(ex), {
       extra: context,
     });
   }
