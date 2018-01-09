@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import chunk from 'lodash/chunk';
 import reduce from 'lodash/reduce';
 import { connect } from 'react-redux';
-import { actions } from './actions';
 import Bubbles from '@buzzn/module_bubbles';
+import { actions } from './actions';
 import { calculateAutarchy } from './_util';
 import BubblesLayout from './components/bubbles_layout';
 import Chart from './components/chart';
@@ -143,15 +142,8 @@ export class Root extends Component {
 function mapStateToProps(state) {
   const calcSource = (types, registers) => registers.reduce((s, r) => (types.includes(r.label.toLowerCase()) ? s + Math.round(r.value) : s), 0);
 
-  let inSum = 0;
-  let outSum = 0;
-  if (state.app.charts.in.length > 0) {
-    inSum = chunk(state.app.charts.in, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + Math.round(v.value)), 0) / h.length) + sh, 0);
-  }
-  if (state.app.charts.out.length > 0) {
-    outSum = chunk(state.app.charts.out, 4).reduce((sh, h) => (h.reduce((sv, v) => (sv + Math.round(v.value)), 0) / h.length) + sh, 0);
-  }
-
+  const inSum = state.app.charts.total.in || 0;
+  const outSum = state.app.charts.total.out || 0;
   const sources = { solar: 'production_pv', fire: 'production_chp', wind: 'production_wind', water: 'production_water' };
   const production = reduce(sources, (res, v, k) => {
     if (!state.bubbles.registers.array.find(r => r.label.toLowerCase() === v)) return res;

@@ -10,7 +10,7 @@ export function configReducer(state = config) {
 export const initialState = {
   loading: true,
   group: {},
-  charts: { in: [], out: [], scores: {} },
+  charts: { in: [], out: [], total: { in: 0, out: 0 } },
   ui: { display: 'computer' },
 };
 
@@ -37,7 +37,13 @@ export function appReducer(state = initialState, action) {
     case constants.LOADED_GROUP:
       return { ...state, loading: false };
     case constants.SET_CHARTS:
-      return { ...state, charts: action.charts };
+      const { production: outData, consumption: inData } = action.charts;
+      const charts = {
+        in: Object.keys(inData.data).sort().map(ts => ({ timestamp: ts / 1000, value: inData.data[ts] })),
+        out: Object.keys(outData.data).sort().map(ts => ({ timestamp: ts / 1000, value: outData.data[ts] })),
+        total: { in: inData.total, out: outData.total },
+      };
+      return { ...state, charts };
 
     case constants.SET_UI:
       return { ...state, ui: uiReducer(state.ui, action) };
