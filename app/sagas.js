@@ -4,6 +4,7 @@ import Bubbles from '@buzzn/module_bubbles';
 import { constants, actions } from './actions';
 import api from './api';
 import { logException } from './_util';
+import store from './configure_store';
 
 export const getConfig = state => state.config;
 
@@ -11,12 +12,13 @@ export function setScale() {
   const scaleX = window.innerWidth / 1920;
   const scaleY = window.innerHeight / 1080;
   const scale = scaleX < scaleY ? scaleX : scaleY;
+  store.dispatch(actions.setWidgetScale(scale));
   document.body.style.zoom = scale;
   document.body.style.MozTransform = `scale(${scale})`;
   if (scale < 1) {
-    document.body.style.MozTransformOrigin = `${window.innerWidth - (1920 * scale)}px 0 0`;
+    document.body.style.MozTransformOrigin = `${window.innerWidth - 1920 * scale}px 0 0`;
   } else {
-    document.body.style.MozTransformOrigin = `${window.innerWidth - (1600 / scale)}px 0 0`;
+    document.body.style.MozTransformOrigin = `${window.innerWidth - 1600 / scale}px 0 0`;
   }
 }
 
