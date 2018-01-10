@@ -22,6 +22,7 @@ export class Root extends Component {
     display: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     group: PropTypes.object.isRequired,
+    mentors: PropTypes.array.isRequired,
     charts: PropTypes.object.isRequired,
     sourcesLeft: PropTypes.object.isRequired,
     sourcesRight: PropTypes.object.isRequired,
@@ -30,7 +31,8 @@ export class Root extends Component {
   };
 
   static defaultProps = {
-    group: { name: '', mentors: [], slug: '' },
+    group: { name: '', slug: '' },
+    mentors: [],
     charts: { in: [], out: [] },
     sourcesLeft: {},
     sourcesRight: {},
@@ -47,6 +49,7 @@ export class Root extends Component {
       display,
       loading,
       group,
+      mentors,
       charts,
       autarchy,
       productionSources,
@@ -99,22 +102,28 @@ export class Root extends Component {
                       paddingTop: '40px',
                       position: 'relative' }}>
                       { Object.keys(sourcesRight).map(k => <EnergySource key={ sourcesRight[k].id } position="right" type={ k } value={ sourcesRight[k].value }/>) }
-                      <div style={{ fontSize: '24px', margin: '40px auto 20px auto', textAlign: 'center' }}>
-                        Ansprechpartner
-                      </div>
                       {
-                        group.mentors.slice(0, 2).map(m => (
-                          <div style={{
-                            float: group.mentors.length > 1 ? 'left' : 'none',
-                            width: '152px',
-                            textAlign: 'center',
-                            margin: group.mentors.length > 1 ? '0 0 0 50px' : 'auto',
-                            fontSize: '18px',
-                            marginBottom: '40px' }} key={ m.id }>
-                            <img style={{ width: '152px', height: '152px', borderRadius: '76px', marginBottom: '10px' }} src={ m.image || UserImg } />
-                            { `${m.firstName} ${m.lastName}` }
+                        mentors.length > 0 &&
+                        <React.Fragment>
+                          <div style={{ fontSize: '24px', margin: '40px auto 20px auto', textAlign: 'center' }}>
+                            Ansprechpartner
                           </div>
-                        ))
+                          {
+                            mentors.slice(0, 2).map(m => (
+                              <div style={{
+                                float: mentors.length > 1 ? 'left' : 'none',
+                                width: '152px',
+                                textAlign: 'center',
+                                margin: mentors.length > 1 ? '0 0 0 50px' : 'auto',
+                                fontSize: '18px',
+                                marginBottom: '40px',
+                              }} key={ m.id }>
+                                <img style={{ width: '150px', height: '150px', borderRadius: '76px', marginBottom: '10px' }} src={ m.image || UserImg } />
+                                { `${m.firstName} ${m.lastName}` }
+                              </div>
+                            ))
+                          }
+                        </React.Fragment>
                       }
                     </div>
                     <img style={{ position: 'absolute', right: '0', bottom: '0' }} src={ LogoImg } />
@@ -131,7 +140,21 @@ export class Root extends Component {
               color: 'white',
               marginTop: '50vh',
             }}>
-              { loading ? 'Loading...' : 'Deine Energiegruppe ist aktuell nicht für diese Ansicht freigeschaltet.'}
+              {
+                loading ?
+                'Loading...' :
+                <React.Fragment>
+                  Deine Energiegruppe ist aktuell nicht für diese Ansicht freigeschaltet.
+                  {
+                    mentors.length > 0 &&
+                    <React.Fragment>
+                    Bitte wende Dich an Deinen Stromgeber:
+                    <img style={{ width: '150px', height: '150px', borderRadius: '76px', marginBottom: '10px' }} src={ mentors[0].image || UserImg } />
+                    { `${mentors[0].firstName} ${mentors[0].lastName}` }
+                    </React.Fragment>
+                  }
+                </React.Fragment>
+              }
             </div>
         }
       </div>
@@ -160,6 +183,7 @@ function mapStateToProps(state) {
     display: state.app.ui.display,
     loading: state.app.loading,
     group: state.app.group,
+    mentors: state.app.mentors,
     charts: state.app.charts,
     productionSources: Object.keys(production).length,
     sourcesLeft: { ...production, grid, consumption },

@@ -123,10 +123,10 @@ export default function* appLoop() {
   while (true) {
     try {
       yield put(actions.loadingGroup());
+      const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
+      yield put(actions.setMentors(mentors.array));
       const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
       if (group.id) {
-        const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
-        group.mentors = mentors.array;
         yield put(actions.setGroup(group));
         yield put(actions.loadedGroup());
         const chartSaga = yield fork(getCharts, { apiUrl, apiPath }, { groupId });

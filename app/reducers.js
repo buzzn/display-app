@@ -10,6 +10,7 @@ export function configReducer(state = config) {
 export const initialState = {
   loading: true,
   group: {},
+  mentors: [],
   charts: { in: [], out: [], total: { in: 0, out: 0 } },
   ui: { display: 'computer' },
 };
@@ -30,6 +31,8 @@ export function appReducer(state = initialState, action) {
       return { ...state, groupId: action.groupId };
     case constants.SET_URL_GROUP_ID:
       return { ...state, urlGroupId: action.urlGroupId };
+    case constants.SET_GROUP_MENTORS:
+      return { ...state, mentors: action.mentors };
     case constants.SET_GROUP:
       return { ...state, group: action.group };
     case constants.LOADING_GROUP:
