@@ -13,6 +13,7 @@ export const initialState = {
   mentors: [],
   charts: { in: [], out: [], total: { in: 0, out: 0 } },
   ui: { display: 'computer' },
+  widgetScale: 1,
 };
 
 export function uiReducer(state, action) {
@@ -50,6 +51,9 @@ export function appReducer(state = initialState, action) {
 
     case constants.SET_UI:
       return { ...state, ui: uiReducer(state.ui, action) };
+
+    case constants.SET_WIDGET_SCALE:
+      return { ...state, widgetScale: action.widgetScale };
 
     default:
       return state;

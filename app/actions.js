@@ -8,6 +8,7 @@ export const constants = {
   LOADED_GROUP: 'buzzn_display/LOADED_GROUP',
   SET_CHARTS: 'buzzn_display/SET_CHARTS',
   CANCEL: 'buzzn_display/CANCEL',
+  SET_WIDGET_SCALE: 'buzzn_display/SET_WIDGET_SCALE',
 
   SET_UI: 'buzzn_display/SET_UI',
 };
@@ -22,6 +23,7 @@ export const actions = {
   loadedGroup: () => ({ type: constants.LOADED_GROUP }),
   setCharts: charts => ({ type: constants.SET_CHARTS, charts }),
   cancel: () => ({ type: constants.CANCEL }),
+  setWidgetScale: (scale) => ({ type: constants.SET_WIDGET_SCALE, scale }),
 
   setUI: ui => ({ type: constants.SET_UI, ui }),
 };

@@ -28,6 +28,7 @@ export class Root extends Component {
     sourcesRight: PropTypes.object.isRequired,
     productionSources: PropTypes.number.isRequired,
     bubblesStatus: PropTypes.number,
+    widgetScale: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -37,6 +38,7 @@ export class Root extends Component {
     sourcesLeft: {},
     sourcesRight: {},
     productionSources: 0,
+    widgetScale: 1,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -58,6 +60,7 @@ export class Root extends Component {
       inSum,
       outSum,
       noTitle,
+      widgetScale,
     } = this.props;
 
     return (
@@ -91,7 +94,12 @@ export class Root extends Component {
                       position: 'relative' }}>
                       { Object.keys(sourcesLeft).map(k => <EnergySource key={ sourcesLeft[k].id } position="left" type={ k } value={ sourcesLeft[k].value }/>) }
                     </div>
-                    <Bubbles.container Layout={ BubblesLayout } Chart={ () => (<Chart charts={ charts } />) } InfoIn={ () => <InfoPanel type="in" data={ inSum }/> } InfoOut={ () => <InfoPanel type="out" data={ outSum }/> } />
+                    <Bubbles.container
+                      Layout={ BubblesLayout }
+                      widgetScale={ widgetScale }
+                      Chart={ () => (<Chart charts={ charts } />) }
+                      InfoIn={ () => <InfoPanel type="in" data={ inSum }/> }
+                      InfoOut={ () => <InfoPanel type="out" data={ outSum }/> } />
                     <div style={{
                       width: '460px',
                       float: 'left',
@@ -192,6 +200,7 @@ function mapStateToProps(state) {
     inSum,
     outSum,
     bubblesStatus: state.bubbles.registers._status,
+    widgetScale: state.app.widgetScale,
   };
 }
 

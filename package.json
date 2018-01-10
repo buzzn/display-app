@@ -64,9 +64,10 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0-beta.34",
-    "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#master",
+    "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#72_bubbles_labels",
     "bootstrap": "^4.0.0-beta.2",
     "buzzn-style": "git://github.com/buzzn/buzzn-style.git",
+    "chance": "^1.0.13",
     "d3": "^4.12.0",
     "font-awesome": "^4.7.0",
     "isomorphic-fetch": "^2.2.1",
