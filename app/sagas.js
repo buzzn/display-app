@@ -4,6 +4,7 @@ import Bubbles from '@buzzn/module_bubbles';
 import { constants, actions } from './actions';
 import api from './api';
 import { logException } from './_util';
+import store from './configure_store';
 
 export const getConfig = state => state.config;
 
@@ -11,31 +12,46 @@ export function setScale() {
   const scaleX = window.innerWidth / 1920;
   const scaleY = window.innerHeight / 1080;
   const scale = scaleX < scaleY ? scaleX : scaleY;
+  if (store) store.dispatch(actions.setWidgetScale(scale));
   document.body.style.zoom = scale;
   document.body.style.MozTransform = `scale(${scale})`;
-  document.body.style.MozTransformOrigin = `${(window.innerWidth - (1920 * scale)) / 2}px 0%`;
+  if (scale < 1) {
+    document.body.style.MozTransformOrigin = `${window.innerWidth - 1920 * scale}px 0 0`;
+  } else {
+    document.body.style.MozTransformOrigin = `${window.innerWidth - 1600 / scale}px 0 0`;
+  }
 }
 
 export function hackScale() {
   document.onload = setScale();
   window.addEventListener('resize', setScale);
 
-  window.addEventListener('touchmove', (event) => {
-    if (event.scale !== 1) { event.preventDefault(); }
-  }, false);
+  window.addEventListener(
+    'touchmove',
+    (event) => {
+      if (event.scale !== 1) {
+        event.preventDefault();
+      }
+    },
+    false,
+  );
 
   let lastTouchEnd = 0;
-  document.addEventListener('touchend', (event) => {
-    const now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 500) {
-      event.preventDefault();
-    }
-    lastTouchEnd = now;
-  }, false);
+  document.addEventListener(
+    'touchend',
+    (event) => {
+      const now = new Date().getTime();
+      if (now - lastTouchEnd <= 500) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    },
+    false,
+  );
 }
 
 export function getGroupFromUrl() {
-  return (new URL(window.location.href)).pathname.split('/')[1];
+  return new URL(window.location.href).pathname.split('/')[1];
 }
 
 export function windowReload() {
@@ -85,11 +101,11 @@ export function* setUI() {
 }
 
 export default function* appLoop() {
-  const { apiUrl, apiPath, secure, timeout } = yield select(getConfig);
+  const {
+    apiUrl, apiPath, secure, timeout,
+  } = yield select(getConfig);
 
   yield fork(setUI);
-
-  yield call(hackScale);
 
   if (secure && window.location.protocol !== 'https:') {
     window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`;
@@ -104,13 +120,15 @@ export default function* appLoop() {
   yield put(Bubbles.actions.setApiParams({ apiUrl, apiPath: `${apiPath}/groups`, timeout }));
   yield put(Bubbles.actions.setToken({ token: null }));
 
+  yield call(hackScale);
+
   while (true) {
     try {
       yield put(actions.loadingGroup());
+      const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
+      yield put(actions.setMentors(mentors.array));
       const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
       if (group.id) {
-        const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
-        group.mentors = mentors.array;
         yield put(actions.setGroup(group));
         yield put(actions.loadedGroup());
         const chartSaga = yield fork(getCharts, { apiUrl, apiPath }, { groupId });

@@ -10,8 +10,10 @@ export function configReducer(state = config) {
 export const initialState = {
   loading: true,
   group: {},
+  mentors: [],
   charts: { in: [], out: [], total: { in: 0, out: 0 } },
   ui: { display: 'computer' },
+  widgetScale: 1,
 };
 
 export function uiReducer(state, action) {
@@ -30,6 +32,8 @@ export function appReducer(state = initialState, action) {
       return { ...state, groupId: action.groupId };
     case constants.SET_URL_GROUP_ID:
       return { ...state, urlGroupId: action.urlGroupId };
+    case constants.SET_GROUP_MENTORS:
+      return { ...state, mentors: action.mentors };
     case constants.SET_GROUP:
       return { ...state, group: action.group };
     case constants.LOADING_GROUP:
@@ -47,6 +51,9 @@ export function appReducer(state = initialState, action) {
 
     case constants.SET_UI:
       return { ...state, ui: uiReducer(state.ui, action) };
+
+    case constants.SET_WIDGET_SCALE:
+      return { ...state, widgetScale: action.widgetScale };
 
     default:
       return state;

@@ -12,7 +12,7 @@ function* rootSaga() {
   yield all([call(Bubbles.sagas, logException), call(appSaga)]);
 }
 
-export default function configureStore(initialState) {
+function configureStore(initialState) {
   const sagaMiddleware = createSagaMiddleware();
   const store = createStore(RootReducer,
     {},
@@ -30,3 +30,7 @@ export default function configureStore(initialState) {
 
   return store;
 }
+
+const store = configureStore();
+
+export default store;

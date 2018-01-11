@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import Redbox from 'redbox-react';
-import configureStore from './configure_store';
+import store from './configure_store';
 import Root from './root';
 
 const render = (Component) => {
   ReactDOM.render(
     <AppContainer errorReporter={ Redbox }>
-      <Provider store={ configureStore() }>
+      <Provider store={ store }>
         <Component />
       </Provider>
     </AppContainer>,
