@@ -53,7 +53,7 @@ export function appReducer(state = initialState, action) {
       return { ...state, ui: uiReducer(state.ui, action) };
 
     case constants.SET_WIDGET_SCALE:
-      return { ...state, widgetScale: action.widgetScale };
+      return { ...state, widgetScale: action.scale };
 
     default:
       return state;
