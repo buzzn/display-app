@@ -12,7 +12,7 @@ export function setScale() {
   const scaleX = window.innerWidth / 1920;
   const scaleY = window.innerHeight / 1080;
   const scale = scaleX < scaleY ? scaleX : scaleY;
-  store.dispatch(actions.setWidgetScale(scale));
+  if (store) store.dispatch(actions.setWidgetScale(scale));
   document.body.style.zoom = scale;
   document.body.style.MozTransform = `scale(${scale})`;
   if (scale < 1) {
@@ -107,8 +107,6 @@ export default function* appLoop() {
 
   yield fork(setUI);
 
-  yield call(hackScale);
-
   if (secure && window.location.protocol !== 'https:') {
     window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`;
   }
@@ -121,6 +119,8 @@ export default function* appLoop() {
   yield put(actions.setUrlGroupId(groupId));
   yield put(Bubbles.actions.setApiParams({ apiUrl, apiPath: `${apiPath}/groups`, timeout }));
   yield put(Bubbles.actions.setToken({ token: null }));
+
+  yield call(hackScale);
 
   while (true) {
     try {
