@@ -72,7 +72,9 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
     } catch (error) {
       logException(error);
     }
-    yield call(delay, 15 * 60 * 1000);
+    // FIXME: temporary fix for broken charts
+    yield call(delay, 40 * 1000);
+    // yield call(delay, 15 * 60 * 1000);
   }
 }
 
