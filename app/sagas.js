@@ -128,7 +128,7 @@ export default function* appLoop() {
     try {
       yield put(actions.loadingGroup());
       const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
-      yield put(actions.setMentors(mentors.array));
+      yield put(actions.setMentors(mentors));
       const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
       if (group.id) {
         yield put(actions.setGroup(group));
@@ -145,7 +145,11 @@ export default function* appLoop() {
         yield call(delay, 10 * 60 * 1000);
       }
     } catch (error) {
-      logException(error);
+      if (error._status === 404 || error._status === 403) {
+        yield put(actions.setMentors({ _status: error._status, array: [] }));
+      } else {
+        logException(error.error);
+      }
       // FIXME: temporary hack, please change to proper err code handling
       yield put(actions.loadedGroup());
       yield call(delay, 10 * 60 * 1000);

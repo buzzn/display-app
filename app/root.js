@@ -22,7 +22,7 @@ export class Root extends Component {
     display: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     group: PropTypes.object.isRequired,
-    mentors: PropTypes.array.isRequired,
+    mentors: PropTypes.object.isRequired,
     charts: PropTypes.object.isRequired,
     sourcesLeft: PropTypes.object.isRequired,
     sourcesRight: PropTypes.object.isRequired,
@@ -33,7 +33,7 @@ export class Root extends Component {
 
   static defaultProps = {
     group: { name: '', slug: '' },
-    mentors: [],
+    mentors: { _status: null, array: [] },
     charts: { in: [], out: [] },
     sourcesLeft: {},
     sourcesRight: {},
@@ -111,18 +111,18 @@ export class Root extends Component {
                       position: 'relative' }}>
                       { Object.keys(sourcesRight).map(k => <EnergySource key={ sourcesRight[k].id } position="right" type={ k } value={ sourcesRight[k].value }/>) }
                       {
-                        mentors.length > 0 &&
+                        mentors.array.length > 0 &&
                         <React.Fragment>
                           <div style={{ fontSize: '24px', margin: '40px auto 20px auto', textAlign: 'center' }}>
                             Ansprechpartner
                           </div>
                           {
-                            mentors.slice(0, 2).map(m => (
+                            mentors.array.slice(0, 2).map(m => (
                               <div style={{
-                                float: mentors.length > 1 ? 'left' : 'none',
+                                float: mentors.array.length > 1 ? 'left' : 'none',
                                 width: '152px',
                                 textAlign: 'center',
-                                margin: mentors.length > 1 ? '0 0 0 50px' : 'auto',
+                                margin: mentors.array.length > 1 ? '0 0 0 50px' : 'auto',
                                 fontSize: '18px',
                                 marginBottom: '40px',
                               }} key={ m.id }>
@@ -151,14 +151,18 @@ export class Root extends Component {
               {
                 loading ?
                 'Loading...' :
+                mentors._status === 404 ?
+                <React.Fragment>
+                  Die von Dir gesuchte Seite wurde leider nicht gefunden. Erfahre mehr über <a href="https://www.buzzn.net">www.buzzn.net</a>
+                </React.Fragment> :
                 <React.Fragment>
                   Deine Energiegruppe ist aktuell nicht für diese Ansicht freigeschaltet.
                   {
-                    mentors.length > 0 &&
+                    mentors.array.length > 0 &&
                     <React.Fragment>
                     Bitte wende Dich an Deinen Stromgeber:
-                    <img style={{ width: '150px', height: '150px', borderRadius: '76px', marginBottom: '10px' }} src={ mentors[0].image || UserImg } />
-                    { `${mentors[0].firstName} ${mentors[0].lastName}` }
+                    <img style={{ width: '150px', height: '150px', borderRadius: '76px', marginBottom: '10px' }} src={ mentors.array[0].image || UserImg } />
+                    { `${mentors.array[0].firstName} ${mentors.array[0].lastName}` }
                     </React.Fragment>
                   }
                 </React.Fragment>
