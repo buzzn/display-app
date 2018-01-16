@@ -153,7 +153,9 @@ export class Root extends Component {
                 'Loading...' :
                 mentors._status === 404 ?
                 <React.Fragment>
-                  Die von Dir gesuchte Seite wurde leider nicht gefunden. Erfahre mehr über <a href="https://www.buzzn.net">www.buzzn.net</a>
+                  <img src={LogoImg}/><br />
+                  Die von Dir gesuchte Seite wurde leider nicht gefunden.<br />
+                  Erfahre mehr über <a href="https://www.buzzn.net" style={{ color: 'white', textDecoration: 'underline' }}>www.buzzn.net</a>
                 </React.Fragment> :
                 <React.Fragment>
                   Deine Energiegruppe ist aktuell nicht für diese Ansicht freigeschaltet.
