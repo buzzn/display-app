@@ -7,7 +7,12 @@ const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: ['bootstrap-loader', 'whatwg-fetch', './app/index.production.js'],
+    app: [
+      '@babel/polyfill',
+      'bootstrap-loader',
+      'whatwg-fetch',
+      './app/index.production.js',
+    ],
   },
   output: {
     path: path.resolve(__dirname, 'build/public/assets'),
