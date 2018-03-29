@@ -3,83 +3,83 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const StatsPlugin = require('stats-webpack-plugin');
+const GenerateJsonPlugin = require('generate-json-webpack-plugin');
 
 module.exports = {
   entry: {
-    app: [
-      'bootstrap-loader',
-      'whatwg-fetch',
-      './app/index.production.js',
-    ],
+    app: ['bootstrap-loader', 'whatwg-fetch', './app/index.production.js'],
   },
   output: {
     path: path.resolve(__dirname, 'build/public/assets'),
     publicPath: '/assets/',
-    filename: 'bundle-[hash].min.js',
+    filename: '[name]-bundle-[chunkhash].min.js',
+    chunkFilename: '[name]-bundle-[chunkhash].min.js',
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(ts|tsx|js)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel-loader',
         query: {
           presets: [
-            ['@babel/env', {
-              targets: {
-                browsers: ['last 2 versions', 'safari >= 7', 'ie 11', 'last 4 Edge versions'],
-                debug: true,
+            [
+              '@babel/env',
+              {
+                targets: {
+                  browsers: ['last 2 versions', 'safari >= 7'],
+                  modules: false,
+                  debug: true,
+                },
               },
-              useBuiltIns: 'usage',
-            }],
+            ],
+            '@babel/stage-3',
             '@babel/react',
+            '@babel/typescript',
           ],
           plugins: [
+            'react-hot-loader/babel',
             '@babel/plugin-proposal-object-rest-spread',
             '@babel/plugin-proposal-class-properties',
             '@babel/plugin-syntax-class-properties',
-            '@babel/plugin-syntax-flow',
             '@babel/plugin-syntax-object-rest-spread',
-            '@babel/plugin-transform-flow-comments',
-            '@babel/plugin-transform-flow-strip-types',
           ],
         },
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'postcss-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
       {
         test: /\.scss$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'postcss-loader',
-          'sass-loader',
-        ],
+        use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'],
       },
       {
         test: /\.woff?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=[path][name].[ext]',
+        loader:
+          'url-loader?limit=10000&mimetype=application/font-woff&name=[path][name].[ext]',
       },
       {
         test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff2&name=[path][name].[ext]',
+        loader:
+          'url-loader?limit=10000&mimetype=application/font-woff2&name=[path][name].[ext]',
       },
       {
-        test: /\.(eot|ttf|svg|gif|png)(\?[\s\S]+)?$/,
+        test: /\.(eot|ttf|svg|gif|png|jpg)(\?[\s\S]+)?$/,
         loader: 'file-loader',
-      },
-      {
-        test: /\.json?$/,
-        loader: 'json',
       },
     ],
   },
+  resolve: {
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, 'app'),
+      'node_modules',
+    ],
+    extensions: ['.ts', '.tsx', '.js', '.json'],
+    alias: { moment$: 'moment/moment.js' },
+  },
+  optimization: { splitChunks: { chunks: 'all' } },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -87,7 +87,11 @@ module.exports = {
     new webpack.ProvidePlugin({
       'window.Tether': 'tether',
     }),
-    new webpack.NoErrorsPlugin(),
+    new webpack.HashedModuleIdsPlugin({}),
+    new webpack.ContextReplacementPlugin(
+      /moment[\\\/]locale$/,
+      /^\.\/(en|de)$/,
+    ),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
@@ -98,7 +102,6 @@ module.exports = {
         },
       },
     }),
-    new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.ProvidePlugin({
       d3: 'd3',
     }),
@@ -106,21 +109,12 @@ module.exports = {
       template: 'app/index.html',
       filename: '../index.html',
     }),
-    // TODO: fix it after #265
-    new ExtractTextPlugin({ filename: 'bundle-[hash].min.css', allChunks: true }),
-    new webpack.optimize.UglifyJsPlugin({
-      comments: false,
-      sourceMap: false,
-      compress: {
-        warnings: false,
-        screw_ie8: true,
-        unused: true,
-        dead_code: true,
-      },
-    }),
     new StatsPlugin('webpack.stats.json', {
       source: false,
       modules: true,
+    }),
+    new GenerateJsonPlugin('version.json', {
+      version: require('./package.json').version,
     }),
   ],
 };
