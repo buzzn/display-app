@@ -10,7 +10,7 @@ export function configReducer(state = config) {
 export const initialState = {
   loading: true,
   group: {},
-  mentors: [],
+  mentors: { _status: null, array: [] },
   charts: { in: [], out: [], total: { in: 0, out: 0 } },
   ui: { display: 'computer' },
   widgetScale: 1,
