@@ -16,7 +16,7 @@ module.exports = {
   },
   entry: [
     '@babel/polyfill',
-    'bootstrap-loader',
+    // 'bootstrap-loader',
     'react-hot-loader/patch',
     'webpack/hot/only-dev-server',
     'whatwg-fetch',

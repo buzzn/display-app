@@ -20,4 +20,11 @@ body {
   #root {
     -moz-transform-origin: 0 0;
   }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -16px;
+    margin-left: -16px;
+  }
 }
