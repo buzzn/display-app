@@ -15,7 +15,7 @@ import { logException } from './_util';
 import store from './configure_store';
 
 export const getConfig = state => state.config;
-export const getAppVer = state => state.appVer;
+export const getAppVer = state => state.app.appVer;
 
 export function setScale() {
   const scaleX = window.innerWidth / 1920;
@@ -72,9 +72,8 @@ export function* windowReload() {
       const { version: newVer } = yield call(api.fetchVersion);
       yield put(actions.setAppVer(newVer));
       if (currentVer && currentVer !== newVer) {
-        console.log(currentVer)
-        console.log(newVer)
-        window.location.reload();}
+        window.location.reload();
+      }
     } catch (error) {
       logException(error);
     }

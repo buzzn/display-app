@@ -9,7 +9,6 @@ module.exports = {
   entry: {
     app: [
       '@babel/polyfill',
-      // 'bootstrap-loader',
       'whatwg-fetch',
       './app/index.production.js',
     ],
@@ -89,9 +88,6 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
-    // new webpack.ProvidePlugin({
-    //   'window.Tether': 'tether',
-    // }),
     new webpack.HashedModuleIdsPlugin({}),
     new webpack.ContextReplacementPlugin(
       /moment[\\\/]locale$/,
