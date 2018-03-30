@@ -7,6 +7,12 @@ module.exports = {
   devtool: 'sourcemap',
   devServer: {
     historyApiFallback: true,
+    proxy: {
+      '/assets/*': {
+        target: 'http://localhost:2998/',
+        pathRewrite: { '^/assets': '' },
+      },
+    },
   },
   entry: [
     '@babel/polyfill',
@@ -71,11 +77,13 @@ module.exports = {
       },
       {
         test: /\.woff?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff&name=[path][name].[ext]',
+        loader:
+          'url-loader?limit=10000&mimetype=application/font-woff&name=[path][name].[ext]',
       },
       {
         test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff2&name=[path][name].[ext]',
+        loader:
+          'url-loader?limit=10000&mimetype=application/font-woff2&name=[path][name].[ext]',
       },
       {
         test: /\.(eot|ttf|svg|gif|png|jpg)(\?[\s\S]+)?$/,
@@ -84,7 +92,11 @@ module.exports = {
     ],
   },
   resolve: {
-    modules: [path.resolve(__dirname, 'node_modules'), path.resolve(__dirname, 'app'), 'node_modules'],
+    modules: [
+      path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, 'app'),
+      'node_modules',
+    ],
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: {
       moment$: 'moment/moment.js',
