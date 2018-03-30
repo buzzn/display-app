@@ -71,7 +71,10 @@ export function* windowReload() {
     try {
       const { version: newVer } = yield call(api.fetchVersion);
       yield put(actions.setAppVer(newVer));
-      if (currentVer && currentVer !== newVer) window.location.reload();
+      if (currentVer && currentVer !== newVer) {
+        console.log(currentVer)
+        console.log(newVer)
+        window.location.reload();}
     } catch (error) {
       logException(error);
     }
