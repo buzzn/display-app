@@ -26,9 +26,9 @@ export default {
       .then(camelizeResponseKeys);
   },
   fetchVersion() {
-    return fetch(`${window.location.origin}/assets/version.json`).then(
-      parseResponse,
-    );
+    return fetch(`${window.location.origin}/assets/version.json`, {
+      headers: { 'Cache-Control': 'no-cache' },
+    }).then(parseResponse);
   },
   setUI(ui) {
     localStorage.setItem('buzznDisplayUI', JSON.stringify(ui || {}));
