@@ -14,6 +14,7 @@ export const initialState = {
   charts: { in: [], out: [], total: { in: 0, out: 0 } },
   ui: { display: 'computer' },
   widgetScale: 1,
+  appVer: null,
 };
 
 export function uiReducer(state, action) {
@@ -43,8 +44,12 @@ export function appReducer(state = initialState, action) {
     case constants.SET_CHARTS:
       const { production: outData, consumption: inData } = action.charts;
       const charts = {
-        in: Object.keys(inData.data).sort().map(ts => ({ timestamp: ts / 1000, value: inData.data[ts] })),
-        out: Object.keys(outData.data).sort().map(ts => ({ timestamp: ts / 1000, value: outData.data[ts] })),
+        in: Object.keys(inData.data)
+          .sort()
+          .map(ts => ({ timestamp: ts / 1000, value: inData.data[ts] })),
+        out: Object.keys(outData.data)
+          .sort()
+          .map(ts => ({ timestamp: ts / 1000, value: outData.data[ts] })),
         total: { in: inData.total, out: outData.total },
       };
       return { ...state, charts };
@@ -54,6 +59,9 @@ export function appReducer(state = initialState, action) {
 
     case constants.SET_WIDGET_SCALE:
       return { ...state, widgetScale: action.scale };
+
+    case constants.SET_APP_VER:
+      return { ...state, appVer: action.appVer };
 
     default:
       return state;

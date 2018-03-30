@@ -1,27 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
 import { Provider } from 'react-redux';
-import Redbox from 'redbox-react';
 import store from './configure_store';
-import Root from './root';
+import HotRoot from './hot_root';
 
-const render = (Component) => {
-  ReactDOM.render(
-    <AppContainer errorReporter={ Redbox }>
-      <Provider store={ store }>
-        <Component />
-      </Provider>
-    </AppContainer>,
-    document.querySelector('#root'),
-  );
-};
-
-render(Root);
-
-if (module.hot) {
-  module.hot.accept('./root', () => {
-    const NewRoot = require('./root').default;
-    render(NewRoot);
-  });
-}
+ReactDOM.render(
+  <Provider store={store}>
+    <HotRoot />
+  </Provider>,
+  document.querySelector('#root'),
+);

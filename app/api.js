@@ -4,14 +4,12 @@ export default {
   fetchGroup({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}`, {
       headers: prepareHeaders(),
-    })
-      .then(parseResponse);
+    }).then(parseResponse);
   },
   fetchGroupChart({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, {
       headers: prepareHeaders(),
-    })
-      .then(parseResponse);
+    }).then(parseResponse);
   },
   fetchGroupMentors({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/mentors`, {
@@ -27,6 +25,15 @@ export default {
       .then(parseResponse)
       .then(camelizeResponseKeys);
   },
-  setUI(ui) { localStorage.setItem('buzznDisplayUI', JSON.stringify(ui || {})); },
-  getUI() { return JSON.parse(localStorage.getItem('buzznDisplayUI')) || {}; },
+  fetchVersion() {
+    return fetch(`${window.location.origin}/assets/version.json`, {
+      headers: { 'Cache-Control': 'no-cache' },
+    }).then(parseResponse);
+  },
+  setUI(ui) {
+    localStorage.setItem('buzznDisplayUI', JSON.stringify(ui || {}));
+  },
+  getUI() {
+    return JSON.parse(localStorage.getItem('buzznDisplayUI')) || {};
+  },
 };
