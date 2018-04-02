@@ -41,8 +41,8 @@ export class Root extends Component {
     widgetScale: 1,
   };
 
-  componentWillReceiveProps(nextProps) {
-    const { bubblesStatus, cancel } = nextProps;
+  componentDidUpdate() {
+    const { bubblesStatus, cancel } = this.props;
     if (bubblesStatus === 403) cancel();
   }
 
@@ -64,43 +64,75 @@ export class Root extends Component {
     } = this.props;
 
     return (
-      <div id={ `display-${display}` } style={{ width: '1920px', margin: 'auto' }}>
-        {
-          group.id ?
+      <div
+        id={`display-${display}`}
+        style={{ width: '1920px', margin: 'auto' }}
+      >
+        {group.id ? (
+          <div>
+            <Helmet>
+              <title>Display: {group.name}</title>
+            </Helmet>
             <div>
-              <Helmet>
-                <title>Display: { group.name }</title>
-              </Helmet>
-              <div>
-                {
-                  noTitle ?
-                  <div className="row" style={{ height: '40px' }}></div> :
-                  <div className="row">
-                    <div style={{ margin: '0 auto', fontSize: '66px', textAlign: 'center', color: 'white', textTransform: 'uppercase' }}>
-                      { group.name }
-                    </div>
-                  </div>
-                }
+              {noTitle ? (
+                <div className="row" style={{ height: '40px' }} />
+              ) : (
                 <div className="row">
-                  <div style={{ width: '1880px', margin: noTitle ? '20px auto' : '0 auto', position: 'relative', minHeight: '960px' }}>
-                    <div style={{
+                  <div
+                    style={{
+                      margin: '0 auto',
+                      fontSize: '66px',
+                      textAlign: 'center',
+                      color: 'white',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {group.name}
+                  </div>
+                </div>
+              )}
+              <div className="row">
+                <div
+                  style={{
+                    width: '1880px',
+                    margin: noTitle ? '20px auto' : '0 auto',
+                    position: 'relative',
+                    minHeight: '960px',
+                  }}
+                >
+                  <div
+                    style={{
                       width: '460px',
                       float: 'left',
                       minHeight: '650px',
                       background: '#f5f5f5',
-                      marginTop: productionSources < 3 ? '148px' : productionSources < 4 ? '108px' : '38px',
+                      marginTop:
+                        productionSources < 3
+                          ? '148px'
+                          : productionSources < 4 ? '108px' : '38px',
                       borderRadius: '40px 0 0 40px',
                       paddingTop: '40px',
-                      position: 'relative' }}>
-                      { Object.keys(sourcesLeft).map(k => <EnergySource key={ sourcesLeft[k].id } position="left" type={ k } value={ sourcesLeft[k].value }/>) }
-                    </div>
-                    <Bubbles.container
-                      Layout={ BubblesLayout }
-                      widgetScale={ widgetScale }
-                      Chart={ () => (<Chart charts={ charts } />) }
-                      InfoIn={ () => <InfoPanel type="in" data={ inSum }/> }
-                      InfoOut={ () => <InfoPanel type="out" data={ outSum }/> } />
-                    <div style={{
+                      position: 'relative',
+                    }}
+                  >
+                    {Object.keys(sourcesLeft).map(k => (
+                      <EnergySource
+                        key={sourcesLeft[k].id}
+                        position="left"
+                        type={k}
+                        value={sourcesLeft[k].value}
+                      />
+                    ))}
+                  </div>
+                  <Bubbles.container
+                    Layout={BubblesLayout}
+                    widgetScale={widgetScale}
+                    Chart={() => <Chart charts={charts} />}
+                    InfoIn={() => <InfoPanel type="in" data={inSum} />}
+                    InfoOut={() => <InfoPanel type="out" data={outSum} />}
+                  />
+                  <div
+                    style={{
                       width: '460px',
                       float: 'left',
                       minHeight: '650px',
@@ -108,38 +140,69 @@ export class Root extends Component {
                       marginTop: '100px',
                       borderRadius: '0 40px 40px 0',
                       paddingTop: '40px',
-                      position: 'relative' }}>
-                      { Object.keys(sourcesRight).map(k => <EnergySource key={ sourcesRight[k].id } position="right" type={ k } value={ sourcesRight[k].value }/>) }
-                      {
-                        mentors.array.length > 0 &&
-                        <React.Fragment>
-                          <div style={{ fontSize: '24px', margin: '40px auto 20px auto', textAlign: 'center' }}>
-                            Ansprechpartner
+                      position: 'relative',
+                    }}
+                  >
+                    {Object.keys(sourcesRight).map(k => (
+                      <EnergySource
+                        key={sourcesRight[k].id}
+                        position="right"
+                        type={k}
+                        value={sourcesRight[k].value}
+                      />
+                    ))}
+                    {mentors.array.length > 0 && (
+                      <React.Fragment>
+                        <div
+                          style={{
+                            fontSize: '24px',
+                            margin: '40px auto 20px auto',
+                            textAlign: 'center',
+                          }}
+                        >
+                          Ansprechpartner
+                        </div>
+                        {mentors.array.slice(0, 2).map(m => (
+                          <div
+                            style={{
+                              float: mentors.array.length > 1 ? 'left' : 'none',
+                              width: '152px',
+                              textAlign: 'center',
+                              margin:
+                                mentors.array.length > 1
+                                  ? '0 0 0 50px'
+                                  : 'auto',
+                              fontSize: '18px',
+                              marginBottom: '40px',
+                            }}
+                            key={m.id}
+                          >
+                            <img
+                              style={{
+                                width: '150px',
+                                height: '150px',
+                                borderRadius: '76px',
+                                marginBottom: '10px',
+                              }}
+                              src={m.image || UserImg}
+                            />
+                            {`${m.firstName} ${m.lastName}`}
                           </div>
-                          {
-                            mentors.array.slice(0, 2).map(m => (
-                              <div style={{
-                                float: mentors.array.length > 1 ? 'left' : 'none',
-                                width: '152px',
-                                textAlign: 'center',
-                                margin: mentors.array.length > 1 ? '0 0 0 50px' : 'auto',
-                                fontSize: '18px',
-                                marginBottom: '40px',
-                              }} key={ m.id }>
-                                <img style={{ width: '150px', height: '150px', borderRadius: '76px', marginBottom: '10px' }} src={ m.image || UserImg } />
-                                { `${m.firstName} ${m.lastName}` }
-                              </div>
-                            ))
-                          }
-                        </React.Fragment>
-                      }
-                    </div>
-                    <img style={{ position: 'absolute', right: '0', bottom: '0' }} src={ LogoImg } />
+                        ))}
+                      </React.Fragment>
+                    )}
                   </div>
+                  <img
+                    style={{ position: 'absolute', right: '0', bottom: '0' }}
+                    src={LogoImg}
+                  />
                 </div>
               </div>
-            </div> :
-            <div style={{
+            </div>
+          </div>
+        ) : (
+          <div
+            style={{
               fontSize: '40px',
               fontWeight: 500,
               letterSpacing: '1px',
@@ -147,47 +210,92 @@ export class Root extends Component {
               textAlign: 'center',
               color: 'white',
               marginTop: '50vh',
-            }}>
-              {
-                loading ?
-                'Loading...' :
-                mentors._status === 404 ?
-                <React.Fragment>
-                  <img src={LogoImg}/><br />
-                  Die von Dir gesuchte Seite wurde leider nicht gefunden.<br />
-                  Erfahre mehr über <a href="https://www.buzzn.net" style={{ color: 'white', textDecoration: 'underline' }}>www.buzzn.net</a>
-                </React.Fragment> :
-                <React.Fragment>
-                  Deine Energiegruppe ist aktuell nicht für diese Ansicht freigeschaltet.
-                  {
-                    mentors.array.length > 0 &&
-                    <React.Fragment>
+            }}
+          >
+            {loading ? (
+              'Loading...'
+            ) : mentors._status === 404 ? (
+              <React.Fragment>
+                <img src={LogoImg} />
+                <br />
+                Die von Dir gesuchte Seite wurde leider nicht gefunden.<br />
+                Erfahre mehr über{' '}
+                <a
+                  href="https://www.buzzn.net"
+                  style={{ color: 'white', textDecoration: 'underline' }}
+                >
+                  www.buzzn.net
+                </a>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                Deine Energiegruppe ist aktuell nicht für diese Ansicht
+                freigeschaltet.
+                {mentors.array.length > 0 && (
+                  <React.Fragment>
                     Bitte wende Dich an Deinen Stromgeber:
-                    <img style={{ width: '150px', height: '150px', borderRadius: '76px', marginBottom: '10px' }} src={ mentors.array[0].image || UserImg } />
-                    { `${mentors.array[0].firstName} ${mentors.array[0].lastName}` }
-                    </React.Fragment>
-                  }
-                </React.Fragment>
-              }
-            </div>
-        }
+                    <img
+                      style={{
+                        width: '150px',
+                        height: '150px',
+                        borderRadius: '76px',
+                        marginBottom: '10px',
+                      }}
+                      src={mentors.array[0].image || UserImg}
+                    />
+                    {`${mentors.array[0].firstName} ${
+                      mentors.array[0].lastName
+                    }`}
+                  </React.Fragment>
+                )}
+              </React.Fragment>
+            )}
+          </div>
+        )}
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const calcSource = (types, registers) => registers.reduce((s, r) => (types.includes(r.label.toLowerCase()) ? s + Math.round(r.value) : s), 0);
+  const calcSource = (types, registers) =>
+    registers.reduce(
+      (s, r) =>
+        types.includes(r.label.toLowerCase()) ? s + Math.round(r.value) : s,
+      0,
+    );
 
   const inSum = state.app.charts.total.in || 0;
   const outSum = state.app.charts.total.out || 0;
-  const sources = { solar: 'production_pv', fire: 'production_chp', wind: 'production_wind', water: 'production_water' };
-  const production = reduce(sources, (res, v, k) => {
-    if (!state.bubbles.registers.array.find(r => r.label.toLowerCase() === v)) return res;
-    return { ...res, [k]: { id: v, value: calcSource([v], state.bubbles.registers.array) } };
-  }, {});
-  const consumption = { id: 3, value: calcSource(['consumption', 'consumption_common'], state.bubbles.registers.array) };
-  const grid = { id: 4, value: consumption.value - reduce(production, (res, v) => (res + v.value), 0) };
+  const sources = {
+    solar: 'production_pv',
+    fire: 'production_chp',
+    wind: 'production_wind',
+    water: 'production_water',
+  };
+  const production = reduce(
+    sources,
+    (res, v, k) => {
+      if (!state.bubbles.registers.array.find(r => r.label.toLowerCase() === v))
+        return res;
+      return {
+        ...res,
+        [k]: { id: v, value: calcSource([v], state.bubbles.registers.array) },
+      };
+    },
+    {},
+  );
+  const consumption = {
+    id: 3,
+    value: calcSource(
+      ['consumption', 'consumption_common'],
+      state.bubbles.registers.array,
+    ),
+  };
+  const grid = {
+    id: 4,
+    value: consumption.value - reduce(production, (res, v) => res + v.value, 0),
+  };
   const autarchy = { id: 5, value: calculateAutarchy(state.app.charts) };
   const prodStat = { id: 6, value: outSum };
   const consStat = { id: 7, value: inSum };
