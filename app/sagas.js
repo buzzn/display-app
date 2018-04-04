@@ -11,7 +11,7 @@ import { delay } from 'redux-saga';
 import Bubbles from '@buzzn/module_bubbles';
 import { constants, actions } from './actions';
 import api from './api';
-import { logException } from './_util';
+import { logException, getAllUrlParams } from './_util';
 import store from './configure_store';
 
 export const getConfig = state => state.config;
@@ -81,19 +81,15 @@ export function* windowReload() {
   }
 }
 
-export function* bubbles({ groupId }) {
-  yield put(Bubbles.actions.setGroupId(groupId));
-}
-
 export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   while (true) {
     try {
-      const charts = yield call(api.fetchGroupChart, {
-        apiUrl,
-        apiPath,
-        groupId,
-      });
-      yield put(actions.setCharts(charts));
+      // const charts = yield call(api.fetchGroupChart, {
+      //   apiUrl,
+      //   apiPath,
+      //   groupId,
+      // });
+      // yield put(actions.setCharts(charts));
     } catch (error) {
       logException(error);
     }
@@ -138,9 +134,12 @@ export default function* appLoop() {
     )}`;
   }
 
-  const groupId = yield call(getGroupFromUrl);
+  let groupId = yield call(getGroupFromUrl);
+  const metaGroup = getAllUrlParams().metagroup;
 
-  if (!groupId) return false;
+  if (!metaGroup && !groupId) return false;
+
+  if (metaGroup) groupId = metaGroup.split(',');
 
   yield spawn(windowReload);
   yield put(actions.setUrlGroupId(groupId));
@@ -158,13 +157,20 @@ export default function* appLoop() {
   while (true) {
     try {
       yield put(actions.loadingGroup());
-      const mentors = yield call(api.fetchGroupMentors, {
-        apiUrl,
-        apiPath,
-        groupId,
-      });
-      yield put(actions.setMentors(mentors));
-      const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
+      let group = {};
+
+      if (Array.isArray(groupId)) {
+        group = { id: 'meta', name: '' };
+      } else {
+        const mentors = yield call(api.fetchGroupMentors, {
+          apiUrl,
+          apiPath,
+          groupId,
+        });
+        yield put(actions.setMentors(mentors));
+        group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
+      }
+
       if (group.id) {
         yield put(actions.setGroup(group));
         yield put(actions.loadedGroup());
