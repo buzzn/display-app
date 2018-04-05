@@ -1,3 +1,4 @@
+import reduce from 'lodash/reduce';
 import { prepareHeaders, parseResponse, camelizeResponseKeys } from './_util';
 
 export default {
@@ -7,9 +8,59 @@ export default {
     }).then(parseResponse);
   },
   fetchGroupChart({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, {
-      headers: prepareHeaders(),
-    }).then(parseResponse);
+    if (Array.isArray(groupId)) {
+      return Promise.all(
+        groupId.map(gid =>
+          fetch(`${apiUrl}${apiPath}/groups/${gid}/charts?duration=day`, {
+            headers: prepareHeaders(),
+          })
+            .then(parseResponse)
+            .catch(error => error),
+        ),
+      ).then(chartsArr => {
+        return chartsArr.reduce(
+          (sum, value) => {
+            if (
+              value._status !== 200 ||
+              !value.consumption ||
+              !value.production
+            ) {
+              return sum;
+            }
+            const reduceValues = (baseVal, newVal) => ({
+              total: baseVal.total + newVal.total,
+              data: reduce(
+                newVal.data,
+                (sum, val, key) => ({
+                  ...sum,
+                  [key]: baseVal.data[key] || 0 + val,
+                }),
+                {
+                  ...baseVal.data,
+                },
+              ),
+            });
+            return {
+              ...sum,
+              consumption: reduceValues(sum.consumption, value.consumption),
+              production: reduceValues(sum.production, value.production),
+            };
+          },
+          {
+            _status: 200,
+            consumption: { total: 0, data: {} },
+            production: { total: 0, data: {} },
+          },
+        );
+      });
+    } else {
+      return fetch(
+        `${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`,
+        {
+          headers: prepareHeaders(),
+        },
+      ).then(parseResponse);
+    }
   },
   fetchGroupMentors({ apiUrl, apiPath, groupId }) {
     return fetch(`${apiUrl}${apiPath}/groups/${groupId}/mentors`, {

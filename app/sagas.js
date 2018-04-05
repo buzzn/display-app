@@ -84,12 +84,12 @@ export function* windowReload() {
 export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   while (true) {
     try {
-      // const charts = yield call(api.fetchGroupChart, {
-      //   apiUrl,
-      //   apiPath,
-      //   groupId,
-      // });
-      // yield put(actions.setCharts(charts));
+      const charts = yield call(api.fetchGroupChart, {
+        apiUrl,
+        apiPath,
+        groupId,
+      });
+      yield put(actions.setCharts(charts));
     } catch (error) {
       logException(error);
     }
