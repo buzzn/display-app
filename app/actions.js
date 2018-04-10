@@ -12,6 +12,8 @@ export const constants = {
   SET_APP_VER: 'buzzn_display/SET_APP_VER',
 
   SET_UI: 'buzzn_display/SET_UI',
+
+  SET_CUSTOM_TITLE: 'buzzn_display/SET_CUSOM_TITLE',
 };
 
 export const actions = {
@@ -31,4 +33,9 @@ export const actions = {
   setAppVer: appVer => ({ type: constants.SET_APP_VER, appVer }),
 
   setUI: ui => ({ type: constants.SET_UI, ui }),
+
+  setCustomTitle: customTitle => ({
+    type: constants.SET_CUSTOM_TITLE,
+    customTitle,
+  }),
 };

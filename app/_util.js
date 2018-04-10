@@ -20,40 +20,6 @@ export function parseResponse(response) {
   );
 }
 
-export function getAllUrlParams() {
-  const queryString = window.location.search.slice(1).split('#')[0];
-
-  if (queryString) {
-    return queryString.split('&').reduce((sum, part) => {
-      const partSplit = part.split('=');
-      let paramNum;
-      let paramName = partSplit[0].replace(/\[\d*\]/, v => {
-        paramNum = v.slice(1, -1);
-        return '';
-      });
-      let paramValue =
-        typeof partSplit[1] === 'undefined' ? true : partSplit[1];
-
-      paramName = paramName.toLowerCase();
-      paramValue = paramValue.toLowerCase();
-
-      if (sum[paramName]) {
-        if (typeof sum[paramName] === 'string') {
-          sum[paramName] = [sum[paramName]];
-        }
-        if (typeof paramNum === 'undefined') {
-          sum[paramName].push(paramValue);
-        } else {
-          sum[paramName][paramNum] = paramValue;
-        }
-        return sum;
-      }
-      return { ...sum, [paramName]: paramValue };
-    }, {});
-  }
-  return {};
-}
-
 export function camelizeResponseArray(data) {
   const result = [];
   forEach(data, v => {
