@@ -182,6 +182,9 @@
     },
     "transform": {
       "^.+\\.(js|jsx|ts|tsx)$": "typescript-babel-jest"
-    }
+    },
+    "setupFiles": [
+      "./jest.init.js"
+    ]
   }
 }
