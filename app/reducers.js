@@ -63,6 +63,9 @@ export function appReducer(state = initialState, action) {
     case constants.SET_APP_VER:
       return { ...state, appVer: action.appVer };
 
+    case constants.SET_CUSTOM_TITLE:
+      return { ...state, customTitle: action.customTitle };
+
     default:
       return state;
   }

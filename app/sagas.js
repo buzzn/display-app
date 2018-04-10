@@ -11,7 +11,7 @@ import { delay } from 'redux-saga';
 import Bubbles from '@buzzn/module_bubbles';
 import { constants, actions } from './actions';
 import api from './api';
-import { logException, getAllUrlParams } from './_util';
+import { logException } from './_util';
 import store from './configure_store';
 
 export const getConfig = state => state.config;
@@ -103,6 +103,7 @@ export function* setUI() {
   const parsedURL = new URL(window.location.href);
   let urlDisplay = parsedURL.searchParams.get('display');
   const urlNoTitle = parsedURL.searchParams.get('no-title');
+  const urlNoClock = parsedURL.searchParams.get('no-clock');
   let ui = yield call(api.getUI);
   if (urlDisplay) {
     if (!['computer', 'tizen'].includes(urlDisplay)) urlDisplay = 'computer';
@@ -111,6 +112,10 @@ export function* setUI() {
   }
   if (urlNoTitle) {
     ui.noTitle = urlNoTitle === 'true';
+    yield call(api.setUI, ui);
+  }
+  if (urlNoClock) {
+    ui.noClock = urlNoClock === 'true';
     yield call(api.setUI, ui);
   }
   yield put(actions.setUI(ui));
@@ -135,9 +140,12 @@ export default function* appLoop() {
   }
 
   let groupId = yield call(getGroupFromUrl);
-  const metaGroup = getAllUrlParams().metagroup;
+  const metaGroup = (new URL(window.location.href)).searchParams.get('metagroup');
+  const customTitle = (new URL(window.location.href)).searchParams.get('custom-title');
 
   if (!metaGroup && !groupId) return false;
+
+  if (customTitle) yield put(actions.setCustomTitle(customTitle));
 
   if (metaGroup) groupId = metaGroup.split(',');
 

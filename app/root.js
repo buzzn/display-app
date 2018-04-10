@@ -60,7 +60,9 @@ export class Root extends Component {
       inSum,
       outSum,
       noTitle,
+      noClock,
       widgetScale,
+      customTitle,
     } = this.props;
 
     return (
@@ -87,7 +89,7 @@ export class Root extends Component {
                       textTransform: 'uppercase',
                     }}
                   >
-                    {group.name}
+                    {customTitle || group.name}
                   </div>
                 </div>
               )}
@@ -127,6 +129,7 @@ export class Root extends Component {
                   <Bubbles.container
                     Layout={BubblesLayout}
                     widgetScale={widgetScale}
+                    showClock={!noClock}
                     Chart={() => <Chart charts={charts} />}
                     InfoIn={() => <InfoPanel type="in" data={inSum} />}
                     InfoOut={() => <InfoPanel type="out" data={outSum} />}
@@ -155,7 +158,7 @@ export class Root extends Component {
                       <React.Fragment>
                         <div
                           style={{
-                            fontSize: '24px',
+                            fontSize: '26px',
                             margin: '40px auto 20px auto',
                             textAlign: 'center',
                           }}
@@ -172,7 +175,7 @@ export class Root extends Component {
                                 mentors.array.length > 1
                                   ? '0 0 0 50px'
                                   : 'auto',
-                              fontSize: '18px',
+                              fontSize: '20px',
                               marginBottom: '40px',
                             }}
                             key={m.id}
@@ -303,6 +306,7 @@ function mapStateToProps(state) {
   return {
     noTitle: state.app.ui.noTitle,
     display: state.app.ui.display,
+    noClock: state.app.ui.noClock,
     loading: state.app.loading,
     group: state.app.group,
     mentors: state.app.mentors,
@@ -315,6 +319,7 @@ function mapStateToProps(state) {
     outSum,
     bubblesStatus: state.bubbles.registers._status,
     widgetScale: state.app.widgetScale,
+    customTitle: state.app.customTitle,
   };
 }
 

@@ -645,7 +645,7 @@
 
 "@buzzn/module_bubbles@git+https://github.com/buzzn/module-bubbles.git#master":
   version "1.0.0"
-  resolved "git+https://github.com/buzzn/module-bubbles.git#f52af678ed943c988df64273c3160501e050f1e2"
+  resolved "git+https://github.com/buzzn/module-bubbles.git#d676c23c859bd2f4e6b79419397c4f89228747e6"
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"

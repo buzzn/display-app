@@ -91,14 +91,14 @@ const EnergySource = ({ type, value, position }) => {
             float: position === 'right' ? 'right' : 'left',
             marginTop: '40px',
             [`margin${position === 'right' ? 'Right' : 'Left'}`]: '60px',
-            fontSize: '34px' }}>{ icons.formatter(value) }</div> :
+            fontSize: '36px' }}>{ icons.formatter(value) }</div> :
           <div className="power" style={{
             textAlign: 'center',
             paddingTop: '20px',
             width: '100%',
-            fontSize: '34px' }}>
+            fontSize: '36px' }}>
             <div>{ icons.formatter(value) }</div>
-            <div style={{ fontSize: '20px' }}>{ icons.title }</div>
+            <div style={{ fontSize: '22px' }}>{ icons.title }</div>
           </div>
       }
       {
