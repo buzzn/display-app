@@ -11,6 +11,7 @@ export default ({
   Chart,
   widgetScale,
   showClock,
+  day,
 }) => (
   <div className="bubbles-wrapper">
     <div className="row">
@@ -23,7 +24,7 @@ export default ({
             position: 'relative',
           }}
         >
-          <Bubbles {...{ registers, widgetScale, showClock }} />
+          <Bubbles {...{ registers, widgetScale, showClock, day }} />
         </div>
       </div>
       <div style={{ width: '832px', height: '150px', margin: '30px auto' }}>

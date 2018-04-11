@@ -63,7 +63,14 @@ export class Root extends Component {
       noClock,
       widgetScale,
       customTitle,
+      day,
     } = this.props;
+
+    if (day) {
+      document.body.classList.add('day');
+    } else {
+      document.body.classList.remove('day');
+    }
 
     return (
       <div
@@ -123,6 +130,7 @@ export class Root extends Component {
                         position="left"
                         type={k}
                         value={sourcesLeft[k].value}
+                        day={day}
                       />
                     ))}
                   </div>
@@ -130,6 +138,7 @@ export class Root extends Component {
                     Layout={BubblesLayout}
                     widgetScale={widgetScale}
                     showClock={!noClock}
+                    day={day}
                     Chart={() => <Chart charts={charts} />}
                     InfoIn={() => <InfoPanel type="in" data={inSum} />}
                     InfoOut={() => <InfoPanel type="out" data={outSum} />}
@@ -152,6 +161,7 @@ export class Root extends Component {
                         position="right"
                         type={k}
                         value={sourcesRight[k].value}
+                        day={day}
                       />
                     ))}
                     {mentors.array.length > 0 && (
@@ -303,6 +313,10 @@ function mapStateToProps(state) {
   const prodStat = { id: 6, value: outSum };
   const consStat = { id: 7, value: inSum };
 
+  const day =
+    (production.solar && !!production.solar.value) ||
+    (new Date().getHours() <= 19 && new Date().getHours() >= 6);
+
   return {
     noTitle: state.app.ui.noTitle,
     display: state.app.ui.display,
@@ -320,6 +334,7 @@ function mapStateToProps(state) {
     bubblesStatus: state.bubbles.registers._status,
     widgetScale: state.app.widgetScale,
     customTitle: state.app.customTitle,
+    day,
   };
 }
 
