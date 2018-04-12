@@ -64,6 +64,7 @@ export class Root extends Component {
       widgetScale,
       customTitle,
       day,
+      appVer,
     } = this.props;
 
     if (day) {
@@ -209,6 +210,16 @@ export class Root extends Component {
                     style={{ position: 'absolute', right: '0', bottom: '0' }}
                     src={LogoImg}
                   />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      right: '0',
+                      bottom: '-26px',
+                      color: 'white',
+                    }}
+                  >
+                    v. {appVer}
+                  </div>
                 </div>
               </div>
             </div>
@@ -239,6 +250,17 @@ export class Root extends Component {
                 >
                   www.buzzn.net
                 </a>
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: '0',
+                    bottom: '0',
+                    color: 'white',
+                    fontSize: '16px',
+                  }}
+                >
+                  v. {appVer}
+                </div>
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -321,6 +343,7 @@ function mapStateToProps(state) {
     noTitle: state.app.ui.noTitle,
     display: state.app.ui.display,
     noClock: state.app.ui.noClock,
+    appVer: state.app.appVer,
     loading: state.app.loading,
     group: state.app.group,
     mentors: state.app.mentors,
