@@ -33,7 +33,7 @@ export default {
                 newVal.data,
                 (sum, val, key) => ({
                   ...sum,
-                  [key]: baseVal.data[key] || 0 + val,
+                  [key]: (baseVal.data[key] || 0) + val,
                 }),
                 {
                   ...baseVal.data,
