@@ -16,43 +16,45 @@ const EnergySource = ({ type, value, position, day }) => {
       : 'fa-chevron-left'
   }`;
 
+  const iconColor = day ? '#dedede' : '#9e9e9e';
+
   switch (type) {
     case 'solar':
       icons.type = 'fa-sun-o';
-      icons.color = day ? '#fffb3b' : '#ffeb3b';
+      icons.color = day ? '#dfbb1b' : '#ffeb3b';
       break;
     case 'fire':
       icons.type = 'fa-fire';
-      icons.color = day ? '#ffc726' : '#ffa726';
+      icons.color = day ? '#df8706' : '#ffa726';
       break;
     case 'water':
       icons.type = 'fa-tint';
-      icons.color = day ? '#3ea8f5' : '#1e88e5';
+      icons.color = day ? '#0068c5' : '#1e88e5';
       break;
     case 'wind':
       icons.type = 'fa-modx';
-      icons.color = day ? '#a0dafa' : '#90caf9';
+      icons.color = day ? '#70aad9' : '#90caf9';
       break;
     case 'grid':
-      icons.color = day ? '#cdcdcd' : '#bdbdbd';
+      icons.color = day ? '#9d9d9d' : '#bdbdbd';
       break;
     case 'consumption':
       icons.title = 'Aktueller Verbrauch';
-      icons.color = day ? '#90eefa' : '#80deea';
+      icons.color = day ? '#60beca' : '#80deea';
       break;
     case 'prodStat':
       icons.title = 'Tagesproduktion';
-      icons.color = day ? '#e4f157' : '#d4e157';
+      icons.color = day ? '#b4c137' : '#d4e157';
       icons.formatter = v => (v ? formatLabel(v, 'h') : 'n.a.');
       break;
     case 'consStat':
       icons.title = 'Tagesverbrauch';
-      icons.color = day ? '#90eefa' : '#80deea';
+      icons.color = day ? '#60beca' : '#80deea';
       icons.formatter = v => (v ? formatLabel(v, 'h') : 'n.a.');
       break;
     case 'autarchy':
       icons.title = 'Autarkie heute';
-      icons.color = day ? '#cdcdcd' : '#bdbdbd';
+      icons.color = day ? '#9d9d9d' : '#bdbdbd';
       icons.formatter = v => (v ? `${Math.round(v * 100)}%` : 'n.a.');
       break;
   }
@@ -63,9 +65,12 @@ const EnergySource = ({ type, value, position, day }) => {
         width: '460px',
         height: '120px',
         position: 'relative',
-        backgroundImage: `linear-gradient(to ${
-          position === 'right' ? 'right' : 'left'
-        }, #ffffff, ${icons.color})`,
+        backgroundImage: day
+          ? 'none'
+          : `linear-gradient(to ${
+              position === 'right' ? 'right' : 'left'
+            }, #ffffff, ${icons.color})`,
+        backgroundColor: day ? icons.color : 'none',
         marginBottom: '20px',
       }}
     >
@@ -79,7 +84,7 @@ const EnergySource = ({ type, value, position, day }) => {
             float: position === 'right' ? 'right' : 'left',
             marginTop: '25px',
             [`margin${position === 'right' ? 'Right' : 'Left'}`]: '32px',
-            color: '#9e9e9e',
+            color: iconColor,
           }}
         />
       ) : (
@@ -89,7 +94,7 @@ const EnergySource = ({ type, value, position, day }) => {
             float: position === 'right' ? 'right' : 'left',
             marginTop: '19px',
             [`margin${position === 'right' ? 'Right' : 'Left'}`]: '32px',
-            color: '#9e9e9e',
+            color: iconColor,
           }}
         >
           <svg width="80" height="80" viewBox="0 0 565 687" version="1.1">
@@ -103,9 +108,9 @@ const EnergySource = ({ type, value, position, day }) => {
               <g
                 id="noun_1053838_cc"
                 transform="translate(5.000000, 5.000000)"
-                stroke="#9e9e9e"
+                stroke={iconColor}
                 strokeWidth="10"
-                fill="#9e9e9e"
+                fill={iconColor}
                 fillRule="nonzero"
               >
                 <path
@@ -122,9 +127,9 @@ const EnergySource = ({ type, value, position, day }) => {
           className="power"
           style={{
             float: position === 'right' ? 'right' : 'left',
-            marginTop: '40px',
+            marginTop: '22px',
             [`margin${position === 'right' ? 'Right' : 'Left'}`]: '60px',
-            fontSize: '36px',
+            fontSize: '48px',
           }}
         >
           {icons.formatter(value)}
@@ -134,9 +139,9 @@ const EnergySource = ({ type, value, position, day }) => {
           className="power"
           style={{
             textAlign: 'center',
-            paddingTop: '20px',
+            paddingTop: '2px',
             width: '100%',
-            fontSize: '36px',
+            fontSize: '48px',
           }}
         >
           <div>{icons.formatter(value)}</div>
@@ -158,7 +163,7 @@ const EnergySource = ({ type, value, position, day }) => {
           <i
             className={`fa ${value === 0 ? 'fa-square' : arrow}`}
             style={{
-              marginTop: value === 0 ? '50px' : '30px',
+              marginTop: value === 0 ? '50px' : '36px',
               marginLeft: value === 0 ? '54px' : '40px',
             }}
           />
