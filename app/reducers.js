@@ -12,6 +12,7 @@ export const initialState = {
   group: {},
   mentors: { _status: null, array: [] },
   charts: { in: [], out: [], total: { in: 0, out: 0 } },
+  health: {},
   ui: { display: 'computer' },
   widgetScale: 1,
   appVer: null,
@@ -53,6 +54,9 @@ export function appReducer(state = initialState, action) {
         total: { in: inData.total, out: outData.total },
       };
       return { ...state, charts };
+
+    case constants.SET_HEALTH:
+      return { ...state, health: action.health };
 
     case constants.SET_UI:
       return { ...state, ui: uiReducer(state.ui, action) };
