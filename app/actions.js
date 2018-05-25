@@ -11,6 +11,8 @@ export const constants = {
   SET_WIDGET_SCALE: 'buzzn_display/SET_WIDGET_SCALE',
   SET_APP_VER: 'buzzn_display/SET_APP_VER',
 
+  SET_HEALTH: 'buzzn_display/SET_HEALTH',
+
   SET_UI: 'buzzn_display/SET_UI',
 
   SET_CUSTOM_TITLE: 'buzzn_display/SET_CUSOM_TITLE',
@@ -31,6 +33,8 @@ export const actions = {
   cancel: () => ({ type: constants.CANCEL }),
   setWidgetScale: scale => ({ type: constants.SET_WIDGET_SCALE, scale }),
   setAppVer: appVer => ({ type: constants.SET_APP_VER, appVer }),
+
+  setHealth: health => ({ type: constants.SET_HEALTH, health }),
 
   setUI: ui => ({ type: constants.SET_UI, ui }),
 

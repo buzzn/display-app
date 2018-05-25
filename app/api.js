@@ -76,6 +76,11 @@ export default {
       .then(parseResponse)
       .then(camelizeResponseKeys);
   },
+  fetchHealth({ apiUrl }) {
+    return fetch(`${apiUrl}health`, {
+      headers: prepareHeaders(),
+    }).then(parseResponse);
+  },
   fetchVersion() {
     return fetch(`${window.location.origin}/assets/version.json`, {
       headers: { 'Cache-Control': 'no-cache' },

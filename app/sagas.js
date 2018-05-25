@@ -99,6 +99,19 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   }
 }
 
+export function* setHealth({ apiUrl }) {
+  while (true) {
+    try {
+      const health = yield call(api.fetchHealth, { apiUrl });
+      yield put(actions.setHealth(health));
+    } catch (error) {
+      logException(error);
+      yield put(actions.setHealth({}));
+    }
+    yield call(delay, 60 * 1000);
+  }
+}
+
 export function* setUI() {
   const parsedURL = new URL(window.location.href);
   let urlDisplay = parsedURL.searchParams.get('display');
@@ -131,12 +144,11 @@ export function* setUI() {
 export default function* appLoop() {
   const { apiUrl, apiPath, secure, timeout } = yield select(getConfig);
 
+  yield fork(setHealth, { apiUrl });
   yield fork(setUI);
 
   if (secure && window.location.protocol !== 'https:') {
-    window.location.href = `https:${window.location.href.substring(
-      window.location.protocol.length,
-    )}`;
+    window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`;
   }
 
   let groupId = yield call(getGroupFromUrl);

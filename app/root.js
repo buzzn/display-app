@@ -10,6 +10,7 @@ import BubblesLayout from './components/bubbles_layout';
 import Chart from './components/chart';
 import EnergySource from './components/energy_source';
 import InfoPanel from './components/info_panel';
+import AppMaintenance from './components/app_maintenance';
 
 import 'buzzn-style';
 import './styles/main.scss';
@@ -65,12 +66,21 @@ export class Root extends Component {
       customTitle,
       day,
       appVer,
+      health,
     } = this.props;
 
     if (day) {
       document.body.classList.add('day');
     } else {
       document.body.classList.remove('day');
+    }
+
+    if (!health.healthy || health.maintenance === 'on') {
+      return (
+        <div id={`display-${display}`} style={{ width: '1920px', margin: 'auto' }}>
+          <AppMaintenance />
+        </div>
+      );
     }
 
     return (
@@ -344,6 +354,7 @@ function mapStateToProps(state) {
     display: state.app.ui.display,
     noClock: state.app.ui.noClock,
     appVer: state.app.appVer,
+    health: state.app.health,
     loading: state.app.loading,
     group: state.app.group,
     mentors: state.app.mentors,
