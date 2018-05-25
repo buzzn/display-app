@@ -9,8 +9,12 @@ body {
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-image: radial-gradient(circle farthest-corner at 100% 0, #bd95bf, #2b5876);
+  &.day {
+    background-image: none;
+    background-color: #2b5876;
+  }
 
-  font-family: 'Asap', Helvetica;
+  font-family: 'Source Sans Pro', Helvetica;
 
   -moz-transform-origin: 4% 0;
   //-moz-transform-origin: 50% 0;
@@ -19,5 +23,12 @@ body {
 
   #root {
     -moz-transform-origin: 0 0;
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -16px;
+    margin-left: -16px;
   }
 }

@@ -1,4 +1,12 @@
-import { put, select, fork, spawn, call, take, cancel } from 'redux-saga/effects';
+import {
+  put,
+  select,
+  fork,
+  spawn,
+  call,
+  take,
+  cancel,
+} from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 import Bubbles from '@buzzn/module_bubbles';
 import { constants, actions } from './actions';
@@ -7,6 +15,7 @@ import { logException } from './_util';
 import store from './configure_store';
 
 export const getConfig = state => state.config;
+export const getAppVer = state => state.app.appVer;
 
 export function setScale() {
   const scaleX = window.innerWidth / 1920;
@@ -16,9 +25,11 @@ export function setScale() {
   document.body.style.zoom = scale;
   document.body.style.MozTransform = `scale(${scale})`;
   if (scale < 1) {
-    document.body.style.MozTransformOrigin = `${window.innerWidth - 1920 * scale}px 0 0`;
+    document.body.style.MozTransformOrigin = `${window.innerWidth -
+      1920 * scale}px 0 0`;
   } else {
-    document.body.style.MozTransformOrigin = `${window.innerWidth - 1600 / scale}px 0 0`;
+    document.body.style.MozTransformOrigin = `${window.innerWidth -
+      1600 / scale}px 0 0`;
   }
 }
 
@@ -28,7 +39,7 @@ export function hackScale() {
 
   window.addEventListener(
     'touchmove',
-    (event) => {
+    event => {
       if (event.scale !== 1) {
         event.preventDefault();
       }
@@ -39,7 +50,7 @@ export function hackScale() {
   let lastTouchEnd = 0;
   document.addEventListener(
     'touchend',
-    (event) => {
+    event => {
       const now = new Date().getTime();
       if (now - lastTouchEnd <= 500) {
         event.preventDefault();
@@ -54,20 +65,30 @@ export function getGroupFromUrl() {
   return new URL(window.location.href).pathname.split('/')[1];
 }
 
-export function windowReload() {
-  setInterval(() => {
-    window.location.reload(true);
-  }, 1000 * 60 * 60 * 24);
-}
-
-export function* bubbles({ groupId }) {
-  yield put(Bubbles.actions.setGroupId(groupId));
+export function* windowReload() {
+  while (true) {
+    const currentVer = yield select(getAppVer);
+    try {
+      const { version: newVer } = yield call(api.fetchVersion);
+      yield put(actions.setAppVer(newVer));
+      if (currentVer && currentVer !== newVer) {
+        window.location.reload();
+      }
+    } catch (error) {
+      logException(error);
+    }
+    yield call(delay, 10 * 60 * 1000);
+  }
 }
 
 export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   while (true) {
     try {
-      const charts = yield call(api.fetchGroupChart, { apiUrl, apiPath, groupId });
+      const charts = yield call(api.fetchGroupChart, {
+        apiUrl,
+        apiPath,
+        groupId,
+      });
       yield put(actions.setCharts(charts));
     } catch (error) {
       logException(error);
@@ -78,10 +99,24 @@ export function* getCharts({ apiUrl, apiPath }, { groupId }) {
   }
 }
 
+export function* setHealth({ apiUrl }) {
+  while (true) {
+    try {
+      const health = yield call(api.fetchHealth, { apiUrl });
+      yield put(actions.setHealth(health));
+    } catch (error) {
+      logException(error);
+      yield put(actions.setHealth({}));
+    }
+    yield call(delay, 60 * 1000);
+  }
+}
+
 export function* setUI() {
   const parsedURL = new URL(window.location.href);
   let urlDisplay = parsedURL.searchParams.get('display');
   const urlNoTitle = parsedURL.searchParams.get('no-title');
+  const urlNoClock = parsedURL.searchParams.get('no-clock');
   let ui = yield call(api.getUI);
   if (urlDisplay) {
     if (!['computer', 'tizen'].includes(urlDisplay)) urlDisplay = 'computer';
@@ -90,6 +125,10 @@ export function* setUI() {
   }
   if (urlNoTitle) {
     ui.noTitle = urlNoTitle === 'true';
+    yield call(api.setUI, ui);
+  }
+  if (urlNoClock) {
+    ui.noClock = urlNoClock === 'true';
     yield call(api.setUI, ui);
   }
   yield put(actions.setUI(ui));
@@ -103,23 +142,34 @@ export function* setUI() {
 }
 
 export default function* appLoop() {
-  const {
-    apiUrl, apiPath, secure, timeout,
-  } = yield select(getConfig);
+  const { apiUrl, apiPath, secure, timeout } = yield select(getConfig);
 
+  yield fork(setHealth, { apiUrl });
   yield fork(setUI);
 
   if (secure && window.location.protocol !== 'https:') {
     window.location.href = `https:${window.location.href.substring(window.location.protocol.length)}`;
   }
 
-  const groupId = yield call(getGroupFromUrl);
+  let groupId = yield call(getGroupFromUrl);
+  const metaGroup = (new URL(window.location.href)).searchParams.get('metagroup');
+  const customTitle = (new URL(window.location.href)).searchParams.get('custom-title');
 
-  if (!groupId) return false;
+  if (!metaGroup && !groupId) return false;
+
+  if (customTitle) yield put(actions.setCustomTitle(customTitle));
+
+  if (metaGroup) groupId = metaGroup.split(',');
 
   yield spawn(windowReload);
   yield put(actions.setUrlGroupId(groupId));
-  yield put(Bubbles.actions.setApiParams({ apiUrl, apiPath: `${apiPath}/groups`, timeout }));
+  yield put(
+    Bubbles.actions.setApiParams({
+      apiUrl,
+      apiPath: `${apiPath}/groups`,
+      timeout,
+    }),
+  );
   yield put(Bubbles.actions.setToken({ token: null }));
 
   yield call(hackScale);
@@ -127,13 +177,28 @@ export default function* appLoop() {
   while (true) {
     try {
       yield put(actions.loadingGroup());
-      const mentors = yield call(api.fetchGroupMentors, { apiUrl, apiPath, groupId });
-      yield put(actions.setMentors(mentors));
-      const group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
+      let group = {};
+
+      if (Array.isArray(groupId)) {
+        group = { id: 'meta', name: '' };
+      } else {
+        const mentors = yield call(api.fetchGroupMentors, {
+          apiUrl,
+          apiPath,
+          groupId,
+        });
+        yield put(actions.setMentors(mentors));
+        group = yield call(api.fetchGroup, { apiUrl, apiPath, groupId });
+      }
+
       if (group.id) {
         yield put(actions.setGroup(group));
         yield put(actions.loadedGroup());
-        const chartSaga = yield fork(getCharts, { apiUrl, apiPath }, { groupId });
+        const chartSaga = yield fork(
+          getCharts,
+          { apiUrl, apiPath },
+          { groupId },
+        );
         yield put(Bubbles.actions.setGroupId(groupId));
 
         yield take(constants.CANCEL);
