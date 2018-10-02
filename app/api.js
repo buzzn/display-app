@@ -3,43 +3,31 @@ import { prepareHeaders, parseResponse, camelizeResponseKeys } from './_util';
 
 export default {
   fetchGroup({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}`, {
-      headers: prepareHeaders(),
-    }).then(parseResponse);
+    return fetch(`${apiUrl}${apiPath}/groups/${groupId}`, { headers: prepareHeaders() }).then(parseResponse);
   },
   fetchGroupChart({ apiUrl, apiPath, groupId }) {
     if (Array.isArray(groupId)) {
-      return Promise.all(
-        groupId.map(gid =>
-          fetch(`${apiUrl}${apiPath}/groups/${gid}/charts?duration=day`, {
-            headers: prepareHeaders(),
-          })
-            .then(parseResponse)
-            .catch(error => error),
-        ),
-      ).then(chartsArr => {
+      return Promise.all(groupId.map(gid =>
+        fetch(`${apiUrl}${apiPath}/groups/${gid}/charts?duration=day`, { headers: prepareHeaders() })
+          .then(parseResponse)
+          .catch(error => error))).then((chartsArr) => {
+        const reduceValues = (baseVal, newVal) => ({
+          total: baseVal.total + newVal.total,
+          data: reduce(
+            newVal.data,
+            (sum, val, key) => ({
+              ...sum,
+              [key]: (baseVal.data[key] || 0) + val,
+            }),
+            { ...baseVal.data },
+          ),
+        });
+
         return chartsArr.reduce(
           (sum, value) => {
-            if (
-              value._status !== 200 ||
-              !value.consumption ||
-              !value.production
-            ) {
+            if (value._status !== 200 || !value.consumption || !value.production) {
               return sum;
             }
-            const reduceValues = (baseVal, newVal) => ({
-              total: baseVal.total + newVal.total,
-              data: reduce(
-                newVal.data,
-                (sum, val, key) => ({
-                  ...sum,
-                  [key]: (baseVal.data[key] || 0) + val,
-                }),
-                {
-                  ...baseVal.data,
-                },
-              ),
-            });
             return {
               ...sum,
               consumption: reduceValues(sum.consumption, value.consumption),
@@ -53,38 +41,33 @@ export default {
           },
         );
       });
-    } else {
-      return fetch(
-        `${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`,
-        {
-          headers: prepareHeaders(),
-        },
-      ).then(parseResponse);
     }
+
+    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/charts?duration=day`, { headers: prepareHeaders() })
+      .then(parseResponse)
+      .then((res) => {
+        // HACK hack for broken api response.
+        if (!res.consumption || !res.production) {
+          return { ...res, consumption: { total: 0, data: {} }, production: { total: 0, data: {} } };
+        }
+        return res;
+      });
   },
   fetchGroupMentors({ apiUrl, apiPath, groupId }) {
-    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/mentors`, {
-      headers: prepareHeaders(),
-    })
+    return fetch(`${apiUrl}${apiPath}/groups/${groupId}/mentors`, { headers: prepareHeaders() })
       .then(parseResponse)
       .then(camelizeResponseKeys);
   },
   fetchGroups({ apiUrl, apiPath }) {
-    return fetch(`${apiUrl}${apiPath}/groups`, {
-      headers: prepareHeaders(),
-    })
+    return fetch(`${apiUrl}${apiPath}/groups`, { headers: prepareHeaders() })
       .then(parseResponse)
       .then(camelizeResponseKeys);
   },
   fetchHealth({ apiUrl }) {
-    return fetch(`${apiUrl}health`, {
-      headers: prepareHeaders(),
-    }).then(parseResponse);
+    return fetch(`${apiUrl}health`, { headers: prepareHeaders() }).then(parseResponse);
   },
   fetchVersion() {
-    return fetch(`${window.location.origin}/assets/version.json`, {
-      headers: { 'Cache-Control': 'no-cache' },
-    }).then(parseResponse);
+    return fetch(`${window.location.origin}/assets/version.json`, { headers: { 'Cache-Control': 'no-cache' } }).then(parseResponse);
   },
   setUI(ui) {
     localStorage.setItem('buzznDisplayUI', JSON.stringify(ui || {}));
