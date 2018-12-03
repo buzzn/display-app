@@ -208,7 +208,9 @@ export class Root extends Component {
                                 borderRadius: '76px',
                                 marginBottom: '10px',
                               }}
-                              src={m.image || UserImg}
+                              // fix it after #278
+                              // src={m.image || UserImg}
+                              src={UserImg}
                             />
                             {`${m.firstName} ${m.lastName}`}
                           </div>
