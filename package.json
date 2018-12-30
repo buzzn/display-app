@@ -78,6 +78,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "@buzzn/module_bubbles": "git+https://github.com/buzzn/module-bubbles.git#master",
+    "@sentry/browser": "^4.4.2",
     "buzzn-style": "git://github.com/buzzn/buzzn-style.git",
     "d3": "^5.7.0",
     "font-awesome": "^4.7.0",
