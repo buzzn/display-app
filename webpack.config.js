@@ -32,30 +32,6 @@ module.exports = {
         test: /\.(ts|tsx|js)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel-loader',
-        query: {
-          presets: [
-            [
-              '@babel/env',
-              {
-                targets: {
-                  browsers: ['last 2 versions', 'safari >= 7'],
-                  modules: false,
-                  debug: true,
-                },
-              },
-            ],
-            '@babel/stage-3',
-            '@babel/react',
-            '@babel/typescript',
-          ],
-          plugins: [
-            'react-hot-loader/babel',
-            '@babel/plugin-proposal-object-rest-spread',
-            '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-syntax-class-properties',
-            '@babel/plugin-syntax-object-rest-spread',
-          ],
-        },
       },
       {
         test: /\.css$/,
