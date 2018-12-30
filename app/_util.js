@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import forEach from 'lodash/forEach';
 import camelCase from 'lodash/camelCase';
 import find from 'lodash/find';
@@ -15,14 +16,12 @@ export function parseResponse(response) {
   if (response.status >= 200 && response.status < 300) {
     return json.then(res => ({ ...res, _status: 200 }));
   }
-  return json.then(error =>
-    Promise.reject({ _status: response.status, error }),
-  );
+  return json.then(error => Promise.reject({ _status: response.status, error }));
 }
 
 export function camelizeResponseArray(data) {
   const result = [];
-  forEach(data, v => {
+  forEach(data, (v) => {
     if (Array.isArray(v)) {
       result.push(camelizeResponseArray(v));
     } else if (typeof v === 'object') {
@@ -81,13 +80,9 @@ export function formatNumber(value) {
     } else if (remainder < 10) {
       formattedNumber = `${leadingNumber}${decimalPoint}00`;
     } else if (remainder < 100) {
-      formattedNumber = `${leadingNumber}${decimalPoint}0${(
-        remainder / 10
-      ).toFixed(0)}`;
+      formattedNumber = `${leadingNumber}${decimalPoint}0${(remainder / 10).toFixed(0)}`;
     } else if (remainder < 1000) {
-      formattedNumber = `${leadingNumber}${decimalPoint}${(
-        remainder / 10
-      ).toFixed(0)}`;
+      formattedNumber = `${leadingNumber}${decimalPoint}${(remainder / 10).toFixed(0)}`;
     }
   } else {
     formattedNumber = leadingNumber.toString();
@@ -123,7 +118,7 @@ export function calculateAutarchy({ in: inData, out: outData }) {
   let totalProduction = 0;
   let autarchy = null;
 
-  inData.forEach(inValue => {
+  inData.forEach((inValue) => {
     totalConsumption += inValue.value;
     const outValue = find(outData, o => o.timestamp === inValue.timestamp);
     if (!outValue) return;
@@ -137,19 +132,13 @@ export function calculateAutarchy({ in: inData, out: outData }) {
   });
 
   if (foreignConsumption + ownConsumption !== 0) {
-    autarchy = (ownConsumption / (foreignConsumption + ownConsumption)).toFixed(
-      2,
-    );
+    autarchy = (ownConsumption / (foreignConsumption + ownConsumption)).toFixed(2);
   }
 
   return autarchy;
 }
 
-export function logException(ex, context) {
-  if (Raven.isSetup()) {
-    Raven.captureException(JSON.stringify(ex), {
-      extra: context,
-    });
-  }
+export function logException(ex) {
+  Sentry.captureException(ex);
   console.error(ex);
 }
