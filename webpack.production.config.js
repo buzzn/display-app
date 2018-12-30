@@ -16,8 +16,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build/public/assets'),
     publicPath: '/assets/',
-    filename: '[name]-bundle-[chunkhash].min.js',
-    chunkFilename: '[name]-bundle-[chunkhash].min.js',
+    filename: '[name]-bundle-[contenthash].min.js',
+    chunkFilename: '[name]-bundle-[contenthash].min.js',
   },
   module: {
     rules: [
@@ -25,30 +25,6 @@ module.exports = {
         test: /\.(ts|tsx|js)$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'babel-loader',
-        query: {
-          presets: [
-            [
-              '@babel/env',
-              {
-                targets: {
-                  browsers: ['last 2 versions', 'safari >= 7'],
-                  modules: false,
-                  debug: true,
-                },
-              },
-            ],
-            '@babel/stage-3',
-            '@babel/react',
-            '@babel/typescript',
-          ],
-          plugins: [
-            'react-hot-loader/babel',
-            '@babel/plugin-proposal-object-rest-spread',
-            '@babel/plugin-proposal-class-properties',
-            '@babel/plugin-syntax-class-properties',
-            '@babel/plugin-syntax-object-rest-spread',
-          ],
-        },
       },
       {
         test: /\.css$/,
@@ -83,7 +59,27 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.json'],
     alias: { moment$: 'moment/moment.js' },
   },
-  optimization: { splitChunks: { chunks: 'all' } },
+    optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      chunks: 'all',
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name(module) {
+            // get the name. E.g. node_modules/packageName/not/this/part.js
+            // or node_modules/packageName
+            const packageName = module.context.match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1];
+
+            // npm package names are URL-safe, but some servers don't like @ symbols
+            return `npm.${packageName.replace('@', '')}`;
+          },
+        },
+      },
+    },
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
